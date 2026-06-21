@@ -1,7 +1,7 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist/client",
-  "framework": "other",
+  "framework": "tanstack-start",
   "functions": {
     "api/**/*.js": {
       "runtime": "nodejs24.x"
