@@ -24,7 +24,7 @@ export function AIChat() {
                   <Sparkles className="h-4 w-4 text-pearl" />
                 </div>
                 <div>
-                  <div className="font-display text-base text-primary">Brideora AI</div>
+                  <div className="font-display text-base text-primary">Brideora Concierge</div>
                   <div className="text-[11px] text-muted-foreground">Live · responds instantly</div>
                 </div>
               </div>

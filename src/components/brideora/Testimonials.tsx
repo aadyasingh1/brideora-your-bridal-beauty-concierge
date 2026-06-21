@@ -11,7 +11,7 @@ const testimonials = [
     name: "Neha S.",
     location: "Saket · Nov 2025",
     quote:
-      "Brideora AI suggested artists that perfectly matched my pastel lehenga. The booking flow was effortless.",
+      "Brideora's concierge suggested artists that perfectly matched my pastel lehenga. The booking flow was effortless.",
   },
   {
     name: "Ritika & Karan",

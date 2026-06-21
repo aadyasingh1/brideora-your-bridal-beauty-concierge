@@ -96,7 +96,7 @@ export function Hero() {
                 <Sparkles className="h-5 w-5 text-pearl" />
               </div>
               <div>
-                <div className="font-display text-base text-primary">Brideora AI</div>
+                <div className="font-display text-base text-primary">Brideora Concierge</div>
                 <div className="text-xs text-muted-foreground">
                   "Find me an artist under ₹15k in Dwarka"
                 </div>

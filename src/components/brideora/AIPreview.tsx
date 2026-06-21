@@ -8,7 +8,7 @@ export function AIPreview() {
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="text-center text-pearl max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 rounded-full bg-pearl/15 backdrop-blur px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-gold-soft">
-            <Sparkles className="h-3.5 w-3.5" /> Brideora AI Concierge
+            <Sparkles className="h-3.5 w-3.5" /> Brideora Bridal Concierge
           </div>
           <h2 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl leading-tight">
             Your personal <span className="italic text-gradient-gold">bridal beauty</span> advisor
@@ -23,13 +23,13 @@ export function AIPreview() {
             }}
             className="mt-8 inline-flex items-center gap-2 rounded-full bg-gradient-gold px-7 py-3.5 text-sm font-semibold text-foreground shadow-gold hover:shadow-luxe transition-all"
           >
-            <Sparkles className="h-4 w-4" /> Try Brideora AI free
+            <Sparkles className="h-4 w-4" /> Try Brideora Concierge free
           </button>
         </div>
 
         <div className="mt-16 grid md:grid-cols-3 gap-8">
           {[
-            { icon: "🎨", title: "Smart Matching", desc: "AI learns your style and budget to suggest perfect artists" },
+            { icon: "🎨", title: "Smart Matching", desc: "Our system matches your style and budget to suggest perfect artists" },
             { icon: "⚡", title: "Instant Shortlists", desc: "Get curated recommendations in under 30 seconds" },
             { icon: "💬", title: "Live Guidance", desc: "Ask anything about looks, timelines and beauty prep" },
           ].map((feature, i) => (

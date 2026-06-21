@@ -9,7 +9,7 @@ const steps = [
   {
     icon: Sparkles,
     title: "Compare",
-    text: "Use Brideora AI to instantly match artists to your budget, look, and locality.",
+    text: "Use Brideora Concierge to instantly match artists to your budget, look, and locality.",
   },
   {
     icon: CalendarHeart,

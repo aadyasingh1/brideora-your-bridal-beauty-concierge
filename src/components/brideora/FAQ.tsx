@@ -15,8 +15,8 @@ const faqs = [
     a: "Pay a small advance to confirm your booking via Razorpay. The balance is paid directly to your artist on the day. Full refund within 48 hours of cancellation per our policy.",
   },
   {
-    q: "What is Brideora AI?",
-    a: "Our AI bridal concierge powered by Gemini understands your budget, function type, lehenga colour and date, and recommends the best-matched artists, packages and looks.",
+    q: "What is Brideora Concierge?",
+    a: "Our smart bridal concierge powered by Gemini understands your budget, function type, lehenga colour and date, and recommends the best-matched artists, packages and looks.",
   },
   {
     q: "Are you available outside Delhi?",

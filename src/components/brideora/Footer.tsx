@@ -12,7 +12,7 @@ const cols = [
   },
   {
     title: "Brideora",
-    links: ["About", "For Artists", "Brideora AI", "Inspiration", "Blog", "Press"],
+    links: ["About", "For Artists", "Bridal Concierge", "Inspiration", "Blog", "Press"],
   },
   {
     title: "Support",

@@ -36,7 +36,7 @@ export function Navbar() {
             className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-primary hover:bg-rose transition-colors"
           >
             <Sparkles className="h-4 w-4" />
-            Brideora AI
+            Bridal Concierge
           </a>
           <a
             href="#vendor"
@@ -72,7 +72,7 @@ export function Navbar() {
               href="#ai"
               className="inline-flex items-center gap-2 py-2 text-sm font-medium text-primary"
             >
-              <Sparkles className="h-4 w-4" /> Brideora AI
+              <Sparkles className="h-4 w-4" /> Bridal Concierge
             </a>
             <a
               href="#login"

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Discover, compare and book trusted bridal makeup artists, mehendi designers and hair stylists across Delhi. Powered by Brideora AI.",
+          "Discover, compare and book trusted bridal makeup artists, mehendi designers and hair stylists across Delhi. Powered by Brideora's Bridal Concierge.",
       },
       { property: "og:title", content: "Brideora — Bridal Beauty Marketplace" },
       {
