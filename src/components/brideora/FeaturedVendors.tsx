@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Star, MapPin, Award, Heart } from "lucide-react";
 import a1 from "@/assets/artist-1.jpg";
 import a2 from "@/assets/artist-2.jpg";
 import a3 from "@/assets/artist-3.jpg";
+import { BookingModal } from "./BookingModal";
 
 const vendors = [
   {
@@ -37,6 +39,8 @@ const vendors = [
 ];
 
 export function FeaturedVendors() {
+  const [selectedVendor, setSelectedVendor] = useState<typeof vendors[0] | null>(null);
+
   return (
     <section id="vendors" className="py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-6">
@@ -99,12 +103,12 @@ export function FeaturedVendors() {
                     <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Starting from</div>
                     <div className="font-display text-2xl text-primary">{v.price}</div>
                   </div>
-                  <a
-                    href="#book"
-                    className="rounded-full bg-foreground px-5 py-2.5 text-xs font-semibold text-pearl hover:bg-primary transition-colors"
+                  <button
+                    onClick={() => setSelectedVendor(v)}
+                    className="rounded-full bg-foreground px-5 py-2.5 text-xs font-semibold text-pearl hover:bg-primary transition-colors cursor-pointer"
                   >
-                    View profile
-                  </a>
+                    Book Artist
+                  </button>
                 </div>
                 <div className="mt-3 text-xs text-muted-foreground">{v.reviews} reviews</div>
               </div>
@@ -112,6 +116,14 @@ export function FeaturedVendors() {
           ))}
         </div>
       </div>
+
+      {selectedVendor && (
+        <BookingModal
+          isOpen={!!selectedVendor}
+          onClose={() => setSelectedVendor(null)}
+          vendor={selectedVendor}
+        />
+      )}
     </section>
   );
 }

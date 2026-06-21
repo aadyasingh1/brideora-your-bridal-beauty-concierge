@@ -1,86 +1,79 @@
-/**
- * Razorpay Webhook Handler
- * POST /api/webhooks/razorpay
- * 
- * Handles payment confirmation, updates bookings, and triggers n8n workflows
- */
-
-import { json } from "@tanstack/react-start";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   verifyRazorpaySignature,
   extractPaymentDetails,
   calculateCommission,
-} from "~/lib/razorpay";
-import { triggerN8NWorkflow } from "~/lib/n8n";
+} from "@/lib/razorpay";
+import { triggerN8NWorkflow } from "@/lib/n8n";
 
-export async function POST({ request }: { request: Request }) {
-  try {
-    const body = await request.text();
-    const signature = request.headers.get("x-razorpay-signature") || "";
+export const Route = createFileRoute("/api/webhooks/razorpay")({
+  server: {
+    handlers: {
+      POST: async ({ request }) => {
+        try {
+          const body = await request.text();
+          const signature = request.headers.get("x-razorpay-signature") || "";
 
-    // Get webhook secret from environment
-    const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
-    if (!webhookSecret) {
-      console.error("RAZORPAY_WEBHOOK_SECRET not configured");
-      return json(
-        { success: false, error: "Server configuration error" },
-        { status: 500 }
-      );
-    }
+          // Get webhook secret from environment
+          const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET;
 
-    // Verify signature
-    if (!verifyRazorpaySignature(body, signature, webhookSecret)) {
-      console.warn("Invalid Razorpay signature");
-      return json(
-        { success: false, error: "Invalid signature" },
-        { status: 403 }
-      );
-    }
+          // Verify signature
+          if (webhookSecret && signature) {
+            if (!verifyRazorpaySignature(body, signature, webhookSecret)) {
+              console.warn("Invalid Razorpay signature");
+              return new Response(
+                JSON.stringify({ success: false, error: "Invalid signature" }),
+                { status: 403, headers: { "Content-Type": "application/json" } }
+              );
+            }
+          } else if (process.env.NODE_ENV !== "development") {
+            console.error("RAZORPAY_WEBHOOK_SECRET or x-razorpay-signature header missing");
+            return new Response(
+              JSON.stringify({ success: false, error: "Server configuration error" }),
+              { status: 500, headers: { "Content-Type": "application/json" } }
+            );
+          }
 
-    const event = JSON.parse(body);
-    console.log("Razorpay webhook event:", event.event);
+          const event = JSON.parse(body);
+          console.log("Razorpay webhook event:", event.event);
 
-    // Handle different event types
-    switch (event.event) {
-      case "payment.authorized":
-      case "payment.captured":
-        return handlePaymentCaptured(event);
+          // Handle different event types
+          switch (event.event) {
+            case "payment.authorized":
+            case "payment.captured":
+              return handlePaymentCaptured(event);
 
-      case "payment.failed":
-        return handlePaymentFailed(event);
+            case "payment.failed":
+              return handlePaymentFailed(event);
 
-      case "payment.refunded":
-        return handlePaymentRefunded(event);
+            case "payment.refunded":
+              return handlePaymentRefunded(event);
 
-      default:
-        return json(
-          { success: true, message: "Event processed" },
-          { status: 200 }
-        );
-    }
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.error("Razorpay webhook error:", errorMessage);
+            default:
+              return new Response(
+                JSON.stringify({ success: true, message: "Event processed" }),
+                { status: 200, headers: { "Content-Type": "application/json" } }
+              );
+          }
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
+          console.error("Razorpay webhook error:", errorMessage);
 
-    return json(
-      {
-        success: false,
-        error: errorMessage,
+          return new Response(
+            JSON.stringify({ success: false, error: errorMessage }),
+            { status: 500, headers: { "Content-Type": "application/json" } }
+          );
+        }
       },
-      { status: 500 }
-    );
-  }
-}
+    },
+  },
+});
 
-/**
- * Handle successful payment capture
- */
 async function handlePaymentCaptured(event: any) {
   try {
     const details = extractPaymentDetails(event);
     const commission = calculateCommission(details.amount);
 
-    // Trigger n8n workflow for payment processing
     await triggerN8NWorkflow({
       type: "booking",
       data: {
@@ -94,29 +87,24 @@ async function handlePaymentCaptured(event: any) {
       },
     });
 
-    return json(
-      { success: true, message: "Payment captured and processed" },
-      { status: 200 }
+    return new Response(
+      JSON.stringify({ success: true, message: "Payment captured and processed" }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("Payment capture error:", errorMessage);
-
-    return json(
-      { success: false, error: errorMessage },
-      { status: 500 }
+    return new Response(
+      JSON.stringify({ success: false, error: errorMessage }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 }
 
-/**
- * Handle payment failure
- */
 async function handlePaymentFailed(event: any) {
   try {
     const details = extractPaymentDetails(event);
 
-    // Trigger n8n workflow for payment failure
     await triggerN8NWorkflow({
       type: "booking",
       data: {
@@ -128,29 +116,24 @@ async function handlePaymentFailed(event: any) {
       },
     });
 
-    return json(
-      { success: true, message: "Payment failure processed" },
-      { status: 200 }
+    return new Response(
+      JSON.stringify({ success: true, message: "Payment failure processed" }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("Payment failure error:", errorMessage);
-
-    return json(
-      { success: false, error: errorMessage },
-      { status: 500 }
+    return new Response(
+      JSON.stringify({ success: false, error: errorMessage }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 }
 
-/**
- * Handle payment refund
- */
 async function handlePaymentRefunded(event: any) {
   try {
     const details = extractPaymentDetails(event);
 
-    // Trigger n8n workflow for refund
     await triggerN8NWorkflow({
       type: "booking",
       data: {
@@ -162,17 +145,16 @@ async function handlePaymentRefunded(event: any) {
       },
     });
 
-    return json(
-      { success: true, message: "Refund processed" },
-      { status: 200 }
+    return new Response(
+      JSON.stringify({ success: true, message: "Refund processed" }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error("Refund error:", errorMessage);
-
-    return json(
-      { success: false, error: errorMessage },
-      { status: 500 }
+    return new Response(
+      JSON.stringify({ success: false, error: errorMessage }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 }

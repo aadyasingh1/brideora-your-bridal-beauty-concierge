@@ -45,6 +45,7 @@ export async function POST({ request }: { request: Request }) {
     // Trigger featured listing activation workflow
     const result = await triggerN8NWorkflow({
       type: "vendor",
+      path: "featured-listing-purchase",
       data: {
         event: "featured_listing_activated",
         vendorId: payload.vendorId,

@@ -10,6 +10,7 @@ export interface N8NWebhookPayload {
   type: "vendor" | "booking" | "notification" | "inquiry";
   data: Record<string, unknown>;
   timestamp?: string;
+  path?: string; // Optional custom path (e.g. "featured-listing-purchase")
 }
 
 export interface N8NResponse {
@@ -26,7 +27,12 @@ export async function triggerN8NWorkflow(
   payload: N8NWebhookPayload
 ): Promise<N8NResponse> {
   try {
-    const webhookUrl = `${N8N_WEBHOOK_URL}/${N8N_WORKFLOW_ID}`;
+    // n8n uses /webhook-test/ in the editor and /webhook/ for active workflows
+    const isDev = process.env.NODE_ENV === "development";
+    const targetPath = payload.path || N8N_WORKFLOW_ID;
+    const webhookUrl = isDev
+      ? `${N8N_WEBHOOK_URL}-test/${targetPath}`
+      : `${N8N_WEBHOOK_URL}/${targetPath}`;
 
     const response = await fetch(webhookUrl, {
       method: "POST",
