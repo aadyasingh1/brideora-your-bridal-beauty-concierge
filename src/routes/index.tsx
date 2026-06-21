@@ -1,29 +1,52 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Navbar } from "@/components/brideora/Navbar";
+import { Hero } from "@/components/brideora/Hero";
+import { Categories } from "@/components/brideora/Categories";
+import { FeaturedVendors } from "@/components/brideora/FeaturedVendors";
+import { Locations } from "@/components/brideora/Locations";
+import { HowItWorks } from "@/components/brideora/HowItWorks";
+import { AIPreview } from "@/components/brideora/AIPreview";
+import { Inspiration } from "@/components/brideora/Inspiration";
+import { Testimonials } from "@/components/brideora/Testimonials";
+import { FAQ } from "@/components/brideora/FAQ";
+import { Footer } from "@/components/brideora/Footer";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Your App" },
-      { name: "description", content: "Replace this with a one-sentence description of your app." },
-      { property: "og:title", content: "Your App" },
-      { property: "og:description", content: "Replace this with a one-sentence description of your app." },
+      { title: "Brideora — Find Your Perfect Bridal Beauty Expert in Delhi" },
+      {
+        name: "description",
+        content:
+          "Discover, compare and book trusted bridal makeup artists, mehendi designers and hair stylists across Delhi. Powered by Brideora AI.",
+      },
+      { property: "og:title", content: "Brideora — Bridal Beauty Marketplace" },
+      {
+        property: "og:description",
+        content:
+          "India's hyperlocal bridal beauty marketplace. Book trusted artists in under 5 minutes.",
+      },
     ],
   }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main>
+        <Hero />
+        <Categories />
+        <FeaturedVendors />
+        <Locations />
+        <HowItWorks />
+        <AIPreview />
+        <Inspiration />
+        <Testimonials />
+        <FAQ />
+      </main>
+      <Footer />
     </div>
   );
 }
