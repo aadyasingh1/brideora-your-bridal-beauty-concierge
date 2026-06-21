@@ -13,12 +13,16 @@ const localities = [
   { name: "Paschim Vihar", count: 41 },
 ];
 
-export function Locations() {
+interface LocationsProps {
+  onLocationClick?: (loc: string) => void;
+}
+
+export function Locations({ onLocationClick }: LocationsProps) {
   return (
     <section id="locations" className="py-20 lg:py-28 bg-gradient-ivory">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="divider-ornament text-xs uppercase tracking-[0.3em]">Delhi Coverage</div>
+          <div className="divider-ornament text-xs uppercase tracking-[0.3em] text-gold-soft">Delhi Coverage</div>
           <h2 className="mt-4 font-display text-4xl sm:text-5xl text-foreground">
             From Dwarka to <span className="italic text-gradient-royal">South Delhi</span>
           </h2>
@@ -32,7 +36,11 @@ export function Locations() {
             <a
               key={l.name}
               href={`#loc-${l.name}`}
-              className="group rounded-2xl border border-border bg-pearl p-5 hover:border-gold hover:shadow-soft transition-all"
+              onClick={(e) => {
+                e.preventDefault();
+                onLocationClick?.(l.name);
+              }}
+              className="group rounded-2xl border border-border bg-pearl p-5 hover:border-gold hover:shadow-soft transition-all cursor-pointer"
             >
               <div className="font-display text-xl text-foreground group-hover:text-primary transition-colors">
                 {l.name}

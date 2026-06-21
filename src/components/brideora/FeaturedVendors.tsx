@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Star, MapPin, Award, Heart } from "lucide-react";
 import a1 from "@/assets/artist-1.jpg";
 import a2 from "@/assets/artist-2.jpg";
@@ -38,83 +38,203 @@ const vendors = [
   },
 ];
 
-export function FeaturedVendors() {
+interface FeaturedVendorsProps {
+  localityFilter: string;
+  budgetFilter: string;
+  specialtyFilter: string;
+  clearFilters: () => void;
+}
+
+export function FeaturedVendors({
+  localityFilter,
+  budgetFilter,
+  specialtyFilter,
+  clearFilters,
+}: FeaturedVendorsProps) {
   const [selectedVendor, setSelectedVendor] = useState<typeof vendors[0] | null>(null);
 
+  useEffect(() => {
+    const handleOpenBooking = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const vendor = customEvent.detail?.vendor;
+      if (vendor) {
+        setSelectedVendor(vendor);
+      }
+    };
+    window.addEventListener("open-booking-modal", handleOpenBooking);
+    return () => window.removeEventListener("open-booking-modal", handleOpenBooking);
+  }, []);
+
+  const filteredVendors = vendors.filter((v) => {
+    if (localityFilter) {
+      const match = v.location.toLowerCase().includes(localityFilter.toLowerCase());
+      if (!match) return false;
+    }
+    if (specialtyFilter) {
+      const matchSpec =
+        v.speciality.toLowerCase().includes(specialtyFilter.toLowerCase()) ||
+        v.name.toLowerCase().includes(specialtyFilter.toLowerCase());
+      if (!matchSpec) return false;
+    }
+    if (budgetFilter && budgetFilter !== "Any budget") {
+      const priceVal = parseInt(v.price.replace(/[^\d]/g, ""), 10) || 0;
+      if (budgetFilter === "Under ₹10,000") {
+        if (priceVal >= 10000) return false;
+      } else if (budgetFilter === "₹10,000 – ₹20,000") {
+        if (priceVal < 10000 || priceVal > 20000) return false;
+      } else if (budgetFilter === "₹20,000+") {
+        if (priceVal < 20000) return false;
+      }
+    }
+    return true;
+  });
+
+  const hasActiveFilters = !!(localityFilter || specialtyFilter || (budgetFilter && budgetFilter !== "Any budget"));
+
+  const triggerConciergeHelp = () => {
+    let query = "I am looking for an artist";
+    if (localityFilter) query += ` in ${localityFilter}`;
+    if (budgetFilter && budgetFilter !== "Any budget") query += ` with budget ${budgetFilter.toLowerCase()}`;
+    if (specialtyFilter) query += ` specializing in ${specialtyFilter}`;
+    
+    window.dispatchEvent(
+      new CustomEvent("open-concierge", {
+        detail: { query: query }
+      })
+    );
+  };
+
   return (
-    <section id="vendors" className="py-20 lg:py-28">
+    <section id="vendors" className="py-20 lg:py-28 bg-pearl/40">
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex items-end justify-between flex-wrap gap-4">
           <div className="max-w-xl">
-            <div className="divider-ornament text-xs uppercase tracking-[0.3em]">
+            <div className="divider-ornament text-xs uppercase tracking-[0.3em] text-gold-soft">
               Handpicked
             </div>
             <h2 className="mt-4 font-display text-4xl sm:text-5xl text-foreground">
               Featured artists this week
             </h2>
           </div>
-          <a href="#all" className="text-sm font-medium text-primary hover:underline">
-            View all 850+ artists →
-          </a>
+          <button 
+            onClick={triggerConciergeHelp}
+            className="text-sm font-semibold text-primary hover:underline cursor-pointer"
+          >
+            Request Custom Concierge Search →
+          </button>
         </div>
 
-        <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {vendors.map((v) => (
-            <article
-              key={v.name}
-              className="group rounded-3xl bg-card overflow-hidden shadow-soft hover:shadow-luxe transition-all duration-500 border border-border/60"
+        {/* Filters status bar */}
+        {hasActiveFilters && (
+          <div className="mt-8 flex flex-wrap items-center gap-3 bg-ivory/80 border border-gold/10 rounded-2xl px-5 py-3">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Active Filters:</span>
+            {localityFilter && (
+              <span className="rounded-full bg-rose/40 text-primary px-3 py-1 text-xs font-medium border border-gold/15">
+                Locality: {localityFilter}
+              </span>
+            )}
+            {specialtyFilter && (
+              <span className="rounded-full bg-rose/40 text-primary px-3 py-1 text-xs font-medium border border-gold/15">
+                Specialty: {specialtyFilter}
+              </span>
+            )}
+            {budgetFilter && budgetFilter !== "Any budget" && (
+              <span className="rounded-full bg-rose/40 text-primary px-3 py-1 text-xs font-medium border border-gold/15">
+                Budget: {budgetFilter}
+              </span>
+            )}
+            <button
+              onClick={clearFilters}
+              className="ml-auto text-xs font-bold text-primary hover:underline cursor-pointer"
             >
-              <div className="relative aspect-[4/5] overflow-hidden">
-                <img
-                  src={v.img}
-                  alt={v.name}
-                  loading="lazy"
-                  width={800}
-                  height={1000}
-                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute top-4 left-4 inline-flex items-center gap-1 rounded-full bg-pearl/90 backdrop-blur px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
-                  <Award className="h-3 w-3 text-gold" />
-                  {v.badge}
-                </div>
-                <button
-                  className="absolute top-4 right-4 h-9 w-9 rounded-full bg-pearl/90 backdrop-blur flex items-center justify-center hover:bg-pearl transition-colors"
-                  aria-label="Save"
-                >
-                  <Heart className="h-4 w-4 text-primary" />
-                </button>
-              </div>
-              <div className="p-6">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="font-display text-2xl text-foreground">{v.name}</h3>
-                    <p className="text-sm text-muted-foreground mt-0.5">{v.speciality}</p>
-                  </div>
-                  <div className="flex items-center gap-1 rounded-full bg-rose px-2.5 py-1 text-xs font-semibold text-primary">
-                    <Star className="h-3 w-3 fill-gold text-gold" />
-                    {v.rating}
-                  </div>
-                </div>
-                <div className="mt-4 flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <MapPin className="h-3.5 w-3.5" /> {v.location}
-                </div>
-                <div className="mt-5 flex items-end justify-between pt-5 border-t border-border">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Starting from</div>
-                    <div className="font-display text-2xl text-primary">{v.price}</div>
+              Clear all filters
+            </button>
+          </div>
+        )}
+
+        {filteredVendors.length === 0 ? (
+          <div className="mt-12 rounded-3xl border border-dashed border-gold/30 bg-pearl p-12 text-center max-w-2xl mx-auto shadow-soft">
+            <div className="h-16 w-16 rounded-full bg-rose mx-auto flex items-center justify-center text-primary mb-4 text-2xl">
+              🔍
+            </div>
+            <h3 className="font-display text-2xl text-foreground mb-2">No matching artists found</h3>
+            <p className="text-sm font-serif text-muted-foreground mb-6">
+              We couldn't find featured listings in our preview directories matching your exact combination. Ask our smart Concierge to search all 850+ artists across Delhi!
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <button
+                onClick={clearFilters}
+                className="rounded-full border border-border px-5 py-2.5 text-xs font-semibold text-foreground hover:bg-ivory transition-colors cursor-pointer"
+              >
+                Clear Filters
+              </button>
+              <button
+                onClick={triggerConciergeHelp}
+                className="rounded-full bg-gradient-royal px-5 py-2.5 text-xs font-semibold text-primary-foreground shadow hover:shadow-md transition-all cursor-pointer"
+              >
+                Ask Bridal Concierge
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {filteredVendors.map((v) => (
+              <article
+                key={v.name}
+                className="group rounded-3xl bg-card overflow-hidden shadow-soft hover:shadow-luxe transition-all duration-500 border border-border/60"
+              >
+                <div className="relative aspect-[4/5] overflow-hidden">
+                  <img
+                    src={v.img}
+                    alt={v.name}
+                    loading="lazy"
+                    width={800}
+                    height={1000}
+                    className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute top-4 left-4 inline-flex items-center gap-1 rounded-full bg-pearl/90 backdrop-blur px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
+                    <Award className="h-3 w-3 text-gold" />
+                    {v.badge}
                   </div>
                   <button
-                    onClick={() => setSelectedVendor(v)}
-                    className="rounded-full bg-foreground px-5 py-2.5 text-xs font-semibold text-pearl hover:bg-primary transition-colors cursor-pointer"
+                    className="absolute top-4 right-4 h-9 w-9 rounded-full bg-pearl/90 backdrop-blur flex items-center justify-center hover:bg-pearl transition-colors cursor-pointer"
+                    aria-label="Save"
                   >
-                    Book Artist
+                    <Heart className="h-4 w-4 text-primary" />
                   </button>
                 </div>
-                <div className="mt-3 text-xs text-muted-foreground">{v.reviews} reviews</div>
-              </div>
-            </article>
-          ))}
-        </div>
+                <div className="p-6">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h3 className="font-display text-2xl text-foreground">{v.name}</h3>
+                      <p className="text-sm text-muted-foreground mt-0.5">{v.speciality}</p>
+                    </div>
+                    <div className="flex items-center gap-1 rounded-full bg-rose px-2.5 py-1 text-xs font-semibold text-primary">
+                      <Star className="h-3 w-3 fill-gold text-gold" />
+                      {v.rating}
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <MapPin className="h-3.5 w-3.5" /> {v.location}
+                  </div>
+                  <div className="mt-5 flex items-end justify-between pt-5 border-t border-border">
+                    <div>
+                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Starting from</div>
+                      <div className="font-display text-2xl text-primary">{v.price}</div>
+                    </div>
+                    <button
+                      onClick={() => setSelectedVendor(v)}
+                      className="rounded-full bg-foreground px-5 py-2.5 text-xs font-semibold text-pearl hover:bg-primary transition-colors cursor-pointer"
+                    >
+                      Book Artist
+                    </button>
+                  </div>
+                  <div className="mt-3 text-xs text-muted-foreground">{v.reviews} reviews</div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
 
       {selectedVendor && (

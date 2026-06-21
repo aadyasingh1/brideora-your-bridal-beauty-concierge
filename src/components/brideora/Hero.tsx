@@ -1,7 +1,20 @@
 import { Search, MapPin, IndianRupee, Sparkles, Star } from "lucide-react";
 import heroImage from "@/assets/hero-bride.jpg";
 
-export function Hero() {
+interface HeroProps {
+  locality: string;
+  setLocality: (val: string) => void;
+  budget: string;
+  setBudget: (val: string) => void;
+  onSearch: () => void;
+}
+
+export function Hero({ locality, setLocality, budget, setBudget, onSearch }: HeroProps) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSearch();
+  };
+
   return (
     <section id="top" className="relative overflow-hidden bg-gradient-ivory">
       <div className="absolute inset-0 bg-rose-glow opacity-70 pointer-events-none" />
@@ -27,13 +40,15 @@ export function Hero() {
           </p>
 
           {/* Search */}
-          <div className="mt-8 rounded-2xl border border-border bg-pearl p-2 shadow-luxe">
+          <form onSubmit={handleSubmit} className="mt-8 rounded-2xl border border-border bg-pearl p-2 shadow-luxe">
             <div className="grid sm:grid-cols-[1fr_1fr_auto] gap-2">
               <label className="flex items-center gap-2 rounded-xl px-4 py-3 hover:bg-ivory transition-colors">
                 <MapPin className="h-4 w-4 text-primary" />
                 <div className="flex-1">
                   <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Locality</div>
                   <input
+                    value={locality}
+                    onChange={(e) => setLocality(e.target.value)}
                     placeholder="Dwarka, Saket, Rohini…"
                     className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-muted-foreground/60"
                   />
@@ -43,20 +58,27 @@ export function Hero() {
                 <IndianRupee className="h-4 w-4 text-primary" />
                 <div className="flex-1">
                   <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Budget</div>
-                  <select className="w-full bg-transparent text-sm font-medium outline-none">
-                    <option>Any budget</option>
-                    <option>Under ₹10,000</option>
-                    <option>₹10,000 – ₹20,000</option>
-                    <option>₹20,000+</option>
+                  <select
+                    value={budget}
+                    onChange={(e) => setBudget(e.target.value)}
+                    className="w-full bg-transparent text-sm font-medium outline-none cursor-pointer"
+                  >
+                    <option value="Any budget">Any budget</option>
+                    <option value="Under ₹10,000">Under ₹10,000</option>
+                    <option value="₹10,000 – ₹20,000">₹10,000 – ₹20,000</option>
+                    <option value="₹20,000+">₹20,000+</option>
                   </select>
                 </div>
               </label>
-              <button className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-royal px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft hover:shadow-luxe transition-all">
+              <button
+                type="submit"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-royal px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft hover:shadow-luxe transition-all cursor-pointer"
+              >
                 <Search className="h-4 w-4" />
                 Find Artists
               </button>
             </div>
-          </div>
+          </form>
 
           <div className="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">

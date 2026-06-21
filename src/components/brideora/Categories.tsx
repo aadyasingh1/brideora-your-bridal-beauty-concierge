@@ -14,12 +14,16 @@ const cats = [
   { name: "Pre-Bridal", count: "75+ packages", img: prebridal },
 ];
 
-export function Categories() {
+interface CategoriesProps {
+  onCategoryClick?: (cat: string) => void;
+}
+
+export function Categories({ onCategoryClick }: CategoriesProps) {
   return (
     <section className="py-20 lg:py-28 bg-ivory">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="divider-ornament text-xs uppercase tracking-[0.3em]">Services</div>
+          <div className="divider-ornament text-xs uppercase tracking-[0.3em] text-gold-soft">Services</div>
           <h2 className="mt-4 font-display text-4xl sm:text-5xl text-foreground">
             Every look, <span className="italic text-gradient-royal">one platform</span>
           </h2>
@@ -34,7 +38,11 @@ export function Categories() {
             <a
               key={c.name}
               href="#vendors"
-              className="group relative overflow-hidden rounded-2xl aspect-[4/5] bg-card shadow-soft hover:shadow-luxe transition-all duration-500"
+              onClick={(e) => {
+                e.preventDefault();
+                onCategoryClick?.(c.name);
+              }}
+              className="group relative overflow-hidden rounded-2xl aspect-[4/5] bg-card shadow-soft hover:shadow-luxe transition-all duration-500 cursor-pointer"
             >
               <img
                 src={c.img}
