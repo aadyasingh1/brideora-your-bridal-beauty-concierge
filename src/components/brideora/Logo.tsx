@@ -1,9 +1,9 @@
-import logoAsset from "@/assets/brideora-logo.png.asset.json";
+import logo from "@/assets/brideora-logo.png";
 
 export function Logo({ className = "h-12 w-12" }: { className?: string }) {
   return (
     <img
-      src={logoAsset.url}
+      src={logo}
       alt="Brideora"
       className={className}
       width={120}
