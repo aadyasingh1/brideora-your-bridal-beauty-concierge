@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AIChat } from "../components/brideora/AIChat";
 
 function NotFoundComponent() {
   return (
@@ -122,6 +123,8 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      {/* Floating AI Chat Widget */}
+      <AIChat />
     </QueryClientProvider>
   );
 }
