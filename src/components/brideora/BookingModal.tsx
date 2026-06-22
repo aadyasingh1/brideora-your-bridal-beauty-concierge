@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Calendar, User, Mail, Sparkles, CheckCircle2, CreditCard } from "lucide-react";
+import { X, Calendar, Clock, User, Mail, Sparkles, CheckCircle2, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 
 interface Vendor {
@@ -8,6 +8,15 @@ interface Vendor {
   price: string;
   location: string;
 }
+
+const formatTime12hr = (timeStr: string) => {
+  if (!timeStr) return "";
+  const [hours, minutes] = timeStr.split(":");
+  const h = parseInt(hours, 10);
+  const ampm = h >= 12 ? "PM" : "AM";
+  const displayHours = h % 12 || 12;
+  return `${displayHours}:${minutes} ${ampm}`;
+};
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -19,6 +28,7 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [date, setDate] = useState("");
+  const [time, setTime] = useState("10:00");
   const [notes, setNotes] = useState("");
   const [service, setService] = useState("Bridal Makeup Package");
   const [isLoading, setIsLoading] = useState(false);
@@ -90,7 +100,7 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
                 bookingData: {
                   vendorId: "00000000-0000-0000-0000-000000000000", // Placeholder UUID for testing
                   serviceName: service,
-                  bookingDate: new Date(date).toISOString(),
+                  bookingDate: new Date(`${date}T${time}`).toISOString(),
                   amount: basePrice,
                   userEmail: email,
                   userName: name,
@@ -161,7 +171,7 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
             <div className="rounded-2xl bg-ivory border border-border p-4 text-left text-xs space-y-2 mb-6">
               <div><span className="font-semibold">Artist:</span> {vendor.name}</div>
               <div><span className="font-semibold">Service:</span> {service}</div>
-              <div><span className="font-semibold">Date:</span> {new Date(date).toLocaleString()}</div>
+              <div><span className="font-semibold">Date:</span> {new Date(`${date}T${time}`).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} at {formatTime12hr(time)}</div>
               <div><span className="font-semibold">Payment ID:</span> {paymentDetails?.paymentId}</div>
               <div><span className="font-semibold">Order ID:</span> {paymentDetails?.orderId}</div>
             </div>
@@ -231,18 +241,35 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
                 </select>
               </div>
 
-              {/* Date */}
-              <div className="space-y-1">
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Date & Time</label>
-                <div className="relative flex items-center">
-                  <Calendar className="absolute left-3.5 h-4 w-4 text-muted-foreground/60" />
-                  <input
-                    type="datetime-local"
-                    required
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    className="w-full rounded-2xl border border-border bg-white pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary transition-all"
-                  />
+              <div className="grid grid-cols-2 gap-3">
+                {/* Date */}
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Event Date</label>
+                  <div className="relative flex items-center">
+                    <Calendar className="absolute left-3.5 h-4 w-4 text-muted-foreground/60" />
+                    <input
+                      type="date"
+                      required
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="w-full rounded-2xl border border-border bg-white pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary transition-all"
+                    />
+                  </div>
+                </div>
+
+                {/* Time */}
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Start Time</label>
+                  <div className="relative flex items-center">
+                    <Clock className="absolute left-3.5 h-4 w-4 text-muted-foreground/60" />
+                    <input
+                      type="time"
+                      required
+                      value={time}
+                      onChange={(e) => setTime(e.target.value)}
+                      className="w-full rounded-2xl border border-border bg-white pl-10 pr-4 py-2.5 text-sm outline-none focus:border-primary transition-all"
+                    />
+                  </div>
                 </div>
               </div>
 
