@@ -36,6 +36,28 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", initialRole =
     }, 800);
   };
 
+  const triggerUserReturnWebhook = async (userEmail: string, userName: string) => {
+    try {
+      await fetch("/api/n8n/trigger", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "notification",
+          path: "user-return",
+          data: {
+            userEmail,
+            userName,
+            role,
+            timestamp: new Date().toISOString(),
+          },
+        }),
+      });
+      console.log("User Return webhook triggered successfully");
+    } catch (err) {
+      console.error("Failed to trigger User Return webhook:", err);
+    }
+  };
+
   const handleVerifyOtp = (e: React.FormEvent) => {
     e.preventDefault();
     if (otp !== "123456") {
@@ -45,7 +67,9 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", initialRole =
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
-      toast.success(`Success! Logged in as ${role === "artist" ? "Artist Partner" : "Client"}.`);
+      const label = role === "artist" ? "Artist Partner" : "Client";
+      toast.success(`Success! Logged in as ${label}.`);
+      triggerUserReturnWebhook(phone + "@brideora-mobile.com", label);
       onClose();
     }, 800);
   };
@@ -61,6 +85,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", initialRole =
       setTimeout(() => {
         setIsLoading(false);
         toast.success(`Welcome back! Logged in successfully.`);
+        triggerUserReturnWebhook(email, email.split("@")[0]);
         onClose();
       }, 800);
     } else {
@@ -72,6 +97,7 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", initialRole =
       setTimeout(() => {
         setIsLoading(false);
         toast.success(`Welcome to Brideora, ${name}! Your account is ready.`);
+        triggerUserReturnWebhook(email, name);
         onClose();
       }, 1000);
     }

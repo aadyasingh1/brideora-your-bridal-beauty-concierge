@@ -4,6 +4,7 @@ import a1 from "@/assets/artist-1.jpg";
 import a2 from "@/assets/artist-2.jpg";
 import a3 from "@/assets/artist-3.jpg";
 import { BookingModal } from "./BookingModal";
+import { toast } from "sonner";
 
 const vendors = [
   {
@@ -52,6 +53,47 @@ export function FeaturedVendors({
   clearFilters,
 }: FeaturedVendorsProps) {
   const [selectedVendor, setSelectedVendor] = useState<typeof vendors[0] | null>(null);
+  const [waitlistEmail, setWaitlistEmail] = useState("");
+  const [isWaitlistLoading, setIsWaitlistLoading] = useState(false);
+  const [isWaitlistSubmitted, setIsWaitlistSubmitted] = useState(false);
+
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!waitlistEmail) return;
+
+    setIsWaitlistLoading(true);
+
+    try {
+      const res = await fetch("/api/n8n/trigger", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "inquiry",
+          path: "waitlist-request",
+          data: {
+            userEmail: waitlistEmail,
+            userName: waitlistEmail.split("@")[0],
+            category: specialtyFilter || "Bridal Makeup",
+            location: localityFilter || "Delhi",
+            budget: budgetFilter,
+            timestamp: new Date().toISOString(),
+          },
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setIsWaitlistSubmitted(true);
+        toast.success("Successfully joined the area waitlist!");
+      } else {
+        throw new Error(data.error || "Failed to join waitlist");
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error joining waitlist");
+    } finally {
+      setIsWaitlistLoading(false);
+    }
+  };
 
   useEffect(() => {
     const handleOpenBooking = (e: Event) => {
@@ -161,7 +203,7 @@ export function FeaturedVendors({
             <p className="text-sm font-serif text-muted-foreground mb-6">
               We couldn't find featured listings in our preview directories matching your exact combination. Ask our smart Concierge to search all 850+ artists across Delhi!
             </p>
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className="flex flex-wrap justify-center gap-3 mb-8">
               <button
                 onClick={clearFilters}
                 className="rounded-full border border-border px-5 py-2.5 text-xs font-semibold text-foreground hover:bg-ivory transition-colors cursor-pointer"
@@ -175,6 +217,42 @@ export function FeaturedVendors({
                 Ask Bridal Concierge
               </button>
             </div>
+
+            {isWaitlistSubmitted ? (
+              <div className="border-t border-gold/10 pt-6 animate-in fade-in duration-500 max-w-md mx-auto">
+                <div className="mx-auto h-10 w-10 rounded-full bg-success/15 flex items-center justify-center mb-3">
+                  <span className="text-success text-lg">✓</span>
+                </div>
+                <h4 className="font-semibold text-foreground text-sm">Added to Area Waitlist!</h4>
+                <p className="text-[11px] text-muted-foreground mt-1 max-w-xs mx-auto font-serif">
+                  We have registered your interest in requesting {specialtyFilter || "bridal beauty expert"} services in {localityFilter || "Delhi"}. We'll email you immediately when matches join.
+                </p>
+              </div>
+            ) : (
+              <div className="border-t border-gold/10 pt-6 max-w-md mx-auto">
+                <h4 className="text-[11px] font-semibold uppercase tracking-wider text-gold-soft mb-2.5">Join the Area Waitlist</h4>
+                <p className="text-xs text-muted-foreground font-serif mb-4">
+                  Request artists in {localityFilter || "your area"} and get notified as soon as new experts match your search criteria.
+                </p>
+                <form onSubmit={handleWaitlistSubmit} className="flex gap-2">
+                  <input
+                    type="email"
+                    required
+                    value={waitlistEmail}
+                    onChange={(e) => setWaitlistEmail(e.target.value)}
+                    placeholder="Enter email to join waitlist"
+                    className="flex-1 rounded-full border border-border bg-white px-4.5 py-2.5 text-xs outline-none focus:border-primary transition-all"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isWaitlistLoading}
+                    className="rounded-full bg-gradient-royal px-5 py-2.5 text-xs font-semibold text-primary-foreground hover:shadow transition-all disabled:opacity-75 cursor-pointer whitespace-nowrap"
+                  >
+                    {isWaitlistLoading ? "Joining..." : "Join Waitlist"}
+                  </button>
+                </form>
+              </div>
+            )}
           </div>
         ) : (
           <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
