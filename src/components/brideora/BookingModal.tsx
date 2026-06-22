@@ -161,7 +161,7 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
             <div className="rounded-2xl bg-ivory border border-border p-4 text-left text-xs space-y-2 mb-6">
               <div><span className="font-semibold">Artist:</span> {vendor.name}</div>
               <div><span className="font-semibold">Service:</span> {service}</div>
-              <div><span className="font-semibold">Date:</span> {new Date(date).toLocaleString()}</div>
+              <div><span className="font-semibold">Date:</span> {new Date(date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
               <div><span className="font-semibold">Payment ID:</span> {paymentDetails?.paymentId}</div>
               <div><span className="font-semibold">Order ID:</span> {paymentDetails?.orderId}</div>
             </div>
@@ -233,11 +233,11 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
 
               {/* Date */}
               <div className="space-y-1">
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Date & Time</label>
+                <label className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Event Date</label>
                 <div className="relative flex items-center">
                   <Calendar className="absolute left-3.5 h-4 w-4 text-muted-foreground/60" />
                   <input
-                    type="datetime-local"
+                    type="date"
                     required
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
