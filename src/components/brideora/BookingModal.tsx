@@ -56,7 +56,7 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
     setIsLoading(true);
 
     try {
-      // 1. Create order on the server
+      // 1. Create order on the server with full booking details
       const orderRes = await fetch("/api/payments/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -64,6 +64,16 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
           amount: depositAmount,
           currency: "INR",
           receipt: `rcpt_bk_${Date.now()}`,
+          bookingData: {
+            vendorId: "00000000-0000-0000-0000-000000000000", // Placeholder UUID for testing
+            vendorName: vendor.name,
+            serviceName: service,
+            bookingDate: new Date(`${date}T${time}`).toISOString(),
+            amount: basePrice,
+            userEmail: email,
+            userName: name,
+            notes: notes,
+          },
         }),
       });
 
@@ -72,82 +82,36 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
         throw new Error(orderData.error || "Failed to create payment order");
       }
 
-      // 2. Initialize Razorpay Checkout
+      // 2. Perform a full page redirect via standard HTML form submission to Razorpay Hosted Checkout
       const keyId = "rzp_test_T4KODs1lPUhMSJ"; // From user request
+      
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "https://api.razorpay.com/v1/checkout/embedded";
 
-      const options = {
-        key: keyId,
-        amount: orderData.amount,
-        currency: orderData.currency,
+      const params = {
+        key_id: keyId,
+        order_id: orderData.orderId,
         name: "Brideora",
         description: `Deposit for ${vendor.name} - ${service}`,
-        order_id: orderData.orderId,
-        handler: async function (response: {
-          razorpay_payment_id: string;
-          razorpay_order_id: string;
-          razorpay_signature: string;
-        }) {
-          setIsLoading(true);
-          try {
-            // 3. Verify payment signature on the server
-            const verifyRes = await fetch("/api/payments/verify", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                razorpayPaymentId: response.razorpay_payment_id,
-                razorpayOrderId: response.razorpay_order_id,
-                razorpaySignature: response.razorpay_signature,
-                bookingData: {
-                  vendorId: "00000000-0000-0000-0000-000000000000", // Placeholder UUID for testing
-                  vendorName: vendor.name,
-                  serviceName: service,
-                  bookingDate: new Date(`${date}T${time}`).toISOString(),
-                  amount: basePrice,
-                  userEmail: email,
-                  userName: name,
-                  notes: notes,
-                },
-              }),
-            });
-
-            const verifyData = await verifyRes.json();
-            if (verifyData.success) {
-              setPaymentDetails({
-                paymentId: response.razorpay_payment_id,
-                orderId: response.razorpay_order_id,
-              });
-              setIsSuccess(true);
-              toast.success("Payment verified! Your booking is complete.");
-            } else {
-              throw new Error(verifyData.error || "Payment verification failed.");
-            }
-          } catch (err) {
-            toast.error(err instanceof Error ? err.message : "Error confirming payment");
-          } finally {
-            setIsLoading(false);
-          }
-        },
-        prefill: {
-          name: name,
-          email: email,
-        },
-        theme: {
-          color: "#A30D1B", // Primary deep red logo color
-        },
+        "prefill[name]": name,
+        "prefill[email]": email,
+        callback_url: `${window.location.origin}/api/payments/verify-redirect`,
+        cancel_url: window.location.href,
       };
 
-      if (!(window as any).Razorpay) {
-        throw new Error("Razorpay SDK could not be loaded. Please check if an ad-blocker, Brave Shields, or privacy extension is blocking checkout.js on your laptop.");
+      for (const [key, val] of Object.entries(params)) {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = val;
+        form.appendChild(input);
       }
 
-      const rzp = new (window as any).Razorpay(options);
-      rzp.on("payment.failed", function (response: any) {
-        toast.error(`Payment failed: ${response.error.description}`);
-      });
-      rzp.open();
+      document.body.appendChild(form);
+      form.submit();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to initiate payment");
-    } finally {
       setIsLoading(false);
     }
   };

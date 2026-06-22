@@ -28,17 +28,32 @@ export const Route = createFileRoute("/api/payments/create-order")({
 
           // Connect to Razorpay API directly using native fetch and basic authentication
           const auth = btoa(`${keyId}:${keySecret}`);
+
+          const orderBody: any = {
+            amount: Math.round(amount * 100), // Convert rupees to paise (sub-units)
+            currency,
+            receipt: receipt || `receipt_${Date.now()}`,
+          };
+
+          if (payload.bookingData) {
+            orderBody.notes = {
+              userName: payload.bookingData.userName || "",
+              userEmail: payload.bookingData.userEmail || "",
+              vendorName: payload.bookingData.vendorName || "",
+              serviceName: payload.bookingData.serviceName || "",
+              bookingDate: payload.bookingData.bookingDate || "",
+              amount: String(payload.bookingData.amount || amount),
+              notes: payload.bookingData.notes || "",
+            };
+          }
+
           const response = await fetch("https://api.razorpay.com/v1/orders", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Basic ${auth}`,
             },
-            body: JSON.stringify({
-              amount: Math.round(amount * 100), // Convert rupees to paise (sub-units)
-              currency,
-              receipt: receipt || `receipt_${Date.now()}`,
-            }),
+            body: JSON.stringify(orderBody),
           });
 
           if (!response.ok) {

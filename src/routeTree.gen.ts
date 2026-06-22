@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiWebhooksRazorpayRouteImport } from './routes/api/webhooks/razorpay'
+import { Route as ApiPaymentsVerifyRedirectRouteImport } from './routes/api/payments/verify-redirect'
 import { Route as ApiPaymentsVerifyRouteImport } from './routes/api/payments/verify'
 import { Route as ApiPaymentsCreateOrderRouteImport } from './routes/api/payments/create-order'
 
@@ -24,6 +25,12 @@ const ApiWebhooksRazorpayRoute = ApiWebhooksRazorpayRouteImport.update({
   path: '/api/webhooks/razorpay',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPaymentsVerifyRedirectRoute =
+  ApiPaymentsVerifyRedirectRouteImport.update({
+    id: '/api/payments/verify-redirect',
+    path: '/api/payments/verify-redirect',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPaymentsVerifyRoute = ApiPaymentsVerifyRouteImport.update({
   id: '/api/payments/verify',
   path: '/api/payments/verify',
@@ -39,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
+  '/api/payments/verify-redirect': typeof ApiPaymentsVerifyRedirectRoute
   '/api/webhooks/razorpay': typeof ApiWebhooksRazorpayRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
+  '/api/payments/verify-redirect': typeof ApiPaymentsVerifyRedirectRoute
   '/api/webhooks/razorpay': typeof ApiWebhooksRazorpayRoute
 }
 export interface FileRoutesById {
@@ -52,6 +61,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
+  '/api/payments/verify-redirect': typeof ApiPaymentsVerifyRedirectRoute
   '/api/webhooks/razorpay': typeof ApiWebhooksRazorpayRoute
 }
 export interface FileRouteTypes {
@@ -60,18 +70,21 @@ export interface FileRouteTypes {
     | '/'
     | '/api/payments/create-order'
     | '/api/payments/verify'
+    | '/api/payments/verify-redirect'
     | '/api/webhooks/razorpay'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/api/payments/create-order'
     | '/api/payments/verify'
+    | '/api/payments/verify-redirect'
     | '/api/webhooks/razorpay'
   id:
     | '__root__'
     | '/'
     | '/api/payments/create-order'
     | '/api/payments/verify'
+    | '/api/payments/verify-redirect'
     | '/api/webhooks/razorpay'
   fileRoutesById: FileRoutesById
 }
@@ -79,6 +92,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiPaymentsCreateOrderRoute: typeof ApiPaymentsCreateOrderRoute
   ApiPaymentsVerifyRoute: typeof ApiPaymentsVerifyRoute
+  ApiPaymentsVerifyRedirectRoute: typeof ApiPaymentsVerifyRedirectRoute
   ApiWebhooksRazorpayRoute: typeof ApiWebhooksRazorpayRoute
 }
 
@@ -96,6 +110,13 @@ declare module '@tanstack/react-router' {
       path: '/api/webhooks/razorpay'
       fullPath: '/api/webhooks/razorpay'
       preLoaderRoute: typeof ApiWebhooksRazorpayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payments/verify-redirect': {
+      id: '/api/payments/verify-redirect'
+      path: '/api/payments/verify-redirect'
+      fullPath: '/api/payments/verify-redirect'
+      preLoaderRoute: typeof ApiPaymentsVerifyRedirectRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/payments/verify': {
@@ -119,6 +140,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiPaymentsCreateOrderRoute: ApiPaymentsCreateOrderRoute,
   ApiPaymentsVerifyRoute: ApiPaymentsVerifyRoute,
+  ApiPaymentsVerifyRedirectRoute: ApiPaymentsVerifyRedirectRoute,
   ApiWebhooksRazorpayRoute: ApiWebhooksRazorpayRoute,
 }
 export const routeTree = rootRouteImport
