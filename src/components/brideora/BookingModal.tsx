@@ -99,6 +99,7 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
                 razorpaySignature: response.razorpay_signature,
                 bookingData: {
                   vendorId: "00000000-0000-0000-0000-000000000000", // Placeholder UUID for testing
+                  vendorName: vendor.name,
                   serviceName: service,
                   bookingDate: new Date(`${date}T${time}`).toISOString(),
                   amount: basePrice,
@@ -134,6 +135,10 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
           color: "#A30D1B", // Primary deep red logo color
         },
       };
+
+      if (!(window as any).Razorpay) {
+        throw new Error("Razorpay SDK could not be loaded. Please check if an ad-blocker, Brave Shields, or privacy extension is blocking checkout.js on your laptop.");
+      }
 
       const rzp = new (window as any).Razorpay(options);
       rzp.on("payment.failed", function (response: any) {

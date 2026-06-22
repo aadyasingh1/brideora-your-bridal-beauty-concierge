@@ -49,6 +49,112 @@ export const Route = createFileRoute("/api/payments/verify")({
 
           // If verification is successful, trigger relevant n8n flow
           if (bookingData) {
+            // Log directly to Supabase to guarantee visibility!
+            try {
+              const { supabase } = await import("@/lib/supabase-utils");
+              if (supabase) {
+                console.log("Saving booking directly to Supabase...");
+                
+                // Find or create user
+                let userId = "";
+                const { data: existingUser } = await supabase
+                  .from("users")
+                  .select("id")
+                  .eq("email", bookingData.userEmail)
+                  .maybeSingle();
+
+                if (existingUser) {
+                  userId = existingUser.id;
+                } else {
+                  const { data: newUser, error: userError } = await supabase
+                    .from("users")
+                    .insert({
+                      name: bookingData.userName,
+                      email: bookingData.userEmail,
+                      phone: "9999999999",
+                    })
+                    .select("id")
+                    .single();
+                  if (userError) throw userError;
+                  userId = newUser.id;
+                }
+
+                // Find or create vendor
+                let vendorId = "";
+                const { data: existingVendor } = await supabase
+                  .from("vendors")
+                  .select("id")
+                  .eq("name", bookingData.vendorName || "Aanya Kapoor")
+                  .maybeSingle();
+
+                if (existingVendor) {
+                  vendorId = existingVendor.id;
+                } else {
+                  const { data: newVendor, error: vendorError } = await supabase
+                    .from("vendors")
+                    .insert({
+                      name: bookingData.vendorName || "Aanya Kapoor",
+                      email: `${(bookingData.vendorName || "aanya").toLowerCase().replace(/\s+/g, "")}@brideora.com`,
+                      phone: "9999988888",
+                      category: "makeup",
+                      location: "Delhi",
+                      status: "approved",
+                    })
+                    .select("id")
+                    .single();
+                  if (vendorError) throw vendorError;
+                  vendorId = newVendor.id;
+                }
+
+                // Insert booking
+                const amount = bookingData.amount || 18000;
+                const commissionAmount = amount * 0.1;
+                const vendorPayout = amount * 0.9;
+
+                const { data: newBooking, error: bookingError } = await supabase
+                  .from("bookings")
+                  .insert({
+                    vendor_id: vendorId,
+                    user_id: userId,
+                    service_name: bookingData.serviceName,
+                    booking_date: new Date(bookingData.bookingDate).toISOString(),
+                    amount,
+                    commission_amount: commissionAmount,
+                    vendor_payout: vendorPayout,
+                    razorpay_order_id: razorpayOrderId,
+                    razorpay_payment_id: razorpayPaymentId,
+                    razorpay_signature: razorpaySignature,
+                    payment_status: "completed",
+                    status: "confirmed",
+                    payment_date: new Date().toISOString(),
+                  })
+                  .select("id")
+                  .single();
+                
+                if (bookingError) throw bookingError;
+
+                // Insert payment
+                const { error: paymentError } = await supabase
+                  .from("payments")
+                  .insert({
+                    booking_id: newBooking.id,
+                    razorpay_order_id: razorpayOrderId,
+                    razorpay_payment_id: razorpayPaymentId,
+                    amount,
+                    status: "captured",
+                    vendor_amount: vendorPayout,
+                    brideora_commission: commissionAmount,
+                    captured_at: new Date().toISOString(),
+                  });
+                
+                if (paymentError) throw paymentError;
+
+                console.log("Successfully logged booking and payment to Supabase!");
+              }
+            } catch (dbError) {
+              console.error("Direct Supabase Logging Error:", dbError);
+            }
+
             await triggerN8NWorkflow({
               type: "booking",
               data: {
