@@ -57,7 +57,7 @@ export function Footer({ onServiceClick, onLocationClick, onInfoClick, onSignInC
         <div className="grid lg:grid-cols-12 gap-12">
           <div className="lg:col-span-4">
             <LogoLockup size="md" />
-            <p className="mt-5 text-base text-pearl/70 font-serif max-w-md leading-relaxed">
+            <p className="mt-5 text-lg text-pearl/70 font-serif max-w-md leading-relaxed">
               India's hyperlocal bridal beauty marketplace. Discover, compare and book trusted artists in under five minutes.
             </p>
             <div className="mt-6 flex gap-3">
@@ -89,14 +89,14 @@ export function Footer({ onServiceClick, onLocationClick, onInfoClick, onSignInC
           <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
             {cols.map((c) => (
               <div key={c.title}>
-                <div className="font-display text-lg text-gold-soft">{c.title}</div>
+                <div className="font-display text-xl text-gold-soft">{c.title}</div>
                 <ul className="mt-4 space-y-2.5">
                   {c.links.map((l) => (
                     <li key={l}>
                       <a
                         href={`#${l.toLowerCase().replace(/\s+/g, "-")}`}
                         onClick={(e) => handleLinkClick(e, c.title, l)}
-                        className="text-base text-pearl/70 hover:text-pearl transition-colors cursor-pointer"
+                        className="text-lg text-pearl/70 hover:text-pearl transition-colors cursor-pointer"
                       >
                         {l}
                       </a>
@@ -108,7 +108,7 @@ export function Footer({ onServiceClick, onLocationClick, onInfoClick, onSignInC
           </div>
         </div>
 
-        <div className="mt-14 pt-8 border-t border-pearl/15 flex flex-wrap items-center justify-between gap-4 text-sm text-pearl/60">
+        <div className="mt-14 pt-8 border-t border-pearl/15 flex flex-wrap items-center justify-between gap-4 text-base text-pearl/60">
           <div>© {new Date().getFullYear()} Brideora. Crafted with love in Delhi.</div>
           <div>Made for India's brides.</div>
         </div>
