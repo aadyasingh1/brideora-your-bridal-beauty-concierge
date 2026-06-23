@@ -12,7 +12,6 @@ const cats = [
   { name: "Hair Styling", count: "144+ experts", img: hair },
   { name: "Outfit Draping", count: "144+ specialists", img: mehendi },
   { name: "Bridal Squad Services", count: "144+ packages", img: nails },
-  { name: "Makeup Trials", count: "144+ sessions", img: trials },
   { name: "Pre-Bridal Wellness & Grooming", count: "144+ packages", img: prebridal },
 ];
 

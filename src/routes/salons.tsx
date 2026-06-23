@@ -57,7 +57,7 @@ const mockSalons = [
     services: [
       { name: "HD Bridal Makeup", price: "₹28,000", category: "Bridal Makeup" },
       { name: "Airbrush Bridal Finish", price: "₹32,000", category: "Bridal Makeup" },
-      { name: "Trial Makeup Session", price: "₹5,000", category: "Makeup Trials" }
+      { name: "Trial Makeup Session", price: "₹5,000", category: "Bridal Makeup" }
     ]
   },
   {
@@ -153,7 +153,6 @@ const categories = [
   "Hair Styling",
   "Outfit Draping",
   "Bridal Squad Services",
-  "Makeup Trials",
   "Pre-Bridal Wellness & Grooming"
 ];
 

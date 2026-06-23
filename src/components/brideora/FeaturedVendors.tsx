@@ -101,16 +101,6 @@ const services = [
     maxPrice: 20000
   },
   {
-    category: "Makeup Trials",
-    styles: [
-      "Pre-wedding Trial Run (Makeup Trials)",
-      "Bridal Look Finalization (Makeup Trials)",
-      "Glam Look Trial (Makeup Trials)"
-    ],
-    minPrice: 3000,
-    maxPrice: 8000
-  },
-  {
     category: "Pre-Bridal Wellness & Grooming",
     styles: [
       "Facial & Massage (Pre-Bridal Wellness & Grooming)",
@@ -129,7 +119,7 @@ const generateMockVendors = () => {
   
   localities.forEach((loc, locIdx) => {
     services.forEach((srv, srvIdx) => {
-      for (let itemIdx = 0; itemIdx < 1; itemIdx++) {
+      for (let itemIdx = 0; itemIdx < 12; itemIdx++) {
         const nameSeed = locIdx * 100 + srvIdx * 10 + itemIdx;
         
         let name = "";
