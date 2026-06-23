@@ -708,6 +708,21 @@ function ArtistProfilePage() {
 
           {/* Sticky booking Price Calculator Sidebar (Col-1) */}
           <div className="space-y-6 lg:sticky lg:top-24">
+            {/* Brideora Match Score */}
+            <div className="rounded-[2rem] bg-gradient-royal p-5 text-white flex items-center justify-between shadow-luxe border border-white/10 relative overflow-hidden animate-in fade-in duration-300">
+              <div className="absolute -right-6 -bottom-6 h-20 w-20 bg-pearl/10 rounded-full blur-xl pointer-events-none" />
+              <div className="relative z-10 text-left space-y-1 pr-3">
+                <div className="flex items-center gap-1.5 text-gold font-semibold">
+                  <Sparkles className="h-4 w-4 fill-gold text-gold" />
+                  <span className="font-display text-sm font-bold text-pearl">92% Brideora Match Score</span>
+                </div>
+                <p className="text-[10px] text-zinc-200 font-serif leading-relaxed">
+                  Match based on your preference for dewy finishes, ₹18k budget limit, Delhi NCR location, and saved ivory inspirations.
+                </p>
+              </div>
+              <span className="relative z-10 text-3xl font-extrabold text-pearl shrink-0">92%</span>
+            </div>
+
             <div className="rounded-[2.5rem] bg-pearl border-2 border-gold/30 p-6 shadow-luxe space-y-6 text-left">
               <div>
                 <h3 className="font-display text-xl text-primary font-bold">Package & Price Calculator</h3>

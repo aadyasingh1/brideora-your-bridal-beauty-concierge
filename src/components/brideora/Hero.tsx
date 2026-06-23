@@ -12,7 +12,12 @@ interface HeroProps {
 export function Hero({ locality, setLocality, budget, setBudget, onSearch }: HeroProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch();
+    if (!locality.trim()) return;
+    window.dispatchEvent(
+      new CustomEvent("open-concierge", {
+        detail: { query: locality }
+      })
+    );
   };
 
   return (
@@ -39,43 +44,27 @@ export function Hero({ locality, setLocality, budget, setBudget, onSearch }: Her
             minutes.
           </p>
 
-          {/* Search */}
-          <form onSubmit={handleSubmit} className="mt-8 rounded-2xl border border-border bg-pearl p-2 shadow-luxe">
-            <div className="grid sm:grid-cols-[1fr_1fr_auto] gap-2">
-              <label className="flex items-center gap-2 rounded-xl px-4 py-3 hover:bg-ivory transition-colors">
-                <MapPin className="h-4 w-4 text-primary" />
-                <div className="flex-1">
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Locality</div>
+          {/* Conversational AI Search */}
+          <form onSubmit={handleSubmit} className="mt-8 rounded-[2rem] border border-gold/20 bg-pearl p-2.5 shadow-luxe">
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <label className="flex-1 w-full flex items-center gap-3 px-4 py-2 hover:bg-ivory/50 rounded-2xl transition-colors cursor-text">
+                <Sparkles className="h-5 w-5 text-primary animate-pulse shrink-0" />
+                <div className="flex-1 text-left">
+                  <div className="text-[9px] uppercase tracking-wider font-bold text-muted-foreground">Brideora AI Search</div>
                   <input
                     value={locality}
                     onChange={(e) => setLocality(e.target.value)}
-                    placeholder="Dwarka, Saket, Rohini…"
-                    className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-muted-foreground/60"
+                    placeholder="Describe your wedding look, budget, or area (e.g. 'day wedding, minimal look in Dwarka under 20k')"
+                    className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-muted-foreground/60 text-foreground"
                   />
-                </div>
-              </label>
-              <label className="flex items-center gap-2 rounded-xl px-4 py-3 hover:bg-ivory transition-colors sm:border-l border-border">
-                <IndianRupee className="h-4 w-4 text-primary" />
-                <div className="flex-1">
-                  <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Budget</div>
-                  <select
-                    value={budget}
-                    onChange={(e) => setBudget(e.target.value)}
-                    className="w-full bg-transparent text-sm font-medium outline-none cursor-pointer"
-                  >
-                    <option value="Any budget">Any budget</option>
-                    <option value="Under ₹10,000">Under ₹10,000</option>
-                    <option value="₹10,000 – ₹20,000">₹10,000 – ₹20,000</option>
-                    <option value="₹20,000+">₹20,000+</option>
-                  </select>
                 </div>
               </label>
               <button
                 type="submit"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-royal px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft hover:shadow-luxe transition-all cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-royal px-6 py-4 text-xs font-semibold text-primary-foreground shadow-soft hover:shadow-luxe transition-all cursor-pointer whitespace-nowrap uppercase tracking-wider"
               >
                 <Search className="h-4 w-4" />
-                Find Artists
+                Ask Concierge
               </button>
             </div>
           </form>

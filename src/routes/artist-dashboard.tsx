@@ -15,7 +15,9 @@ import {
   Briefcase,
   Layers,
   ArrowLeft,
-  Info
+  Info,
+  MessageSquare,
+  Send
 } from "lucide-react";
 import { Navbar } from "@/components/brideora/Navbar";
 import { Footer } from "@/components/brideora/Footer";
@@ -35,7 +37,7 @@ export const Route = createFileRoute("/artist-dashboard")({
 });
 
 function ArtistDashboardPage() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "calendar" | "packages" | "health" | "instagram">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "calendar" | "packages" | "health" | "instagram" | "inbox">("dashboard");
 
   // State for Calendar (Unified Calendar Management)
   const [blockedDates, setBlockedDates] = useState<Array<{ date: string; label: string }>>([
@@ -266,6 +268,17 @@ function ArtistDashboardPage() {
               }`}
             >
               <Instagram className="h-4.5 w-4.5" /> Instagram Auto-Sync
+            </button>
+
+            <button
+              onClick={() => setActiveTab("inbox")}
+              className={`w-full flex items-center gap-3 rounded-2xl px-5 py-4 text-sm font-semibold tracking-wide transition-all cursor-pointer ${
+                activeTab === "inbox"
+                  ? "bg-foreground text-pearl shadow-md"
+                  : "bg-pearl hover:bg-rose/40 text-foreground/80"
+              }`}
+            >
+              <MessageSquare className="h-4.5 w-4.5" /> AI Inbox Responder
             </button>
           </aside>
 
@@ -628,6 +641,14 @@ function ArtistDashboardPage() {
                         <div className="text-[11px] text-muted-foreground mt-0.5">"Profiles with 3 more reception looks are getting 40% more clicks in your area right now."</div>
                       </div>
                     </div>
+
+                    <div className="flex gap-3 rounded-2xl border border-gold/20 bg-rose-glow/5 p-4 items-start">
+                      <TrendingUp className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                      <div>
+                        <div className="text-xs font-bold text-foreground">Winter Season Forecast: Airbrush Demand Up 40%</div>
+                        <div className="text-[11px] text-muted-foreground mt-0.5">Searches for 'Airbrush Makeup' in your area have increased by 40% for the upcoming winter wedding season. Consider adding an Airbrush package or adjusting winter weekend rates by +15% to capture this demand.</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -822,6 +843,72 @@ function ArtistDashboardPage() {
                           Upload a portfolio image above to start AI automatic tagging.
                         </div>
                       )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "inbox" && (
+              <div className="rounded-[2.5rem] bg-pearl border border-border p-6 lg:p-8 shadow-luxe space-y-8 animate-in fade-in duration-300">
+                <div>
+                  <h3 className="font-display text-2xl text-foreground mb-1">AI Inbox Auto-Responder</h3>
+                  <p className="text-sm text-muted-foreground font-serif">
+                    Review and approve auto-generated draft replies for client inquiries based on your calendar and rates.
+                  </p>
+                </div>
+
+                <div className="space-y-6">
+                  {/* Inquiry Card */}
+                  <div className="rounded-3xl border border-border bg-white p-6 shadow-sm space-y-4 text-left">
+                    <div className="flex items-center justify-between border-b border-border pb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-rose text-primary flex items-center justify-center font-bold">
+                          RM
+                        </div>
+                        <div>
+                          <h4 className="font-display text-sm font-semibold text-primary">Riya Malhotra</h4>
+                          <span className="text-[10px] text-muted-foreground uppercase font-serif">Bride · Dwarka, Delhi</span>
+                        </div>
+                      </div>
+                      <span className="bg-primary/10 text-primary text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-full border border-gold/10">
+                        Inquiry
+                      </span>
+                    </div>
+
+                    <div className="bg-rose/40 border border-gold/15 rounded-2xl p-4 space-y-1">
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Received Message</span>
+                      <p className="text-xs text-foreground font-serif italic leading-relaxed">
+                        "Hi! I wanted to check if you are available for a wedding on December 12th in Saket. We'd need makeup for me (HD Bridal) + 3 bridesmaids. Let me know pricing!"
+                      </p>
+                    </div>
+
+                    {/* AI Draft Suggestion */}
+                    <div className="rounded-2xl border border-primary/30 bg-pearl/30 p-5 space-y-3 relative overflow-hidden">
+                      <div className="absolute top-0 right-0 bg-primary/15 text-primary text-[8px] uppercase tracking-widest font-bold px-3 py-1 rounded-bl-xl border-l border-b border-primary/20">
+                        AI Draft
+                      </div>
+                      <span className="text-[10px] uppercase font-bold tracking-wider text-primary block font-semibold">Suggested Response</span>
+                      
+                      <textarea
+                        defaultValue="Dear Riya, thank you for reaching out! Yes, I am available on December 12, 2026. Based on my winter rates, the package for HD Bridal Makeup + 3 bridesmaids is ₹18,000 + ₹21,600 (includes a 10% group discount) = ₹39,600 total. A 10% deposit of ₹3,960 holds your date in my calendar. Let me know if you would like me to lock this in! Best, Aanya."
+                        className="w-full min-h-[120px] rounded-xl border border-border bg-white p-3.5 text-xs text-foreground font-serif leading-relaxed outline-none focus:border-primary transition-all resize-none"
+                      />
+
+                      <div className="flex gap-3 justify-end pt-2">
+                        <button 
+                          onClick={() => toast.info("Draft discarded.")}
+                          className="rounded-full border border-border px-5 py-2 text-xs font-semibold text-foreground hover:bg-ivory transition-colors cursor-pointer"
+                        >
+                          Discard
+                        </button>
+                        <button 
+                          onClick={() => toast.success("AI suggested response sent to Riya Malhotra!")}
+                          className="rounded-full bg-gradient-royal px-5 py-2 text-xs font-semibold text-pearl hover:shadow transition-all flex items-center gap-1.5 cursor-pointer"
+                        >
+                          <Send className="h-3.5 w-3.5" /> Approve & Send Draft
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

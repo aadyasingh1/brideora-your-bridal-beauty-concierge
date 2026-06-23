@@ -106,6 +106,18 @@ export function AIChat() {
   const generateResponse = (userText: string): Message => {
     const text = userText.toLowerCase();
     
+    if (text.includes("ivory") || text.includes("minimal") || text.includes("december") || text.includes("saree") || text.includes("20k")) {
+      return {
+        sender: "bot",
+        text: "🎨 <strong>Conversational Onboarding Agent Parameters Extracted:</strong>\n• <strong>Event:</strong> Wedding Day 💍\n• <strong>Time/Season:</strong> Day Ceremony (December) ☀️\n• <strong>Outfit:</strong> Ivory Silk Saree 👗\n• <strong>Style Preference:</strong> Minimal & Fresh Radiant Finish ✨\n• <strong>Budget:</strong> ~₹20,000 limits 💰\n\n<em>Since you're wearing ivory for a day wedding, these artists specialize in soft, sun-kissed minimal looks within your budget.</em> I highly recommend **Aanya Kapoor** (Dwarka) who is an expert in HD minimal skin finishes, or **Riya Sehgal** (Rohini) for minimalist draping and styling.",
+        action: {
+          label: "View Aanya Kapoor's Profile (95% Match)",
+          payload: "Aanya Kapoor",
+          type: "profile"
+        }
+      };
+    }
+
     if (text.includes("dwarka") || text.includes("aanya")) {
       return {
         sender: "bot",
