@@ -293,6 +293,7 @@ function ArtistProfilePage() {
     const next = !isWishlisted;
     setIsWishlisted(next);
     localStorage.setItem(`wishlist-${artist!.name}`, next ? "true" : "false");
+    window.dispatchEvent(new CustomEvent("wishlist-changed"));
     toast.success(next ? "Added to wishlist!" : "Removed from wishlist");
   };
 

@@ -85,6 +85,24 @@ function Index() {
         amount,
       });
 
+      // Save verified booking record in localStorage
+      const savedBookings = JSON.parse(localStorage.getItem("brideora-bookings") || "[]");
+      const isDuplicate = savedBookings.some((b: any) => b.paymentId === paymentId);
+      if (!isDuplicate) {
+        savedBookings.unshift({
+          paymentId,
+          orderId,
+          vendorName,
+          serviceName,
+          date,
+          userName,
+          amount,
+          timestamp: new Date().toISOString()
+        });
+        localStorage.setItem("brideora-bookings", JSON.stringify(savedBookings));
+        window.dispatchEvent(new CustomEvent("bookings-updated"));
+      }
+
       // Show success toast
       toast.success("Payment verified! Your booking is successfully logged.", {
         duration: 6000,
