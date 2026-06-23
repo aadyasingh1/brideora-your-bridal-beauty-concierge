@@ -71,6 +71,9 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", initialRole =
       toast.success(`Success! Logged in as ${label}.`);
       triggerUserReturnWebhook(phone + "@brideora-mobile.com", label);
       onClose();
+      if (role === "artist") {
+        window.location.href = "/artist-dashboard";
+      }
     }, 800);
   };
 
@@ -87,6 +90,9 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", initialRole =
         toast.success(`Welcome back! Logged in successfully.`);
         triggerUserReturnWebhook(email, email.split("@")[0]);
         onClose();
+        if (role === "artist") {
+          window.location.href = "/artist-dashboard";
+        }
       }, 800);
     } else {
       if (!name || !email || !password) {
@@ -99,6 +105,9 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", initialRole =
         toast.success(`Welcome to Brideora, ${name}! Your account is ready.`);
         triggerUserReturnWebhook(email, name);
         onClose();
+        if (role === "artist") {
+          window.location.href = "/artist-dashboard";
+        }
       }, 1000);
     }
   };
@@ -155,32 +164,30 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", initialRole =
         </div>
 
         {/* Form Selector (Role Choice) */}
-        {activeTab === "signup" && (
-          <div className="grid grid-cols-2 gap-3 mb-6">
-            <button
-              onClick={() => setRole("user")}
-              className={`rounded-2xl border p-3.5 text-center transition-all cursor-pointer ${
-                role === "user" 
-                  ? "border-primary bg-rose/20 text-primary" 
-                  : "border-border bg-white text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <User className="h-5 w-5 mx-auto mb-1.5" />
-              <div className="text-xs font-semibold">I am a Bride / Client</div>
-            </button>
-            <button
-              onClick={() => setRole("artist")}
-              className={`rounded-2xl border p-3.5 text-center transition-all cursor-pointer ${
-                role === "artist" 
-                  ? "border-primary bg-rose/20 text-primary" 
-                  : "border-border bg-white text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Sparkles className="h-5 w-5 mx-auto mb-1.5" />
-              <div className="text-xs font-semibold">I am an Artist / Salon</div>
-            </button>
-          </div>
-        )}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <button
+            onClick={() => setRole("user")}
+            className={`rounded-2xl border p-3.5 text-center transition-all cursor-pointer ${
+              role === "user" 
+                ? "border-primary bg-rose/20 text-primary" 
+                : "border-border bg-white text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <User className="h-5 w-5 mx-auto mb-1.5" />
+            <div className="text-xs font-semibold">I am a Bride / Client</div>
+          </button>
+          <button
+            onClick={() => setRole("artist")}
+            className={`rounded-2xl border p-3.5 text-center transition-all cursor-pointer ${
+              role === "artist" 
+                ? "border-primary bg-rose/20 text-primary" 
+                : "border-border bg-white text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Sparkles className="h-5 w-5 mx-auto mb-1.5" />
+            <div className="text-xs font-semibold">I am an Artist / Salon</div>
+          </button>
+        </div>
 
         {/* Mobile OTP Flow */}
         {!otpSent ? (
