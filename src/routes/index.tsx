@@ -7,7 +7,6 @@ import { FeaturedVendors } from "@/components/brideora/FeaturedVendors";
 import { Locations } from "@/components/brideora/Locations";
 import { HowItWorks } from "@/components/brideora/HowItWorks";
 import { AIPreview } from "@/components/brideora/AIPreview";
-import { Inspiration } from "@/components/brideora/Inspiration";
 import { Testimonials } from "@/components/brideora/Testimonials";
 import { FAQ } from "@/components/brideora/FAQ";
 import { Footer } from "@/components/brideora/Footer";
@@ -163,7 +162,6 @@ function Index() {
         <Locations onLocationClick={handleLocationClick} />
         <HowItWorks />
         <AIPreview />
-        <Inspiration />
         <Testimonials />
         <FAQ />
       </main>

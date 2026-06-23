@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Menu, X, Search, Sparkles } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { LogoLockup } from "./Logo";
 
 const links = [
-  { label: "Artists", href: "#vendors" },
-  { label: "Locations", href: "#locations" },
-  { label: "Inspiration", href: "#inspiration" },
-  { label: "How it Works", href: "#how" },
+  { label: "Salons", href: "/salons", isRoute: true },
+  { label: "Locations", href: "/#locations", isRoute: false },
+  { label: "How it Works", href: "/#how", isRoute: false },
 ];
 
 interface NavbarProps {
@@ -24,20 +24,30 @@ export function Navbar({ onSignInClick }: NavbarProps) {
   return (
     <header className="sticky top-0 z-50 backdrop-blur-xl bg-pearl/80 border-b border-border/60">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <a href="#top" className="flex items-center">
+        <Link to="/" className="flex items-center">
           <LogoLockup size="sm" />
-        </a>
+        </Link>
 
         <div className="hidden lg:flex items-center gap-8">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors"
-            >
-              {l.label}
-            </a>
-          ))}
+          {links.map((l) =>
+            l.isRoute ? (
+              <Link
+                key={l.href}
+                to={l.href}
+                className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors"
+              >
+                {l.label}
+              </Link>
+            ) : (
+              <a
+                key={l.href}
+                href={l.href}
+                className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors"
+              >
+                {l.label}
+              </a>
+            )
+          )}
         </div>
 
         <div className="hidden lg:flex items-center gap-4">
@@ -78,16 +88,27 @@ export function Navbar({ onSignInClick }: NavbarProps) {
       {open && (
         <div className="lg:hidden border-t border-border/60 bg-pearl animate-in slide-in-from-top duration-200">
           <div className="px-6 py-4 flex flex-col gap-3">
-            {links.map((l) => (
-              <a 
-                key={l.href} 
-                href={l.href} 
-                className="py-2 text-base font-medium"
-                onClick={() => setOpen(false)}
-              >
-                {l.label}
-              </a>
-            ))}
+            {links.map((l) =>
+              l.isRoute ? (
+                <Link
+                  key={l.href}
+                  to={l.href}
+                  className="py-2 text-base font-medium"
+                  onClick={() => setOpen(false)}
+                >
+                  {l.label}
+                </Link>
+              ) : (
+                <a
+                  key={l.href}
+                  href={l.href}
+                  className="py-2 text-base font-medium"
+                  onClick={() => setOpen(false)}
+                >
+                  {l.label}
+                </a>
+              )
+            )}
             <a
               href="#ai"
               onClick={(e) => {

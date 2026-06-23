@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SalonsRouteImport } from './routes/salons'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiWebhooksRazorpayRouteImport } from './routes/api/webhooks/razorpay'
 import { Route as ApiPaymentsVerifyRedirectRouteImport } from './routes/api/payments/verify-redirect'
 import { Route as ApiPaymentsVerifyRouteImport } from './routes/api/payments/verify'
 import { Route as ApiPaymentsCreateOrderRouteImport } from './routes/api/payments/create-order'
 
+const SalonsRoute = SalonsRouteImport.update({
+  id: '/salons',
+  path: '/salons',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -44,6 +50,7 @@ const ApiPaymentsCreateOrderRoute = ApiPaymentsCreateOrderRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/salons': typeof SalonsRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
   '/api/payments/verify-redirect': typeof ApiPaymentsVerifyRedirectRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/salons': typeof SalonsRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
   '/api/payments/verify-redirect': typeof ApiPaymentsVerifyRedirectRoute
@@ -59,6 +67,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/salons': typeof SalonsRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
   '/api/payments/verify-redirect': typeof ApiPaymentsVerifyRedirectRoute
@@ -68,6 +77,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/salons'
     | '/api/payments/create-order'
     | '/api/payments/verify'
     | '/api/payments/verify-redirect'
@@ -75,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/salons'
     | '/api/payments/create-order'
     | '/api/payments/verify'
     | '/api/payments/verify-redirect'
@@ -82,6 +93,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/salons'
     | '/api/payments/create-order'
     | '/api/payments/verify'
     | '/api/payments/verify-redirect'
@@ -90,6 +102,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SalonsRoute: typeof SalonsRoute
   ApiPaymentsCreateOrderRoute: typeof ApiPaymentsCreateOrderRoute
   ApiPaymentsVerifyRoute: typeof ApiPaymentsVerifyRoute
   ApiPaymentsVerifyRedirectRoute: typeof ApiPaymentsVerifyRedirectRoute
@@ -98,6 +111,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/salons': {
+      id: '/salons'
+      path: '/salons'
+      fullPath: '/salons'
+      preLoaderRoute: typeof SalonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -138,6 +158,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SalonsRoute: SalonsRoute,
   ApiPaymentsCreateOrderRoute: ApiPaymentsCreateOrderRoute,
   ApiPaymentsVerifyRoute: ApiPaymentsVerifyRoute,
   ApiPaymentsVerifyRedirectRoute: ApiPaymentsVerifyRedirectRoute,
