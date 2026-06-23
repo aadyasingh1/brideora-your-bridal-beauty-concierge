@@ -3,25 +3,8 @@ import { Star, MapPin, Award, Heart } from "lucide-react";
 import a1 from "@/assets/artist-1.jpg";
 import a2 from "@/assets/artist-2.jpg";
 import a3 from "@/assets/artist-3.jpg";
-import m1 from "@/assets/cat-bridal-makeup.jpg";
 import me1 from "@/assets/cat-mehendi.jpg";
-import h1 from "@/assets/cat-hair.jpg";
-import n1 from "@/assets/cat-nails.jpg";
-import p1 from "@/assets/cat-party.jpg";
-import pb1 from "@/assets/cat-prebridal.jpg";
-import i1 from "@/assets/insp-1.jpg";
-import i2 from "@/assets/insp-2.jpg";
-import i3 from "@/assets/insp-3.jpg";
-import i4 from "@/assets/insp-4.jpg";
-import an1 from "@/assets/artist-new-1.jpg";
-import an2 from "@/assets/artist-new-2.jpg";
-import an3 from "@/assets/artist-new-3.jpg";
-import an4 from "@/assets/artist-new-4.jpg";
-import an5 from "@/assets/artist-new-5.jpg";
 import an6 from "@/assets/artist-new-6.jpg";
-import an7 from "@/assets/artist-new-7.jpg";
-import an8 from "@/assets/artist-new-8.jpg";
-import an9 from "@/assets/artist-new-9.jpg";
 import an10 from "@/assets/artist-new-10.jpg";
 import { BookingModal } from "./BookingModal";
 import { toast } from "sonner";
@@ -85,96 +68,6 @@ const vendors = [
     rating: 4.6,
     reviews: 73,
     img: an10,
-    badge: "Verified",
-  },
-  {
-    name: "Nail Couture by Ritu",
-    speciality: "Bridal Nail Extensions",
-    location: "Punjabi Bagh, Delhi",
-    price: "₹4,500",
-    rating: 4.8,
-    reviews: 64,
-    img: n1,
-    badge: "Best Seller",
-  },
-  {
-    name: "Shreya Gupta",
-    speciality: "Party Makeup & Styling",
-    location: "Lajpat Nagar, South Delhi",
-    price: "₹8,000",
-    rating: 4.7,
-    reviews: 112,
-    img: an9,
-    badge: "Top Choice",
-  },
-  {
-    name: "Kiran Pre-Bridal",
-    speciality: "Luxury Pre-Bridal Skin Care",
-    location: "Vasant Kunj, Delhi",
-    price: "₹15,000",
-    rating: 4.9,
-    reviews: 45,
-    img: an8,
-    badge: "Elite",
-  },
-  {
-    name: "Preeti Singh",
-    speciality: "Traditional Matte Bridal",
-    location: "Karol Bagh, Delhi",
-    price: "₹19,500",
-    rating: 4.8,
-    reviews: 89,
-    img: an3,
-    badge: "Verified",
-  },
-  {
-    name: "Glow by Tanvi",
-    speciality: "Glass Skin Makeup",
-    location: "Model Town, Delhi",
-    price: "₹24,000",
-    rating: 4.9,
-    reviews: 104,
-    img: an4,
-    badge: "Trending",
-  },
-  {
-    name: "Sakshi Arora",
-    speciality: "Indo-Western Styling",
-    location: "Paschim Vihar, Delhi",
-    price: "₹11,000",
-    rating: 4.6,
-    reviews: 53,
-    img: an5,
-    badge: "Verified",
-  },
-  {
-    name: "Zoya Khan",
-    speciality: "Haldi & Mehendi Makeup",
-    location: "Dwarka, Delhi",
-    price: "₹8,500",
-    rating: 4.8,
-    reviews: 91,
-    img: an7,
-    badge: "Popular",
-  },
-  {
-    name: "South Delhi Salon",
-    speciality: "Complete Bridal Package",
-    location: "Saket, South Delhi",
-    price: "₹35,000",
-    rating: 4.9,
-    reviews: 178,
-    img: an1,
-    badge: "Luxury",
-  },
-  {
-    name: "Rohini Makeovers",
-    speciality: "Airbrush HD Bridal",
-    location: "Rohini, Delhi",
-    price: "₹17,000",
-    rating: 4.7,
-    reviews: 69,
-    img: an2,
     badge: "Verified",
   },
 ];

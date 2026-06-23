@@ -59,16 +59,12 @@ export function Navbar({ onSignInClick }: NavbarProps) {
             <Sparkles className="h-4.5 w-4.5 text-gold" />
             Bridal Concierge
           </a>
-          <a
-            href="#vendor"
-            onClick={(e) => {
-              e.preventDefault();
-              onSignInClick?.("signup", "artist");
-            }}
+          <Link
+            to="/artist-dashboard"
             className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors cursor-pointer"
           >
             For Artists
-          </a>
+          </Link>
           <button
             onClick={() => onSignInClick?.("login", "user")}
             className="rounded-full bg-gradient-royal px-6 py-3 text-lg font-medium text-primary-foreground shadow-soft hover:shadow-luxe transition-all cursor-pointer"
@@ -119,17 +115,13 @@ export function Navbar({ onSignInClick }: NavbarProps) {
             >
               <Sparkles className="h-4.5 w-4.5 text-gold" /> Bridal Concierge
             </a>
-            <a
-              href="#vendor"
-              onClick={(e) => {
-                e.preventDefault();
-                onSignInClick?.("signup", "artist");
-                setOpen(false);
-              }}
+            <Link
+              to="/artist-dashboard"
+              onClick={() => setOpen(false)}
               className="py-2 text-base font-medium text-foreground/80 cursor-pointer"
             >
               For Artists
-            </a>
+            </Link>
             <button
               onClick={() => {
                 onSignInClick?.("login", "user");
