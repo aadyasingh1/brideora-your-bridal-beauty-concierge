@@ -13,6 +13,11 @@ import i1 from "@/assets/insp-1.jpg";
 import i2 from "@/assets/insp-2.jpg";
 import i3 from "@/assets/insp-3.jpg";
 import i4 from "@/assets/insp-4.jpg";
+import an1 from "@/assets/artist-new-1.jpg";
+import an2 from "@/assets/artist-new-2.jpg";
+import an3 from "@/assets/artist-new-3.jpg";
+import an4 from "@/assets/artist-new-4.jpg";
+import an5 from "@/assets/artist-new-5.jpg";
 import { BookingModal } from "./BookingModal";
 import { toast } from "sonner";
 
@@ -114,7 +119,7 @@ const vendors = [
     price: "₹19,500",
     rating: 4.8,
     reviews: 89,
-    img: i1,
+    img: an3,
     badge: "Verified",
   },
   {
@@ -124,7 +129,7 @@ const vendors = [
     price: "₹24,000",
     rating: 4.9,
     reviews: 104,
-    img: i2,
+    img: an4,
     badge: "Trending",
   },
   {
@@ -134,7 +139,7 @@ const vendors = [
     price: "₹11,000",
     rating: 4.6,
     reviews: 53,
-    img: i3,
+    img: an5,
     badge: "Verified",
   },
   {
@@ -154,7 +159,7 @@ const vendors = [
     price: "₹35,000",
     rating: 4.9,
     reviews: 178,
-    img: a1,
+    img: an1,
     badge: "Luxury",
   },
   {
@@ -164,7 +169,7 @@ const vendors = [
     price: "₹17,000",
     rating: 4.7,
     reviews: 69,
-    img: a2,
+    img: an2,
     badge: "Verified",
   },
 ];
