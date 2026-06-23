@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { Sparkles, Send, X, MessageCircle, Calendar, Image, Loader2, Paperclip } from "lucide-react";
+import { Sparkles, Send, X, MessageCircle, Calendar, Image, Loader2, Paperclip, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "@tanstack/react-router";
 
 interface Message {
   sender: "user" | "bot";
@@ -8,7 +9,7 @@ interface Message {
   action?: {
     label: string;
     payload: any;
-    type: "booking" | "navigation";
+    type: "booking" | "navigation" | "profile";
   };
 }
 
@@ -50,6 +51,7 @@ const mockArtists = {
 };
 
 export function AIChat() {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -107,11 +109,11 @@ export function AIChat() {
     if (text.includes("dwarka") || text.includes("aanya")) {
       return {
         sender: "bot",
-        text: "Lovely! In Dwarka, I highly recommend Aanya Kapoor. She is a Top-Rated specialist in HD Bridal Makeup, starting from ₹18,000. She has high customer reviews (4.9⭐). Would you like to check her booking availability?",
+        text: "Lovely! In Dwarka, I highly recommend Aanya Kapoor. She is a Top-Rated specialist in HD Bridal Makeup, starting from ₹18,000. She has high customer reviews (4.9⭐). Would you like to check out her profile?",
         action: {
-          label: "Book Aanya Kapoor",
-          payload: mockArtists.dwarka,
-          type: "booking"
+          label: "View Aanya Kapoor's Profile",
+          payload: "Aanya Kapoor",
+          type: "profile"
         }
       };
     }
@@ -119,11 +121,11 @@ export function AIChat() {
     if (text.includes("saket") || text.includes("meher") || text.includes("south delhi")) {
       return {
         sender: "bot",
-        text: "Perfect! In Saket/South Delhi, Meher Studio is an excellent choice for Airbrush & Engagement makeup, starting from ₹22,000. Verified rating: 4.8⭐. Would you like to lock in your date with her?",
+        text: "Perfect! In Saket/South Delhi, Meher Studio is an excellent choice for Airbrush & Engagement makeup, starting from ₹22,000. Verified rating: 4.8⭐. Would you like to check out her profile?",
         action: {
-          label: "Book Meher Studio",
-          payload: mockArtists.saket,
-          type: "booking"
+          label: "View Meher Studio's Profile",
+          payload: "Meher Studio",
+          type: "profile"
         }
       };
     }
@@ -131,11 +133,11 @@ export function AIChat() {
     if (text.includes("rohini") || text.includes("riya") || text.includes("hair") || text.includes("styling")) {
       return {
         sender: "bot",
-        text: "Great styling search! In Rohini, Riya Sehgal is a Premium hair and bridal styling expert, starting at just ₹9,500. She has 156+ reviews (4.9⭐). Would you like to book a deposit reservation with Riya?",
+        text: "Great styling search! In Rohini, Riya Sehgal is a Premium hair and bridal styling expert, starting at just ₹9,500. She has 156+ reviews (4.9⭐). Would you like to check out her profile?",
         action: {
-          label: "Book Riya Sehgal",
-          payload: mockArtists.rohini,
-          type: "booking"
+          label: "View Riya Sehgal's Profile",
+          payload: "Riya Sehgal",
+          type: "profile"
         }
       };
     }
@@ -186,11 +188,11 @@ export function AIChat() {
           ...prev,
           {
             sender: "bot",
-            text: "🎨 **AI Moodboard Matcher Analysis**\n\nI analyzed your screenshots and extracted these visual tags:\n• **Dewy Finish / Glass Skin** ✨\n• **Soft Smokey Eyes** 👁️\n• **Pastel Lehenga Styling** 👗\n\nI queried our vector database and found **Aanya Kapoor** (Dwarka) matches this aesthetic with a **98% style match score**! Riya Sehgal (Rohini) is also a strong fit. Would you like to reserve a deposit slot with Aanya?",
+            text: "🎨 **AI Moodboard Matcher Analysis**\n\nI analyzed your screenshots and extracted these visual tags:\n• **Dewy Finish / Glass Skin** ✨\n• **Soft Smokey Eyes** 👁️\n• **Pastel Lehenga Styling** 👗\n\nI queried our vector database and found **Aanya Kapoor** (Dwarka) matches this aesthetic with a **98% style match score**! Riya Sehgal (Rohini) is also a strong fit. Would you like to check out Aanya's profile?",
             action: {
-              label: "Book Aanya Kapoor (98% Match)",
-              payload: mockArtists.dwarka,
-              type: "booking"
+              label: "View Aanya Kapoor (98% Match)",
+              payload: "Aanya Kapoor",
+              type: "profile"
             }
           }
         ]);
@@ -225,6 +227,20 @@ export function AIChat() {
         el.scrollIntoView({ behavior: "smooth" });
       }
       setOpen(false);
+    } else if (action.type === "profile") {
+      navigate({
+        to: "/artists",
+        search: {
+          specialty: action.payload
+        }
+      });
+      setOpen(false);
+      setTimeout(() => {
+        const el = document.getElementById("vendors");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
     }
   };
 
@@ -271,7 +287,13 @@ export function AIChat() {
                         onClick={() => handleActionClick(m.action)}
                         className="inline-flex items-center gap-1.5 rounded-full bg-foreground hover:bg-primary text-pearl text-xs font-semibold px-4 py-2 shadow-soft transition-all cursor-pointer"
                       >
-                        <Calendar className="h-3.5 w-3.5" />
+                        {m.action.type === "booking" ? (
+                          <Calendar className="h-3.5 w-3.5" />
+                        ) : m.action.type === "profile" ? (
+                          <Eye className="h-3.5 w-3.5" />
+                        ) : (
+                          <Sparkles className="h-3.5 w-3.5" />
+                        )}
                         {m.action.label}
                       </button>
                     </div>
