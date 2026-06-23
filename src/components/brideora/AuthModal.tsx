@@ -68,15 +68,6 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", initialRole =
     setTimeout(() => {
       setIsLoading(false);
       const label = role === "artist" ? "Artist Partner" : "Client";
-      
-      const sessionData = {
-        role,
-        name: label,
-        email: phone + "@brideora-mobile.com"
-      };
-      localStorage.setItem("brideora-session", JSON.stringify(sessionData));
-      window.dispatchEvent(new CustomEvent("session-changed"));
-
       toast.success(`Success! Logged in as ${label}.`);
       triggerUserReturnWebhook(phone + "@brideora-mobile.com", label);
       onClose();
@@ -96,19 +87,8 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", initialRole =
       setIsLoading(true);
       setTimeout(() => {
         setIsLoading(false);
-        const namePart = email.split("@")[0];
-        const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-        
-        const sessionData = {
-          role,
-          name: formattedName,
-          email
-        };
-        localStorage.setItem("brideora-session", JSON.stringify(sessionData));
-        window.dispatchEvent(new CustomEvent("session-changed"));
-
         toast.success(`Welcome back! Logged in successfully.`);
-        triggerUserReturnWebhook(email, formattedName);
+        triggerUserReturnWebhook(email, email.split("@")[0]);
         onClose();
         if (role === "artist") {
           window.location.href = "/artist-dashboard";
@@ -122,15 +102,6 @@ export function AuthModal({ isOpen, onClose, initialTab = "login", initialRole =
       setIsLoading(true);
       setTimeout(() => {
         setIsLoading(false);
-        
-        const sessionData = {
-          role,
-          name,
-          email
-        };
-        localStorage.setItem("brideora-session", JSON.stringify(sessionData));
-        window.dispatchEvent(new CustomEvent("session-changed"));
-
         toast.success(`Welcome to Brideora, ${name}! Your account is ready.`);
         triggerUserReturnWebhook(email, name);
         onClose();

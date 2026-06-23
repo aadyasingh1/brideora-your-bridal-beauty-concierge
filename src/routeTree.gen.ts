@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SalonsRouteImport } from './routes/salons'
-import { Route as InspirationRouteImport } from './routes/inspiration'
 import { Route as ArtistsRouteImport } from './routes/artists'
 import { Route as ArtistDashboardRouteImport } from './routes/artist-dashboard'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,11 +22,6 @@ import { Route as ApiPaymentsCreateOrderRouteImport } from './routes/api/payment
 const SalonsRoute = SalonsRouteImport.update({
   id: '/salons',
   path: '/salons',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InspirationRoute = InspirationRouteImport.update({
-  id: '/inspiration',
-  path: '/inspiration',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArtistsRoute = ArtistsRouteImport.update({
@@ -76,7 +70,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/artist-dashboard': typeof ArtistDashboardRoute
   '/artists': typeof ArtistsRoute
-  '/inspiration': typeof InspirationRoute
   '/salons': typeof SalonsRoute
   '/artist/$artistSlug': typeof ArtistArtistSlugRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
@@ -88,7 +81,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/artist-dashboard': typeof ArtistDashboardRoute
   '/artists': typeof ArtistsRoute
-  '/inspiration': typeof InspirationRoute
   '/salons': typeof SalonsRoute
   '/artist/$artistSlug': typeof ArtistArtistSlugRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
@@ -101,7 +93,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/artist-dashboard': typeof ArtistDashboardRoute
   '/artists': typeof ArtistsRoute
-  '/inspiration': typeof InspirationRoute
   '/salons': typeof SalonsRoute
   '/artist/$artistSlug': typeof ArtistArtistSlugRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
@@ -115,7 +106,6 @@ export interface FileRouteTypes {
     | '/'
     | '/artist-dashboard'
     | '/artists'
-    | '/inspiration'
     | '/salons'
     | '/artist/$artistSlug'
     | '/api/payments/create-order'
@@ -127,7 +117,6 @@ export interface FileRouteTypes {
     | '/'
     | '/artist-dashboard'
     | '/artists'
-    | '/inspiration'
     | '/salons'
     | '/artist/$artistSlug'
     | '/api/payments/create-order'
@@ -139,7 +128,6 @@ export interface FileRouteTypes {
     | '/'
     | '/artist-dashboard'
     | '/artists'
-    | '/inspiration'
     | '/salons'
     | '/artist/$artistSlug'
     | '/api/payments/create-order'
@@ -152,7 +140,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ArtistDashboardRoute: typeof ArtistDashboardRoute
   ArtistsRoute: typeof ArtistsRoute
-  InspirationRoute: typeof InspirationRoute
   SalonsRoute: typeof SalonsRoute
   ArtistArtistSlugRoute: typeof ArtistArtistSlugRoute
   ApiPaymentsCreateOrderRoute: typeof ApiPaymentsCreateOrderRoute
@@ -168,13 +155,6 @@ declare module '@tanstack/react-router' {
       path: '/salons'
       fullPath: '/salons'
       preLoaderRoute: typeof SalonsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/inspiration': {
-      id: '/inspiration'
-      path: '/inspiration'
-      fullPath: '/inspiration'
-      preLoaderRoute: typeof InspirationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/artists': {
@@ -240,7 +220,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ArtistDashboardRoute: ArtistDashboardRoute,
   ArtistsRoute: ArtistsRoute,
-  InspirationRoute: InspirationRoute,
   SalonsRoute: SalonsRoute,
   ArtistArtistSlugRoute: ArtistArtistSlugRoute,
   ApiPaymentsCreateOrderRoute: ApiPaymentsCreateOrderRoute,
