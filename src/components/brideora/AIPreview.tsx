@@ -29,9 +29,9 @@ export function AIPreview() {
 
         <div className="mt-16 grid md:grid-cols-3 gap-8">
           {[
-            { icon: "🎨", title: "Smart Matching", desc: "Our system matches your style and budget to suggest perfect artists" },
-            { icon: "⚡", title: "Instant Shortlists", desc: "Get curated recommendations in under 30 seconds" },
-            { icon: "💬", title: "Live Guidance", desc: "Ask anything about looks, timelines and beauty prep" },
+            { icon: "🎨", title: "AI Moodboard Matcher", desc: "Upload Pinterest/Instagram screenshots in chat to match with artists whose portfolios visually align with your style." },
+            { icon: "⚡", title: "Automated Portfolio Tagging", desc: "For artists: AI face-analysis automatically generates descriptive tags for portfolio uploads, updating filters instantly." },
+            { icon: "🎭", title: "Virtual 'Style Transfer' Preview", desc: "Upload a selfie in the booking modal to simulate how a specific artist's makeup look adapts to your facial skin tone." },
           ].map((feature, i) => (
             <div key={i} className="text-center text-pearl">
               <div className="text-4xl mb-3">{feature.icon}</div>

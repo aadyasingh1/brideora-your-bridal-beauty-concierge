@@ -38,6 +38,25 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
     orderId: string;
   } | null>(null);
 
+  const [showStyleTransfer, setShowStyleTransfer] = useState(false);
+  const [selfie, setSelfie] = useState<string | null>(null);
+  const [selectedLook, setSelectedLook] = useState<string | null>(null);
+  const [isTransferring, setIsTransferring] = useState(false);
+  const [styleResult, setStyleResult] = useState<string | null>(null);
+
+  const handleSelfieUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setSelfie(event.target.result as string);
+        setStyleResult(null);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   if (!isOpen) return null;
 
   // Clean numerical amount (e.g. "₹18,000" -> 18000)
@@ -160,6 +179,142 @@ export function BookingModal({ isOpen, onClose, vendor }: BookingModalProps) {
             <p className="text-sm text-muted-foreground mb-6 font-serif">
               Fill in your event details to initialize the reservation.
             </p>
+
+            {/* Try Style Transfer Trigger */}
+            <div className="mb-4 rounded-2xl border border-gold/30 bg-rose-glow/5 p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4.5 w-4.5 text-primary animate-pulse" />
+                  <div>
+                    <div className="text-xs font-bold text-foreground">Virtual Style Transfer Preview</div>
+                    <div className="text-[10px] text-muted-foreground">Upload a selfie to preview {vendor.name}'s styling on your face.</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowStyleTransfer(!showStyleTransfer)}
+                  className="rounded-full bg-foreground text-pearl px-4 py-1.5 text-[10px] font-bold hover:bg-primary transition-colors cursor-pointer"
+                >
+                  {showStyleTransfer ? "Hide Preview" : "Try AI Demo"}
+                </button>
+              </div>
+
+              {showStyleTransfer && (
+                <div className="mt-4 border-t border-border/60 pt-4 space-y-4 animate-in slide-in-from-top duration-300">
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Selfie slot */}
+                    <div className="flex flex-col items-center justify-center border border-dashed rounded-xl p-4 bg-white min-h-[140px] text-center">
+                      {selfie ? (
+                        <div className="relative h-28 w-28 rounded-full overflow-hidden border shadow">
+                          <img
+                            src={selfie}
+                            alt="Selfie"
+                            className="h-full w-full object-cover transition-all duration-700"
+                            style={{
+                              filter: isTransferring
+                                ? "blur(3px)"
+                                : styleResult
+                                ? selectedLook === "Dewy Glass Glam"
+                                  ? "saturate(1.25) brightness(1.05) contrast(1.05)"
+                                  : selectedLook === "Matte Crimson Lip"
+                                  ? "contrast(1.05) saturate(1.15) sepia(0.05)"
+                                  : selectedLook === "Smokey Charcoal Eye"
+                                  ? "contrast(1.15) brightness(0.95) saturate(0.9)"
+                                  : selectedLook === "Traditional Golden Glow"
+                                  ? "sepia(0.15) saturate(1.25) brightness(1.02)"
+                                  : "none"
+                                : "none"
+                            }}
+                          />
+                          {styleResult && !isTransferring && (
+                            <div className="absolute inset-0 bg-gold-soft/10 mix-blend-overlay animate-pulse" />
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => { setSelfie(null); setStyleResult(null); }}
+                            className="absolute bottom-0 right-0 h-6 w-6 bg-black/60 hover:bg-primary text-white rounded-full flex items-center justify-center text-xs cursor-pointer font-bold"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="cursor-pointer flex flex-col items-center space-y-1">
+                          <span className="text-xl">👤</span>
+                          <span className="text-[10px] font-bold text-primary hover:underline">Upload Selfie</span>
+                          <input type="file" accept="image/*" className="hidden" onChange={handleSelfieUpload} />
+                        </label>
+                      )}
+                    </div>
+
+                    {/* Look Picker */}
+                    <div className="space-y-2">
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground block">Select Makeup Look</span>
+                      <div className="grid grid-cols-2 gap-1.5">
+                        {[
+                          { id: "Dewy Glass Glam", label: "Dewy Glass" },
+                          { id: "Matte Crimson Lip", label: "Matte Crimson" },
+                          { id: "Smokey Charcoal Eye", label: "Smokey Eye" },
+                          { id: "Traditional Golden Glow", label: "Gold Glow" }
+                        ].map(look => (
+                          <button
+                            key={look.id}
+                            type="button"
+                            onClick={() => { setSelectedLook(look.id); setStyleResult(null); }}
+                            className={`rounded-lg p-2 text-[10px] font-semibold text-center border transition-all ${
+                              selectedLook === look.id
+                                ? "bg-primary border-primary text-pearl"
+                                : "bg-pearl border-border/80 text-foreground/80 hover:bg-rose"
+                            }`}
+                          >
+                            {look.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Transfer Action */}
+                  {selfie && selectedLook && (
+                    <div className="pt-2">
+                      {isTransferring ? (
+                        <div className="rounded-full bg-rose/40 text-primary py-2.5 text-[10px] font-semibold text-center flex items-center justify-center gap-1.5 animate-pulse">
+                          <span className="h-3 w-3 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                          Mapping facial dimensions & blending look...
+                        </div>
+                      ) : styleResult ? (
+                        <div className="text-center">
+                          <div className="text-[10px] text-success font-semibold mb-1 flex items-center justify-center gap-1">
+                            ✓ Style transfer complete! Blended look: {selectedLook}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setStyleResult(null)}
+                            className="text-[9px] text-primary hover:underline font-bold"
+                          >
+                            Reset Style Transfer
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsTransferring(true);
+                            setTimeout(() => {
+                              setIsTransferring(false);
+                              setStyleResult(selfie);
+                              toast.success(`Applied ${selectedLook} style transfer!`);
+                            }, 1800);
+                          }}
+                          className="w-full rounded-full bg-foreground text-pearl py-2.5 text-[10px] font-semibold hover:bg-primary transition-colors cursor-pointer flex items-center justify-center gap-1.5 shadow"
+                        >
+                          <Sparkles className="h-3 w-3 text-gold-soft" /> Run Style Transfer Simulation
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             <form onSubmit={handlePayment} className="space-y-4">
               <div className="grid grid-cols-2 gap-3">

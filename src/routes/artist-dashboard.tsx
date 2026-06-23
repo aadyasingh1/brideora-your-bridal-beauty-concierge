@@ -64,6 +64,12 @@ function ArtistDashboardPage() {
     { id: "img-6", url: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=300", synced: true }
   ]);
 
+  // State for AI Automated Portfolio Tagging
+  const [taggingImage, setTaggingImage] = useState<string | null>(null);
+  const [analyzingImage, setAnalyzingImage] = useState(false);
+  const [generatedTags, setGeneratedTags] = useState<string[]>([]);
+  const [customTagInput, setCustomTagInput] = useState("");
+
   // Add block date handler
   const handleAddBlockDate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,6 +114,54 @@ function ArtistDashboardPage() {
         error: "Sync failed."
       }
     );
+  };
+
+  const handlePortfolioTaggingUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setTaggingImage(event.target.result as string);
+        setAnalyzingImage(true);
+        setGeneratedTags([]);
+        
+        setTimeout(() => {
+          setAnalyzingImage(false);
+          setGeneratedTags(["#HDMakeup", "#RedLip", "#MatteFinish", "#DuskySkinTone", "#DewyGlow", "#BridalNath"]);
+          toast.success("AI face-analysis complete! Generated 6 tags.");
+        }, 2000);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleAddCustomTag = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customTagInput.trim()) return;
+    let tag = customTagInput.trim();
+    if (!tag.startsWith("#")) tag = "#" + tag;
+    if (generatedTags.includes(tag)) {
+      toast.error("Tag already exists.");
+      return;
+    }
+    setGeneratedTags([...generatedTags, tag]);
+    setCustomTagInput("");
+  };
+
+  const handleRemoveGeneratedTag = (tagToRemove: string) => {
+    setGeneratedTags(generatedTags.filter(t => t !== tagToRemove));
+  };
+
+  const handleSaveTaggedImage = () => {
+    setInstaGrid([
+      { id: `img-${Date.now()}`, url: taggingImage || "", synced: true },
+      ...instaGrid
+    ]);
+    setTaggingImage(null);
+    setGeneratedTags([]);
+    toast.success(`Successfully saved new photo with ${generatedTags.length} AI search tags!`);
   };
 
   // Calculate dynamic rates based on toggles
@@ -666,6 +720,111 @@ function ArtistDashboardPage() {
                     </div>
                   </div>
                 )}
+
+                {/* AI Automated Portfolio Tagging Panel */}
+                <div className="border-t border-border/60 pt-8 mt-8 space-y-6">
+                  <div>
+                    <h4 className="font-display text-2xl text-foreground flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 text-primary" /> AI Automated Portfolio Tagging
+                    </h4>
+                    <p className="text-xs text-muted-foreground mt-1 font-serif">
+                      Upload a new portfolio photo. Our face-analysis model will automatically extract traits and generate tags (#HDMakeup, #RedLip) to save you data entry.
+                    </p>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-8">
+                    {/* Upload Card */}
+                    <div className="rounded-2xl border border-dashed border-border p-6 bg-pearl/40 flex flex-col items-center justify-center min-h-[220px]">
+                      {taggingImage ? (
+                        <div className="relative w-full max-w-[200px] aspect-square rounded-2xl overflow-hidden shadow">
+                          <img src={taggingImage} alt="Tagging upload" className="h-full w-full object-cover" />
+                          <button
+                            onClick={() => { setTaggingImage(null); setGeneratedTags([]); }}
+                            className="absolute top-2 right-2 h-6 w-6 rounded-full bg-black/60 text-white hover:bg-primary transition-colors flex items-center justify-center text-sm cursor-pointer"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ) : (
+                        <label className="cursor-pointer flex flex-col items-center text-center space-y-2">
+                          <div className="h-12 w-12 rounded-full bg-rose flex items-center justify-center text-primary text-xl">
+                            📸
+                          </div>
+                          <div>
+                            <span className="text-xs font-bold text-primary hover:underline">Click to upload photo</span>
+                            <p className="text-[10px] text-muted-foreground mt-1">Accepts PNG, JPG up to 10MB</p>
+                          </div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handlePortfolioTaggingUpload}
+                          />
+                        </label>
+                      )}
+                    </div>
+
+                    {/* AI Tagging Controls */}
+                    <div className="space-y-4">
+                      <h5 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">AI Face-Analysis Status</h5>
+                      
+                      {analyzingImage ? (
+                        <div className="rounded-2xl border border-border bg-white p-5 flex flex-col items-center justify-center space-y-3 min-h-[140px]">
+                          <RefreshCw className="h-8 w-8 text-primary animate-spin" />
+                          <span className="text-xs font-semibold text-muted-foreground font-serif">Mapping facial landmarks & skin tones...</span>
+                        </div>
+                      ) : taggingImage && generatedTags.length > 0 ? (
+                        <div className="space-y-4">
+                          <div className="rounded-2xl border border-border bg-white p-4 space-y-3">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Generated Tags</span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {generatedTags.map((tag) => (
+                                <span key={tag} className="inline-flex items-center gap-1 rounded-full bg-rose text-primary px-3 py-1 text-xs font-semibold border border-gold/10">
+                                  {tag}
+                                  <button
+                                    onClick={() => handleRemoveGeneratedTag(tag)}
+                                    className="hover:text-foreground text-[10px] ml-0.5 cursor-pointer font-bold"
+                                  >
+                                    ×
+                                  </button>
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Add Custom Tag Form */}
+                          <form onSubmit={handleAddCustomTag} className="flex gap-2">
+                            <input
+                              type="text"
+                              value={customTagInput}
+                              onChange={(e) => setCustomTagInput(e.target.value)}
+                              placeholder="Add custom tag (e.g. #DewyLook)..."
+                              className="flex-1 rounded-full border border-border bg-white px-4 py-2 text-xs outline-none focus:border-primary transition-all text-foreground"
+                            />
+                            <button
+                              type="submit"
+                              className="rounded-full bg-foreground px-4 py-2 text-xs font-semibold text-pearl hover:bg-primary transition-colors cursor-pointer"
+                            >
+                              Add
+                            </button>
+                          </form>
+
+                          {/* Save Button */}
+                          <button
+                            onClick={handleSaveTaggedImage}
+                            className="w-full rounded-full bg-gradient-royal py-3 text-xs font-semibold text-pearl hover:shadow transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                          >
+                            <Sparkles className="h-3.5 w-3.5" /> Save Photo with Tags
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="rounded-2xl border border-border bg-white p-5 text-center text-xs text-muted-foreground flex items-center justify-center min-h-[140px] font-serif">
+                          Upload a portfolio image above to start AI automatic tagging.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 

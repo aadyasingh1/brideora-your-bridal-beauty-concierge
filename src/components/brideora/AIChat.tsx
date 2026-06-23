@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Sparkles, Send, X, MessageCircle, Calendar } from "lucide-react";
+import { Sparkles, Send, X, MessageCircle, Calendar, Image, Loader2, Paperclip } from "lucide-react";
+import { toast } from "sonner";
 
 interface Message {
   sender: "user" | "bot";
@@ -60,6 +61,27 @@ export function AIChat() {
   ]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const handleMoodboardUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    for (let i = 0; i < files.length; i++) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setUploadedImages((prev) => [...prev, event.target!.result as string]);
+        }
+      };
+      reader.readAsDataURL(files[i]);
+    }
+    toast.success(`${files.length} screenshot(s) added. Click send to analyze moodboard matching.`);
+  };
+
+  const handleRemoveUploadedImage = (index: number) => {
+    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -142,7 +164,39 @@ export function AIChat() {
   };
 
   const handleSendMessage = (text: string) => {
-    if (!text.trim()) return;
+    if (!text.trim() && uploadedImages.length === 0) return;
+
+    if (uploadedImages.length > 0) {
+      const count = uploadedImages.length;
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "user",
+          text: `📸 *[AI Moodboard Matcher]* Uploaded ${count} screenshot(s) for visual similarity matching.`
+        }
+      ]);
+      setUploadedImages([]);
+      setIsTyping(true);
+      setIsAnalyzing(true);
+
+      setTimeout(() => {
+        setIsTyping(false);
+        setIsAnalyzing(false);
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender: "bot",
+            text: "🎨 **AI Moodboard Matcher Analysis**\n\nI analyzed your screenshots and extracted these visual tags:\n• **Dewy Finish / Glass Skin** ✨\n• **Soft Smokey Eyes** 👁️\n• **Pastel Lehenga Styling** 👗\n\nI queried our vector database and found **Aanya Kapoor** (Dwarka) matches this aesthetic with a **98% style match score**! Riya Sehgal (Rohini) is also a strong fit. Would you like to reserve a deposit slot with Aanya?",
+            action: {
+              label: "Book Aanya Kapoor (98% Match)",
+              payload: mockArtists.dwarka,
+              type: "booking"
+            }
+          }
+        ]);
+      }, 2500);
+      return;
+    }
 
     // Add user message
     setMessages((prev) => [...prev, { sender: "user", text }]);
@@ -159,7 +213,6 @@ export function AIChat() {
   const handleActionClick = (action: Message["action"]) => {
     if (!action) return;
     if (action.type === "booking") {
-      // Dispatch global booking trigger
       window.dispatchEvent(
         new CustomEvent("open-booking-modal", {
           detail: { vendor: action.payload }
@@ -227,10 +280,19 @@ export function AIChat() {
               ))}
               
               {isTyping && (
-                <div className="bg-pearl border border-border text-foreground rounded-2xl rounded-tl-sm max-w-[50px] px-3.5 py-2.5 flex justify-center gap-1 items-center">
-                  <span className="h-1.5 w-1.5 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="h-1.5 w-1.5 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="h-1.5 w-1.5 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                <div className="bg-pearl border border-border text-foreground rounded-2xl rounded-tl-sm max-w-[200px] px-3.5 py-2.5 flex items-center gap-2">
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 text-primary animate-spin" />
+                      <span className="text-xs font-semibold text-muted-foreground font-serif">Analyzing screenshots...</span>
+                    </>
+                  ) : (
+                    <div className="flex gap-1 items-center">
+                      <span className="h-1.5 w-1.5 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                      <span className="h-1.5 w-1.5 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                      <span className="h-1.5 w-1.5 bg-muted-foreground/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    </div>
+                  )}
                 </div>
               )}
               <div ref={messagesEndRef} />
@@ -238,6 +300,25 @@ export function AIChat() {
 
             {/* suggestion Chips & Input */}
             <div className="space-y-3">
+              {uploadedImages.length > 0 && (
+                <div className="flex flex-wrap gap-2 p-2 bg-white rounded-2xl border border-border">
+                  {uploadedImages.map((img, idx) => (
+                    <div key={idx} className="relative h-12 w-12 rounded-xl overflow-hidden border">
+                      <img src={img} alt="moodboard thumb" className="h-full w-full object-cover" />
+                      <button
+                        onClick={() => handleRemoveUploadedImage(idx)}
+                        className="absolute top-0 right-0 h-4 w-4 bg-foreground/75 text-pearl text-[9px] rounded-full flex items-center justify-center hover:bg-primary transition-colors cursor-pointer"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  <div className="flex items-center text-[10px] text-muted-foreground ml-2 font-semibold font-serif">
+                    Moodboard loaded ({uploadedImages.length} images)
+                  </div>
+                </div>
+              )}
+
               {messages.length === 1 && (
                 <div className="flex flex-wrap gap-1.5">
                   {chips.map((c) => (
@@ -253,11 +334,21 @@ export function AIChat() {
               )}
               
               <div className="flex items-center gap-2 rounded-full border border-border bg-pearl px-4 py-2.5">
+                <label className="cursor-pointer p-1.5 rounded-full hover:bg-rose/40 transition-colors text-muted-foreground hover:text-primary">
+                  <Image className="h-4.5 w-4.5" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="hidden"
+                    onChange={handleMoodboardUpload}
+                  />
+                </label>
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMessage(input)}
-                  placeholder="Ask about your bridal look..."
+                  placeholder={uploadedImages.length > 0 ? "Send to match moodboard..." : "Ask look or upload screenshots..."}
                   className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/60 text-foreground"
                 />
                 <button
