@@ -9,10 +9,17 @@ import { BookingModal } from "@/components/brideora/BookingModal";
 import { toast } from "sonner";
 
 // Import premium assets
+import a1 from "@/assets/artist-1.jpg";
+import a2 from "@/assets/artist-2.jpg";
+import a3 from "@/assets/artist-3.jpg";
 import an1 from "@/assets/artist-new-1.jpg";
 import an2 from "@/assets/artist-new-2.jpg";
+import an3 from "@/assets/artist-new-3.jpg";
 import an4 from "@/assets/artist-new-4.jpg";
+import an5 from "@/assets/artist-new-5.jpg";
 import an6 from "@/assets/artist-new-6.jpg";
+import an7 from "@/assets/artist-new-7.jpg";
+import an8 from "@/assets/artist-new-8.jpg";
 import an9 from "@/assets/artist-new-9.jpg";
 import an10 from "@/assets/artist-new-10.jpg";
 import me1 from "@/assets/cat-mehendi.jpg";
@@ -30,121 +37,6 @@ export const Route = createFileRoute("/salons")({
   }),
   component: SalonsPage,
 });
-
-const mockSalons = [
-  {
-    id: "salon-1",
-    name: "South Delhi Salon",
-    location: "Saket, South Delhi",
-    rating: 4.9,
-    reviews: 178,
-    badge: "Luxury",
-    img: an1,
-    services: [
-      { name: "Complete Bridal Package", price: "₹35,000", category: "Bridal Makeup" },
-      { name: "Engagement & Sangeet Makeup", price: "₹24,000", category: "Event-Specific Styling" },
-      { name: "Party Makeup & Hair Styling", price: "₹14,000", category: "Event-Specific Styling" }
-    ]
-  },
-  {
-    id: "salon-2",
-    name: "The Bride & Co. Studio",
-    location: "Dwarka, Delhi",
-    rating: 4.8,
-    reviews: 134,
-    badge: "Premium",
-    img: an2,
-    services: [
-      { name: "HD Bridal Makeup", price: "₹28,000", category: "Bridal Makeup" },
-      { name: "Airbrush Bridal Finish", price: "₹32,000", category: "Bridal Makeup" },
-      { name: "Trial Makeup Session", price: "₹5,000", category: "Bridal Makeup" }
-    ]
-  },
-  {
-    id: "salon-3",
-    name: "Royal Orchid Spa & Salon",
-    location: "Vasant Kunj, Delhi",
-    rating: 4.9,
-    reviews: 145,
-    badge: "Elite",
-    img: an6,
-    services: [
-      { name: "Luxury Pre-Bridal Skincare", price: "₹15,000", category: "Pre-Bridal Wellness & Grooming" },
-      { name: "Global Hair Coloring & Styling", price: "₹10,500", category: "Hair Styling" },
-      { name: "Bridal Glow HydraFacial", price: "₹8,000", category: "Pre-Bridal Wellness & Grooming" }
-    ]
-  },
-  {
-    id: "salon-4",
-    name: "Golden Shear Salon",
-    location: "Rajouri Garden, Delhi",
-    rating: 4.7,
-    reviews: 96,
-    badge: "Verified",
-    img: an10,
-    services: [
-      { name: "Hair Extensions & Volumizing", price: "₹12,000", category: "Hair Styling" },
-      { name: "Bridal Hair Spa & Cut", price: "₹6,500", category: "Hair Styling" },
-      { name: "Rebonding & Smoothening", price: "₹9,000", category: "Hair Styling" }
-    ]
-  },
-  {
-    id: "salon-5",
-    name: "Nail Couture & Spa",
-    location: "Punjabi Bagh, Delhi",
-    rating: 4.8,
-    reviews: 82,
-    badge: "Best Seller",
-    img: n1,
-    services: [
-      { name: "Bridal Gel Nail Extensions", price: "₹4,500", category: "Pre-Bridal Wellness & Grooming" },
-      { name: "Chrome Overlay & Nail Art", price: "₹3,000", category: "Pre-Bridal Wellness & Grooming" },
-      { name: "Premium Pedicure & Manicure", price: "₹2,500", category: "Pre-Bridal Wellness & Grooming" }
-    ]
-  },
-  {
-    id: "salon-6",
-    name: "Delhi Glamour Hub",
-    location: "Karol Bagh, Delhi",
-    rating: 4.6,
-    reviews: 112,
-    badge: "Popular",
-    img: an9,
-    services: [
-      { name: "Party Makeup & Styling", price: "₹9,500", category: "Event-Specific Styling" },
-      { name: "Saree/Lehenga Draping", price: "₹2,500", category: "Outfit Draping" },
-      { name: "Sangeet Hair Styling", price: "₹4,500", category: "Hair Styling" }
-    ]
-  },
-  {
-    id: "salon-7",
-    name: "Studio Velvet Beauty",
-    location: "Model Town, Delhi",
-    rating: 4.9,
-    reviews: 104,
-    badge: "Trending",
-    img: an4,
-    services: [
-      { name: "Glass Skin Makeover", price: "₹22,000", category: "Bridal Makeup" },
-      { name: "Reception Glam Pack", price: "₹18,000", category: "Event-Specific Styling" },
-      { name: "Roka/Engagement Finish", price: "₹15,000", category: "Event-Specific Styling" }
-    ]
-  },
-  {
-    id: "salon-8",
-    name: "Heritage Mehendi & Salon",
-    location: "Janakpuri, Delhi",
-    rating: 4.9,
-    reviews: 156,
-    badge: "Elite",
-    img: me1,
-    services: [
-      { name: "Luxury Bridal Mehendi", price: "₹11,500", category: "Event-Specific Styling" },
-      { name: "Pre-Bridal Haldi Package", price: "₹7,500", category: "Pre-Bridal Wellness & Grooming" },
-      { name: "Family Mehendi (Per Hand)", price: "₹1,500", category: "Event-Specific Styling" }
-    ]
-  }
-];
 
 const categories = [
   "All Services",
@@ -171,6 +63,79 @@ const localities = [
   "Model Town",
   "Paschim Vihar"
 ];
+
+const generateMockSalons = () => {
+  const list = [];
+  const salonNames = [
+    "Grace & Glow", "The Velvet Room", "Femme Salon", "Aura Luxury Studio", "Royal Oak Salon", 
+    "Urban Chic Spa", "Diva Makeovers", "Magnolia Hair & Beauty", "Reflections Salon", "Elite Bridal Studio",
+    "Gilded Scissors", "Pearl & Rose Wellness", "Golden Shear Salon", "Nail Couture & Spa", "Studio Velvet Beauty"
+  ];
+  const images = [a1, a2, a3, an1, an2, an3, an4, an5, an6, an7, an8, an9, an10, me1, n1];
+  
+  const cleanLocalities = localities.filter(l => l !== "All Delhi");
+  const cleanCategories = categories.filter(c => c !== "All Services");
+
+  cleanLocalities.forEach((loc, locIdx) => {
+    cleanCategories.forEach((cat, catIdx) => {
+      for (let itemIdx = 0; itemIdx < 12; itemIdx++) {
+        const nameSeed = locIdx * 100 + catIdx * 10 + itemIdx;
+        const img = images[nameSeed % images.length];
+        const name = `${loc} ${salonNames[nameSeed % salonNames.length]}`;
+        const suffix = (loc === "Saket" || loc === "Lajpat Nagar") ? ", South Delhi" : ", Delhi";
+        const location = `${loc}${suffix}`;
+        
+        const ratingVal = parseFloat((4.5 + (nameSeed % 5) * 0.1).toFixed(1));
+        const rating = ratingVal > 5.0 ? 5.0 : ratingVal;
+        const reviews = 50 + (nameSeed % 150);
+        const badges = ["Luxury", "Premium", "Elite", "Verified", "Best Seller", "Trending", "Popular"];
+        const badge = badges[nameSeed % badges.length];
+
+        const servicesList = [];
+        if (cat === "Bridal Makeup") {
+          servicesList.push({ name: "HD Bridal Makeup", price: "₹28,000", category: "Bridal Makeup" });
+          servicesList.push({ name: "Airbrush Bridal Finish", price: "₹35,000", category: "Bridal Makeup" });
+          servicesList.push({ name: "Royal Bridal Makeover", price: "₹45,000", category: "Bridal Makeup" });
+        } else if (cat === "Event-Specific Styling") {
+          servicesList.push({ name: "Haldi & Mehendi Look", price: "₹12,000", category: "Event-Specific Styling" });
+          servicesList.push({ name: "Sangeet Styling Package", price: "₹15,000", category: "Event-Specific Styling" });
+          servicesList.push({ name: "Engagement Glam Finish", price: "₹18,000", category: "Event-Specific Styling" });
+        } else if (cat === "Hair Styling") {
+          servicesList.push({ name: "Bridal Updo & Flowers", price: "₹8,500", category: "Hair Styling" });
+          servicesList.push({ name: "Luxury Extensions & Blowdry", price: "₹12,000", category: "Hair Styling" });
+          servicesList.push({ name: "Premium Styling & Setting", price: "₹6,000", category: "Hair Styling" });
+        } else if (cat === "Outfit Draping") {
+          servicesList.push({ name: "Saree Draping Professional", price: "₹2,500", category: "Outfit Draping" });
+          servicesList.push({ name: "Lehenga Pleating & Setting", price: "₹3,000", category: "Outfit Draping" });
+          servicesList.push({ name: "Multi-Outfit Premium Draping", price: "₹5,500", category: "Outfit Draping" });
+        } else if (cat === "Bridal Squad Services") {
+          servicesList.push({ name: "Bridesmaid Makeup & Hair", price: "₹9,500", category: "Bridal Squad Services" });
+          servicesList.push({ name: "Mothers Grooming Package", price: "₹8,000", category: "Bridal Squad Services" });
+          servicesList.push({ name: "Squad Pack (3+ People)", price: "₹22,000", category: "Bridal Squad Services" });
+        } else if (cat === "Pre-Bridal Wellness & Grooming") {
+          servicesList.push({ name: "Luxury Skincare HydraFacial", price: "₹7,500", category: "Pre-Bridal Wellness & Grooming" });
+          servicesList.push({ name: "Bridal Glow Body Spa", price: "₹10,000", category: "Pre-Bridal Wellness & Grooming" });
+          servicesList.push({ name: "Nail Extensions & Pedicure", price: "₹6,500", category: "Pre-Bridal Wellness & Grooming" });
+        }
+
+        list.push({
+          id: `salon-${locIdx}-${catIdx}-${itemIdx}`,
+          name,
+          location,
+          rating,
+          reviews,
+          badge,
+          img,
+          services: servicesList
+        });
+      }
+    });
+  });
+
+  return list;
+};
+
+const mockSalons = generateMockSalons();
 
 function SalonsPage() {
   const [searchQuery, setSearchQuery] = useState("");
