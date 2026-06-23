@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SalonsRouteImport } from './routes/salons'
+import { Route as ArtistsRouteImport } from './routes/artists'
 import { Route as ArtistDashboardRouteImport } from './routes/artist-dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiWebhooksRazorpayRouteImport } from './routes/api/webhooks/razorpay'
@@ -20,6 +21,11 @@ import { Route as ApiPaymentsCreateOrderRouteImport } from './routes/api/payment
 const SalonsRoute = SalonsRouteImport.update({
   id: '/salons',
   path: '/salons',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistsRoute = ArtistsRouteImport.update({
+  id: '/artists',
+  path: '/artists',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArtistDashboardRoute = ArtistDashboardRouteImport.update({
@@ -57,6 +63,7 @@ const ApiPaymentsCreateOrderRoute = ApiPaymentsCreateOrderRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/artist-dashboard': typeof ArtistDashboardRoute
+  '/artists': typeof ArtistsRoute
   '/salons': typeof SalonsRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/artist-dashboard': typeof ArtistDashboardRoute
+  '/artists': typeof ArtistsRoute
   '/salons': typeof SalonsRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/artist-dashboard': typeof ArtistDashboardRoute
+  '/artists': typeof ArtistsRoute
   '/salons': typeof SalonsRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/artist-dashboard'
+    | '/artists'
     | '/salons'
     | '/api/payments/create-order'
     | '/api/payments/verify'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/artist-dashboard'
+    | '/artists'
     | '/salons'
     | '/api/payments/create-order'
     | '/api/payments/verify'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/artist-dashboard'
+    | '/artists'
     | '/salons'
     | '/api/payments/create-order'
     | '/api/payments/verify'
@@ -115,6 +127,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ArtistDashboardRoute: typeof ArtistDashboardRoute
+  ArtistsRoute: typeof ArtistsRoute
   SalonsRoute: typeof SalonsRoute
   ApiPaymentsCreateOrderRoute: typeof ApiPaymentsCreateOrderRoute
   ApiPaymentsVerifyRoute: typeof ApiPaymentsVerifyRoute
@@ -129,6 +142,13 @@ declare module '@tanstack/react-router' {
       path: '/salons'
       fullPath: '/salons'
       preLoaderRoute: typeof SalonsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artists': {
+      id: '/artists'
+      path: '/artists'
+      fullPath: '/artists'
+      preLoaderRoute: typeof ArtistsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/artist-dashboard': {
@@ -179,6 +199,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ArtistDashboardRoute: ArtistDashboardRoute,
+  ArtistsRoute: ArtistsRoute,
   SalonsRoute: SalonsRoute,
   ApiPaymentsCreateOrderRoute: ApiPaymentsCreateOrderRoute,
   ApiPaymentsVerifyRoute: ApiPaymentsVerifyRoute,

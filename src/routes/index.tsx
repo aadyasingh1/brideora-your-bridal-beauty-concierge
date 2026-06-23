@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Navbar } from "@/components/brideora/Navbar";
 import { Hero } from "@/components/brideora/Hero";
 import { Categories } from "@/components/brideora/Categories";
@@ -36,6 +36,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const navigate = useNavigate({ from: "/" });
   const [localityFilter, setLocalityFilter] = useState("");
   const [budgetFilter, setBudgetFilter] = useState("Any budget");
   const [specialtyFilter, setSpecialtyFilter] = useState("");
@@ -105,24 +106,32 @@ function Index() {
   }, []);
 
   const handleSearch = () => {
-    const el = document.getElementById("vendors");
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
+    navigate({
+      to: "/artists",
+      search: {
+        locality: localityFilter || undefined,
+        budget: budgetFilter !== "Any budget" ? budgetFilter : undefined,
+        specialty: specialtyFilter || undefined
+      }
+    });
   };
 
   const handleServiceClick = (service: string) => {
-    setSpecialtyFilter(service);
-    setLocalityFilter("");
-    setBudgetFilter("Any budget");
-    handleSearch();
+    navigate({
+      to: "/artists",
+      search: {
+        specialty: service
+      }
+    });
   };
 
   const handleLocationClick = (loc: string) => {
-    setLocalityFilter(loc);
-    setSpecialtyFilter("");
-    setBudgetFilter("Any budget");
-    handleSearch();
+    navigate({
+      to: "/artists",
+      search: {
+        locality: loc
+      }
+    });
   };
 
   const handleInfoClick = (type: string) => {
