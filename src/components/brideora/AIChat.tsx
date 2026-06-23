@@ -228,19 +228,17 @@ export function AIChat() {
       }
       setOpen(false);
     } else if (action.type === "profile") {
+      const slug = action.payload
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
       navigate({
-        to: "/artists",
-        search: {
-          specialty: action.payload
+        to: "/artist/$artistSlug",
+        params: {
+          artistSlug: slug
         }
       });
       setOpen(false);
-      setTimeout(() => {
-        const el = document.getElementById("vendors");
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth" });
-        }
-      }, 100);
     }
   };
 

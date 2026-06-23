@@ -13,6 +13,7 @@ import { Route as SalonsRouteImport } from './routes/salons'
 import { Route as ArtistsRouteImport } from './routes/artists'
 import { Route as ArtistDashboardRouteImport } from './routes/artist-dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ArtistArtistSlugRouteImport } from './routes/artist.$artistSlug'
 import { Route as ApiWebhooksRazorpayRouteImport } from './routes/api/webhooks/razorpay'
 import { Route as ApiPaymentsVerifyRedirectRouteImport } from './routes/api/payments/verify-redirect'
 import { Route as ApiPaymentsVerifyRouteImport } from './routes/api/payments/verify'
@@ -36,6 +37,11 @@ const ArtistDashboardRoute = ArtistDashboardRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArtistArtistSlugRoute = ArtistArtistSlugRouteImport.update({
+  id: '/artist/$artistSlug',
+  path: '/artist/$artistSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiWebhooksRazorpayRoute = ApiWebhooksRazorpayRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/artist-dashboard': typeof ArtistDashboardRoute
   '/artists': typeof ArtistsRoute
   '/salons': typeof SalonsRoute
+  '/artist/$artistSlug': typeof ArtistArtistSlugRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
   '/api/payments/verify-redirect': typeof ApiPaymentsVerifyRedirectRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/artist-dashboard': typeof ArtistDashboardRoute
   '/artists': typeof ArtistsRoute
   '/salons': typeof SalonsRoute
+  '/artist/$artistSlug': typeof ArtistArtistSlugRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
   '/api/payments/verify-redirect': typeof ApiPaymentsVerifyRedirectRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/artist-dashboard': typeof ArtistDashboardRoute
   '/artists': typeof ArtistsRoute
   '/salons': typeof SalonsRoute
+  '/artist/$artistSlug': typeof ArtistArtistSlugRoute
   '/api/payments/create-order': typeof ApiPaymentsCreateOrderRoute
   '/api/payments/verify': typeof ApiPaymentsVerifyRoute
   '/api/payments/verify-redirect': typeof ApiPaymentsVerifyRedirectRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/artist-dashboard'
     | '/artists'
     | '/salons'
+    | '/artist/$artistSlug'
     | '/api/payments/create-order'
     | '/api/payments/verify'
     | '/api/payments/verify-redirect'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/artist-dashboard'
     | '/artists'
     | '/salons'
+    | '/artist/$artistSlug'
     | '/api/payments/create-order'
     | '/api/payments/verify'
     | '/api/payments/verify-redirect'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/artist-dashboard'
     | '/artists'
     | '/salons'
+    | '/artist/$artistSlug'
     | '/api/payments/create-order'
     | '/api/payments/verify'
     | '/api/payments/verify-redirect'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   ArtistDashboardRoute: typeof ArtistDashboardRoute
   ArtistsRoute: typeof ArtistsRoute
   SalonsRoute: typeof SalonsRoute
+  ArtistArtistSlugRoute: typeof ArtistArtistSlugRoute
   ApiPaymentsCreateOrderRoute: typeof ApiPaymentsCreateOrderRoute
   ApiPaymentsVerifyRoute: typeof ApiPaymentsVerifyRoute
   ApiPaymentsVerifyRedirectRoute: typeof ApiPaymentsVerifyRedirectRoute
@@ -163,6 +176,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/artist/$artistSlug': {
+      id: '/artist/$artistSlug'
+      path: '/artist/$artistSlug'
+      fullPath: '/artist/$artistSlug'
+      preLoaderRoute: typeof ArtistArtistSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/webhooks/razorpay': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   ArtistDashboardRoute: ArtistDashboardRoute,
   ArtistsRoute: ArtistsRoute,
   SalonsRoute: SalonsRoute,
+  ArtistArtistSlugRoute: ArtistArtistSlugRoute,
   ApiPaymentsCreateOrderRoute: ApiPaymentsCreateOrderRoute,
   ApiPaymentsVerifyRoute: ApiPaymentsVerifyRoute,
   ApiPaymentsVerifyRedirectRoute: ApiPaymentsVerifyRedirectRoute,

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Star, MapPin, Award, Heart } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import a1 from "@/assets/artist-1.jpg";
 import a2 from "@/assets/artist-2.jpg";
 import a3 from "@/assets/artist-3.jpg";
@@ -199,7 +200,13 @@ const generateMockVendors = () => {
   return list;
 };
 
-const vendors = generateMockVendors();
+export const slugify = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+export const vendors = generateMockVendors();
 
 interface FeaturedVendorsProps {
   localityFilter: string;
@@ -435,14 +442,16 @@ export function FeaturedVendors({
                 className="group rounded-3xl bg-card overflow-hidden shadow-soft hover:shadow-luxe transition-all duration-500 border border-border/60"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
-                  <img
-                    src={v.img}
-                    alt={v.name}
-                    loading="lazy"
-                    width={800}
-                    height={1000}
-                    className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
+                  <Link to="/artist/$artistSlug" params={{ artistSlug: slugify(v.name) }}>
+                    <img
+                      src={v.img}
+                      alt={v.name}
+                      loading="lazy"
+                      width={800}
+                      height={1000}
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700 cursor-pointer"
+                    />
+                  </Link>
                   <div className="absolute top-4 left-4 inline-flex items-center gap-1 rounded-full bg-pearl/90 backdrop-blur px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
                     <Award className="h-3 w-3 text-gold" />
                     {v.badge}
@@ -457,7 +466,9 @@ export function FeaturedVendors({
                 <div className="p-6">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h3 className="font-display text-2xl text-foreground">{v.name}</h3>
+                      <Link to="/artist/$artistSlug" params={{ artistSlug: slugify(v.name) }}>
+                        <h3 className="font-display text-2xl text-foreground hover:text-primary transition-colors cursor-pointer">{v.name}</h3>
+                      </Link>
                       <p className="text-sm text-muted-foreground mt-0.5">{v.speciality}</p>
                     </div>
                     <div className="flex items-center gap-1 rounded-full bg-rose px-2.5 py-1 text-xs font-semibold text-primary">
@@ -473,12 +484,13 @@ export function FeaturedVendors({
                       <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Starting from</div>
                       <div className="font-display text-2xl text-primary">{v.price}</div>
                     </div>
-                    <button
-                      onClick={() => setSelectedVendor(v)}
+                    <Link
+                      to="/artist/$artistSlug"
+                      params={{ artistSlug: slugify(v.name) }}
                       className="rounded-full bg-foreground px-5 py-2.5 text-xs font-semibold text-pearl hover:bg-primary transition-colors cursor-pointer"
                     >
-                      Book Artist
-                    </button>
+                      View Profile
+                    </Link>
                   </div>
                   <div className="mt-3 text-xs text-muted-foreground">{v.reviews} reviews</div>
                 </div>
