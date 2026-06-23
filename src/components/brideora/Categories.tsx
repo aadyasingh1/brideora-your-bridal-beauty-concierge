@@ -4,14 +4,16 @@ import hair from "@/assets/cat-hair.jpg";
 import mehendi from "@/assets/cat-mehendi.jpg";
 import nails from "@/assets/cat-nails.jpg";
 import prebridal from "@/assets/cat-prebridal.jpg";
+import trials from "@/assets/artist-new-4.jpg";
 
 const cats = [
-  { name: "Bridal Makeup", count: "320+ artists", img: bridal },
-  { name: "Party Makeup", count: "180+ artists", img: party },
-  { name: "Hair Styling", count: "210+ stylists", img: hair },
-  { name: "Mehendi", count: "140+ designers", img: mehendi },
-  { name: "Nail Art", count: "90+ artists", img: nails },
-  { name: "Pre-Bridal", count: "75+ packages", img: prebridal },
+  { name: "Bridal Makeup", count: "144+ artists", img: bridal },
+  { name: "Event-Specific Styling", count: "144+ stylists", img: party },
+  { name: "Hair Styling", count: "144+ experts", img: hair },
+  { name: "Outfit Draping", count: "144+ specialists", img: mehendi },
+  { name: "Bridal Squad Services", count: "144+ packages", img: nails },
+  { name: "Makeup Trials", count: "144+ sessions", img: trials },
+  { name: "Pre-Bridal Wellness & Grooming", count: "144+ packages", img: prebridal },
 ];
 
 interface CategoriesProps {

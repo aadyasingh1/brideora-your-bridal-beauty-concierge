@@ -42,8 +42,8 @@ const mockSalons = [
     img: an1,
     services: [
       { name: "Complete Bridal Package", price: "₹35,000", category: "Bridal Makeup" },
-      { name: "Engagement & Sangeet Makeup", price: "₹24,000", category: "Party Makeup" },
-      { name: "Party Makeup & Hair Styling", price: "₹14,000", category: "Party Makeup" }
+      { name: "Engagement & Sangeet Makeup", price: "₹24,000", category: "Event-Specific Styling" },
+      { name: "Party Makeup & Hair Styling", price: "₹14,000", category: "Event-Specific Styling" }
     ]
   },
   {
@@ -57,7 +57,7 @@ const mockSalons = [
     services: [
       { name: "HD Bridal Makeup", price: "₹28,000", category: "Bridal Makeup" },
       { name: "Airbrush Bridal Finish", price: "₹32,000", category: "Bridal Makeup" },
-      { name: "Trial Makeup Session", price: "₹5,000", category: "Party Makeup" }
+      { name: "Trial Makeup Session", price: "₹5,000", category: "Makeup Trials" }
     ]
   },
   {
@@ -69,9 +69,9 @@ const mockSalons = [
     badge: "Elite",
     img: an6,
     services: [
-      { name: "Luxury Pre-Bridal Skincare", price: "₹15,000", category: "Pre-Bridal" },
+      { name: "Luxury Pre-Bridal Skincare", price: "₹15,000", category: "Pre-Bridal Wellness & Grooming" },
       { name: "Global Hair Coloring & Styling", price: "₹10,500", category: "Hair Styling" },
-      { name: "Bridal Glow HydraFacial", price: "₹8,000", category: "Pre-Bridal" }
+      { name: "Bridal Glow HydraFacial", price: "₹8,000", category: "Pre-Bridal Wellness & Grooming" }
     ]
   },
   {
@@ -97,9 +97,9 @@ const mockSalons = [
     badge: "Best Seller",
     img: n1,
     services: [
-      { name: "Bridal Gel Nail Extensions", price: "₹4,500", category: "Nail Art" },
-      { name: "Chrome Overlay & Nail Art", price: "₹3,000", category: "Nail Art" },
-      { name: "Premium Pedicure & Manicure", price: "₹2,500", category: "Nail Art" }
+      { name: "Bridal Gel Nail Extensions", price: "₹4,500", category: "Pre-Bridal Wellness & Grooming" },
+      { name: "Chrome Overlay & Nail Art", price: "₹3,000", category: "Pre-Bridal Wellness & Grooming" },
+      { name: "Premium Pedicure & Manicure", price: "₹2,500", category: "Pre-Bridal Wellness & Grooming" }
     ]
   },
   {
@@ -111,8 +111,8 @@ const mockSalons = [
     badge: "Popular",
     img: an9,
     services: [
-      { name: "Party Makeup & Styling", price: "₹9,500", category: "Party Makeup" },
-      { name: "Saree/Lehenga Draping", price: "₹2,500", category: "Party Makeup" },
+      { name: "Party Makeup & Styling", price: "₹9,500", category: "Event-Specific Styling" },
+      { name: "Saree/Lehenga Draping", price: "₹2,500", category: "Outfit Draping" },
       { name: "Sangeet Hair Styling", price: "₹4,500", category: "Hair Styling" }
     ]
   },
@@ -126,8 +126,8 @@ const mockSalons = [
     img: an4,
     services: [
       { name: "Glass Skin Makeover", price: "₹22,000", category: "Bridal Makeup" },
-      { name: "Reception Glam Pack", price: "₹18,000", category: "Party Makeup" },
-      { name: "Roka/Engagement Finish", price: "₹15,000", category: "Party Makeup" }
+      { name: "Reception Glam Pack", price: "₹18,000", category: "Event-Specific Styling" },
+      { name: "Roka/Engagement Finish", price: "₹15,000", category: "Event-Specific Styling" }
     ]
   },
   {
@@ -139,9 +139,9 @@ const mockSalons = [
     badge: "Elite",
     img: me1,
     services: [
-      { name: "Luxury Bridal Mehendi", price: "₹11,500", category: "Mehendi" },
-      { name: "Pre-Bridal Haldi Package", price: "₹7,500", category: "Pre-Bridal" },
-      { name: "Family Mehendi (Per Hand)", price: "₹1,500", category: "Mehendi" }
+      { name: "Luxury Bridal Mehendi", price: "₹11,500", category: "Event-Specific Styling" },
+      { name: "Pre-Bridal Haldi Package", price: "₹7,500", category: "Pre-Bridal Wellness & Grooming" },
+      { name: "Family Mehendi (Per Hand)", price: "₹1,500", category: "Event-Specific Styling" }
     ]
   }
 ];
@@ -149,23 +149,28 @@ const mockSalons = [
 const categories = [
   "All Services",
   "Bridal Makeup",
-  "Party Makeup",
+  "Event-Specific Styling",
   "Hair Styling",
-  "Mehendi",
-  "Nail Art",
-  "Pre-Bridal"
+  "Outfit Draping",
+  "Bridal Squad Services",
+  "Makeup Trials",
+  "Pre-Bridal Wellness & Grooming"
 ];
 
 const localities = [
   "All Delhi",
-  "Saket",
   "Dwarka",
-  "Vasant Kunj",
+  "Rohini",
+  "Saket",
+  "Pitampura",
+  "Janakpuri",
   "Rajouri Garden",
   "Punjabi Bagh",
+  "Lajpat Nagar",
+  "Vasant Kunj",
   "Karol Bagh",
   "Model Town",
-  "Janakpuri"
+  "Paschim Vihar"
 ];
 
 function SalonsPage() {

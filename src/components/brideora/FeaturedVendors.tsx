@@ -3,74 +3,213 @@ import { Star, MapPin, Award, Heart } from "lucide-react";
 import a1 from "@/assets/artist-1.jpg";
 import a2 from "@/assets/artist-2.jpg";
 import a3 from "@/assets/artist-3.jpg";
-import me1 from "@/assets/cat-mehendi.jpg";
+import an1 from "@/assets/artist-new-1.jpg";
+import an2 from "@/assets/artist-new-2.jpg";
+import an3 from "@/assets/artist-new-3.jpg";
+import an4 from "@/assets/artist-new-4.jpg";
+import an5 from "@/assets/artist-new-5.jpg";
 import an6 from "@/assets/artist-new-6.jpg";
+import an7 from "@/assets/artist-new-7.jpg";
+import an8 from "@/assets/artist-new-8.jpg";
+import an9 from "@/assets/artist-new-9.jpg";
 import an10 from "@/assets/artist-new-10.jpg";
 import { BookingModal } from "./BookingModal";
 import { toast } from "sonner";
 
-const vendors = [
-  {
-    name: "Aanya Kapoor",
-    speciality: "HD Bridal Makeup",
-    location: "Dwarka, Delhi",
-    price: "₹18,000",
-    rating: 4.9,
-    reviews: 124,
-    img: a1,
-    badge: "Top Rated",
-  },
-  {
-    name: "Meher Studio",
-    speciality: "Airbrush & Engagement",
-    location: "Saket, South Delhi",
-    price: "₹22,000",
-    rating: 4.8,
-    reviews: 98,
-    img: a2,
-    badge: "Verified",
-  },
-  {
-    name: "Riya Sehgal",
-    speciality: "Hair Styling & Updos",
-    location: "Rohini, Delhi",
-    price: "₹9,500",
-    rating: 4.9,
-    reviews: 156,
-    img: a3,
-    badge: "Premium",
-  },
-  {
-    name: "Kriti Sharma",
-    speciality: "Bridal Makeup & Drape",
-    location: "Pitampura, Delhi",
-    price: "₹16,500",
-    rating: 4.7,
-    reviews: 82,
-    img: an6,
-    badge: "Premium",
-  },
-  {
-    name: "Divya Mehendi Art",
-    speciality: "Luxury Bridal Mehendi",
-    location: "Janakpuri, Delhi",
-    price: "₹7,500",
-    rating: 4.9,
-    reviews: 210,
-    img: me1,
-    badge: "Trending",
-  },
-  {
-    name: "Pooja Malhotra",
-    speciality: "Hair Extensions & Color",
-    location: "Rajouri Garden, Delhi",
-    price: "₹12,000",
-    rating: 4.6,
-    reviews: 73,
-    img: an10,
-    badge: "Verified",
-  },
+const firstNames = [
+  "Aanya", "Meher", "Riya", "Kriti", "Divya", "Pooja", "Ananya", "Ishita", "Sneha", "Tanvi", 
+  "Neha", "Priya", "Aditi", "Simran", "Ridhima", "Kiara", "Nisha", "Gauri", "Shreya", "Kavya", 
+  "Avani", "Diya", "Myra", "Suhana", "Kareena", "Alia", "Deepika", "Priyanka", "Shraddha", "Janhvi"
 ];
+
+const lastNames = [
+  "Kapoor", "Sharma", "Sehgal", "Malhotra", "Mehta", "Sen", "Joshi", "Verma", "Gupta", "Bhasin", 
+  "Chawla", "Arora", "Gill", "Kaur", "Singh", "Roy", "Das", "Rao", "Nair", "Iyer", 
+  "Trivedi", "Sarin", "Mehra", "Khanna", "Bahl", "Sethi", "Bose", "Choudhury", "Patel", "Reddy"
+];
+
+const localities = [
+  "Dwarka",
+  "Rohini",
+  "Saket",
+  "Pitampura",
+  "Janakpuri",
+  "Rajouri Garden",
+  "Punjabi Bagh",
+  "Lajpat Nagar",
+  "Vasant Kunj",
+  "Karol Bagh",
+  "Model Town",
+  "Paschim Vihar"
+];
+
+const services = [
+  {
+    category: "Bridal Makeup",
+    styles: [
+      "HD Bridal Makeup",
+      "Airbrush Bridal Makeup",
+      "Traditional Bridal Makeup",
+      "Minimalist Bridal Makeup",
+      "Glam Bridal Makeup"
+    ],
+    minPrice: 15000,
+    maxPrice: 35000
+  },
+  {
+    category: "Event-Specific Styling",
+    styles: [
+      "Haldi (Event-Specific Styling)",
+      "Mehendi (Event-Specific Styling)",
+      "Sangeet (Event-Specific Styling)",
+      "Wedding Day (Event-Specific Styling)",
+      "Reception (Event-Specific Styling)"
+    ],
+    minPrice: 6000,
+    maxPrice: 18000
+  },
+  {
+    category: "Hair Styling",
+    styles: [
+      "Bridal Updo (Hair Styling)",
+      "Open Style (Hair Styling)",
+      "Hair Extension Application (Hair Styling)",
+      "Premium Styling (Hair Styling)"
+    ],
+    minPrice: 5000,
+    maxPrice: 12000
+  },
+  {
+    category: "Outfit Draping",
+    styles: [
+      "Professional Saree Draping (Outfit Draping)",
+      "Lehenga Draping (Outfit Draping)",
+      "Dupatta Draping (Outfit Draping)",
+      "Saree & Lehenga Draping (Outfit Draping)"
+    ],
+    minPrice: 2000,
+    maxPrice: 6000
+  },
+  {
+    category: "Bridal Squad Services",
+    styles: [
+      "Bridesmaids Makeup (Bridal Squad Services)",
+      "Mothers & Family Styling (Bridal Squad Services)",
+      "Group Makeup Package (Bridal Squad Services)"
+    ],
+    minPrice: 8000,
+    maxPrice: 20000
+  },
+  {
+    category: "Makeup Trials",
+    styles: [
+      "Pre-wedding Trial Run (Makeup Trials)",
+      "Bridal Look Finalization (Makeup Trials)",
+      "Glam Look Trial (Makeup Trials)"
+    ],
+    minPrice: 3000,
+    maxPrice: 8000
+  },
+  {
+    category: "Pre-Bridal Wellness & Grooming",
+    styles: [
+      "Facial & Massage (Pre-Bridal Wellness & Grooming)",
+      "Hair Removal Package (Pre-Bridal Wellness & Grooming)",
+      "Full Pre-Bridal Glow Treatment (Pre-Bridal Wellness & Grooming)"
+    ],
+    minPrice: 5000,
+    maxPrice: 25000
+  }
+];
+
+const artistImages = [a1, a2, a3, an1, an2, an3, an4, an5, an6, an7, an8, an9, an10];
+
+const generateMockVendors = () => {
+  const list = [];
+  
+  localities.forEach((loc, locIdx) => {
+    services.forEach((srv, srvIdx) => {
+      for (let itemIdx = 0; itemIdx < 1; itemIdx++) {
+        const nameSeed = locIdx * 100 + srvIdx * 10 + itemIdx;
+        
+        let name = "";
+        let speciality = "";
+        let priceStr = "";
+        let rating = 4.8;
+        let reviews = 100;
+        let img = artistImages[nameSeed % artistImages.length];
+        let badge = "";
+
+        // Sync with specific chatbot recommended artists
+        if (loc === "Dwarka" && srv.category === "Bridal Makeup" && itemIdx === 0) {
+          name = "Aanya Kapoor";
+          speciality = "HD Bridal Makeup";
+          priceStr = "₹18,000";
+          rating = 4.9;
+          reviews = 124;
+          img = a1;
+          badge = "Top Rated";
+        }
+        else if (loc === "Saket" && srv.category === "Event-Specific Styling" && itemIdx === 0) {
+          name = "Meher Studio";
+          speciality = "Airbrush & Engagement (Event-Specific Styling)";
+          priceStr = "₹22,000";
+          rating = 4.8;
+          reviews = 98;
+          img = a2;
+          badge = "Verified";
+        }
+        else if (loc === "Rohini" && srv.category === "Hair Styling" && itemIdx === 0) {
+          name = "Riya Sehgal";
+          speciality = "Hair Styling & Updos (Hair Styling)";
+          priceStr = "₹9,500";
+          rating = 4.9;
+          reviews = 156;
+          img = a3;
+          badge = "Premium";
+        }
+        else {
+          const firstName = firstNames[nameSeed % firstNames.length];
+          const lastName = lastNames[(nameSeed * 7 + 3) % lastNames.length];
+          name = `${firstName} ${lastName}`;
+          
+          speciality = srv.styles[nameSeed % srv.styles.length];
+          
+          const ratingVal = parseFloat((4.5 + (nameSeed % 5) * 0.1).toFixed(1));
+          rating = ratingVal > 5.0 ? 5.0 : ratingVal;
+          
+          reviews = 30 + (nameSeed % 220);
+          
+          const priceStep = (srv.maxPrice - srv.minPrice) / 11;
+          const priceVal = Math.round(srv.minPrice + itemIdx * priceStep);
+          const roundedPrice = Math.round(priceVal / 500) * 500;
+          priceStr = `₹${roundedPrice.toLocaleString('en-IN')}`;
+          
+          const badges = ["Top Rated", "Verified", "Premium", "Trending", "Featured", "Luxe"];
+          badge = badges[nameSeed % badges.length];
+        }
+
+        const suffix = (loc === "Saket" || loc === "Lajpat Nagar") ? ", South Delhi" : ", Delhi";
+        const location = `${loc}${suffix}`;
+
+        list.push({
+          name,
+          speciality,
+          location,
+          price: priceStr,
+          rating,
+          reviews,
+          img,
+          badge
+        });
+      }
+    });
+  });
+
+  return list;
+};
+
+const vendors = generateMockVendors();
 
 interface FeaturedVendorsProps {
   localityFilter: string;
@@ -166,6 +305,17 @@ export function FeaturedVendors({
 
   const hasActiveFilters = !!(localityFilter || specialtyFilter || (budgetFilter && budgetFilter !== "Any budget"));
 
+  const displayedVendors = hasActiveFilters
+    ? filteredVendors
+    : [
+        vendors.find((v) => v.location.includes("Dwarka") && v.speciality.includes("Bridal Makeup")),
+        vendors.find((v) => v.location.includes("Saket") && v.speciality.includes("Event-Specific Styling")),
+        vendors.find((v) => v.location.includes("Rohini") && v.speciality.includes("Hair Styling")),
+        vendors.find((v) => v.location.includes("Pitampura") && v.speciality.includes("Outfit Draping")),
+        vendors.find((v) => v.location.includes("Janakpuri") && v.speciality.includes("Bridal Squad Services")),
+        vendors.find((v) => v.location.includes("Rajouri Garden") && v.speciality.includes("Pre-Bridal Wellness & Grooming")),
+      ].filter(Boolean) as typeof vendors;
+
   const triggerConciergeHelp = () => {
     let query = "I am looking for an artist";
     if (localityFilter) query += ` in ${localityFilter}`;
@@ -227,7 +377,7 @@ export function FeaturedVendors({
           </div>
         )}
 
-        {filteredVendors.length === 0 ? (
+        {displayedVendors.length === 0 ? (
           <div className="mt-12 rounded-3xl border border-dashed border-gold/30 bg-pearl p-12 text-center max-w-2xl mx-auto shadow-soft">
             <div className="h-16 w-16 rounded-full bg-rose mx-auto flex items-center justify-center text-primary mb-4 text-2xl">
               🔍
@@ -289,7 +439,7 @@ export function FeaturedVendors({
           </div>
         ) : (
           <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {filteredVendors.map((v) => (
+            {displayedVendors.map((v) => (
               <article
                 key={v.name}
                 className="group rounded-3xl bg-card overflow-hidden shadow-soft hover:shadow-luxe transition-all duration-500 border border-border/60"
