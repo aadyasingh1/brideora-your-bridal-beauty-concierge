@@ -29,11 +29,15 @@ import hair4 from "@/assets/hair-new-4.jpg";
 import hair5 from "@/assets/hair-new-5.jpg";
 import hair6 from "@/assets/hair-new-6.jpg";
 import hair7 from "@/assets/hair-new-7.jpg";
+import hair8 from "@/assets/hair-new-8.jpg";
 import makeup1 from "@/assets/makeup-new-1.jpg";
 import makeup2 from "@/assets/makeup-new-2.jpg";
 import makeup3 from "@/assets/makeup-new-3.jpg";
 import makeup4 from "@/assets/makeup-new-4.jpg";
 import makeup5 from "@/assets/makeup-new-5.jpg";
+import makeup6 from "@/assets/makeup-new-6.jpg";
+import makeup7 from "@/assets/makeup-new-7.jpg";
+import makeup8 from "@/assets/makeup-new-8.jpg";
 import prebridal1 from "@/assets/prebridal-new-1.jpg";
 import prebridal2 from "@/assets/prebridal-new-2.jpg";
 import prebridal3 from "@/assets/prebridal-new-3.jpg";
@@ -498,13 +502,13 @@ function ArtistProfilePage() {
     }
     const cat = artist.category;
     if (cat === "Hair Styling") {
-      return [hair1, hair2, hair3, hair4, hair5, hair6];
+      return [hair1, hair2, hair3, hair4, hair5, hair8];
     } else if (cat === "Bridal Mehendi & Henna") {
       return [mehendi1, mehendi2, catMehendi, mehendi1, mehendi2, catMehendi];
     } else if (cat === "Pre-Bridal Wellness & Grooming") {
       return [prebridal1, prebridal2, prebridal3, prebridal5, prebridal6, prebridal7];
     } else {
-      return [makeup1, makeup2, makeup3, makeup4, makeup5, catBridalMakeup];
+      return [makeup1, makeup2, makeup6, makeup7, makeup8, catBridalMakeup];
     }
   };
 
@@ -515,7 +519,7 @@ function ArtistProfilePage() {
     }
     const cat = artist.category;
     if (cat === "Hair Styling") {
-      if (portfolioTab === "haldi") return [hair4, hair5, hair6];
+      if (portfolioTab === "haldi") return [hair4, hair5, hair8];
       if (portfolioTab === "reception") return [hair7, hair1, hair2];
       return [hair1, hair2, hair3];
     } else if (cat === "Bridal Mehendi & Henna") {
@@ -527,8 +531,8 @@ function ArtistProfilePage() {
       if (portfolioTab === "reception") return [prebridal7, prebridal1, prebridal2];
       return [prebridal1, prebridal2, prebridal3];
     } else {
-      if (portfolioTab === "haldi") return [makeup3, makeup4, makeup5];
-      if (portfolioTab === "reception") return [makeup2, makeup1, makeup5];
+      if (portfolioTab === "haldi") return [makeup3, makeup6, makeup7];
+      if (portfolioTab === "reception") return [makeup8, makeup1, makeup5];
       return [makeup1, makeup2, makeup3];
     }
   };

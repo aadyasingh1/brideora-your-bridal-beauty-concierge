@@ -34,26 +34,31 @@ import hair4 from "@/assets/hair-new-4.jpg";
 import hair5 from "@/assets/hair-new-5.jpg";
 import hair6 from "@/assets/hair-new-6.jpg";
 import hair7 from "@/assets/hair-new-7.jpg";
+import hair8 from "@/assets/hair-new-8.jpg";
 import makeup1 from "@/assets/makeup-new-1.jpg";
 import makeup2 from "@/assets/makeup-new-2.jpg";
 import makeup3 from "@/assets/makeup-new-3.jpg";
 import makeup4 from "@/assets/makeup-new-4.jpg";
 import makeup5 from "@/assets/makeup-new-5.jpg";
+import makeup6 from "@/assets/makeup-new-6.jpg";
+import makeup7 from "@/assets/makeup-new-7.jpg";
+import makeup8 from "@/assets/makeup-new-8.jpg";
 import prebridal1 from "@/assets/prebridal-new-1.jpg";
 import prebridal2 from "@/assets/prebridal-new-2.jpg";
 import prebridal3 from "@/assets/prebridal-new-3.jpg";
 import prebridal4 from "@/assets/prebridal-new-4.jpg";
 import prebridal5 from "@/assets/prebridal-new-5.jpg";
 import prebridal6 from "@/assets/prebridal-new-6.jpg";
+import prebridal7 from "@/assets/prebridal-new-7.jpg";
 import mehendi1 from "@/assets/mehendi-new-1.jpg";
 import mehendi2 from "@/assets/mehendi-new-2.jpg";
 
-const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2, makeup3, makeup4, makeup5];
-const eventImages = [a2, a3, an4, an7, an9, makeup2, makeup3, makeup5];
-const hairImages = [a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7];
+const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2, makeup3, makeup4, makeup5, makeup6, makeup7, makeup8];
+const eventImages = [a2, a3, an4, an7, an9, makeup2, makeup3, makeup5, makeup6, makeup8];
+const hairImages = [a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7, hair8];
 const mehendiImages = [mehendi1, mehendi2, me1, mehendi1, mehendi2];
 const squadImages = [n1, an2, an5, an6, an10];
-const wellnessImages = [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, an8];
+const wellnessImages = [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, prebridal7, an8];
 
 export const Route = createFileRoute("/salons")({
   head: () => ({
