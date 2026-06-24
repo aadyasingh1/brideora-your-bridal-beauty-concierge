@@ -515,16 +515,16 @@ function ArtistProfilePage() {
       return customProfile.portfolioPics;
     }
     if (portfolioTab === "Hair Styling") {
-      return [hair1, hair2, hair3, ...gdriveHairImages];
+      return [...gdriveHairImages, hair1, hair2, hair3];
     } else if (portfolioTab === "Bridal Mehendi") {
-      return [mehendi1, mehendi2, catMehendi, ...gdriveMehendiImages];
+      return [...gdriveMehendiImages, mehendi1, mehendi2, catMehendi];
     } else if (portfolioTab === "Nail Art") {
-      return [catNails, an2, an5, ...gdriveNailsImages];
+      return [...gdriveNailsImages, catNails, an2, an5];
     } else if (portfolioTab === "Pre-Bridal") {
-      return [prebridal1, prebridal2, prebridal3, ...gdrivePrebridalImages];
+      return [...gdrivePrebridalImages, prebridal1, prebridal2, prebridal3];
     } else {
       // Default: Bridal Makeup
-      return [makeup1, makeup2, makeup3, ...gdriveMakeupImages];
+      return [...gdriveMakeupImages, makeup1, makeup2, makeup3];
     }
   };
 
