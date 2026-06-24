@@ -23,19 +23,24 @@ import hair4 from "@/assets/hair-new-4.jpg";
 import hair5 from "@/assets/hair-new-5.jpg";
 import makeup1 from "@/assets/makeup-new-1.jpg";
 import makeup2 from "@/assets/makeup-new-2.jpg";
+import makeup3 from "@/assets/makeup-new-3.jpg";
+import makeup4 from "@/assets/makeup-new-4.jpg";
 import prebridal1 from "@/assets/prebridal-new-1.jpg";
 import prebridal2 from "@/assets/prebridal-new-2.jpg";
+import prebridal3 from "@/assets/prebridal-new-3.jpg";
+import prebridal4 from "@/assets/prebridal-new-4.jpg";
+import prebridal5 from "@/assets/prebridal-new-5.jpg";
 import mehendi1 from "@/assets/mehendi-new-1.jpg";
 
 import { BookingModal } from "./BookingModal";
 import { toast } from "sonner";
 
-const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2];
-const eventImages = [a2, a3, an4, an7, an9, makeup2];
+const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2, makeup3, makeup4];
+const eventImages = [a2, a3, an4, an7, an9, makeup2, makeup3];
 const hairImages = [a3, hair1, hair2, hair3, hair4, hair5];
 const drapingImages = [mehendi1, an3, an7];
 const squadImages = [an2, an5, an6, an10];
-const wellnessImages = [prebridal1, prebridal2, an8];
+const wellnessImages = [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, an8];
 
 const firstNames = [
   "Aanya", "Meher", "Riya", "Kriti", "Divya", "Pooja", "Ananya", "Ishita", "Sneha", "Tanvi", 
