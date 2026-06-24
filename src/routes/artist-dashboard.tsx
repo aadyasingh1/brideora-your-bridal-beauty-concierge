@@ -42,12 +42,14 @@ function ArtistDashboardPage() {
 
   // State for Profile Editor
   const [profile, setProfile] = useState(() => {
-    const saved = localStorage.getItem("brideora-artist-profile");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error(e);
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("brideora-artist-profile");
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          console.error(e);
+        }
       }
     }
     return {
@@ -80,12 +82,14 @@ function ArtistDashboardPage() {
     amount: number;
     status: "Paid" | "Confirmed" | "Cancelled" | "Declined";
   }>>(() => {
-    const saved = localStorage.getItem("brideora-bookings");
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        console.error(e);
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("brideora-bookings");
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          console.error(e);
+        }
       }
     }
     return [
@@ -97,7 +101,9 @@ function ArtistDashboardPage() {
 
   const saveBookings = (list: typeof bookingsList) => {
     setBookingsList(list);
-    localStorage.setItem("brideora-bookings", JSON.stringify(list));
+    if (typeof window !== "undefined") {
+      localStorage.setItem("brideora-bookings", JSON.stringify(list));
+    }
   };
 
   // State for Calendar (Unified Calendar Management)
@@ -168,38 +174,58 @@ function ArtistDashboardPage() {
     message: string;
     status: "Pending" | "Replied";
     squadCount: number;
-  }>>([
-    {
-      id: "inq-1",
-      clientName: "Riya Malhotra",
-      location: "Saket, South Delhi",
-      service: "HD Bridal Makeup",
-      date: "2026-07-15",
-      message: "Hi! I wanted to check if you are available for a wedding on July 15th in Saket. We'd need makeup for me (HD Bridal) + 3 bridesmaids. Let me know pricing!",
-      status: "Pending",
-      squadCount: 3
-    },
-    {
-      id: "inq-2",
-      clientName: "Sanya Gupta",
-      location: "Dwarka, Delhi",
-      service: "Engagement Makeup",
-      date: "2026-07-20",
-      message: "Hey, I need an engagement makeup look for July 20th in Dwarka. Just myself, looking for a very soft dewy look. Is your calendar open?",
-      status: "Pending",
-      squadCount: 0
-    },
-    {
-      id: "inq-3",
-      clientName: "Meera Oberoi",
-      location: "Punjabi Bagh, Delhi",
-      service: "Airbrush Bridal Finish",
-      date: "2026-07-28",
-      message: "Hello! Looking to book Airbrush Bridal Makeup for July 28th. We have a day wedding in Punjabi Bagh. Do you offer any discount if I book trial too?",
-      status: "Pending",
-      squadCount: 1
+  }>>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("brideora-inquiries");
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          console.error(e);
+        }
+      }
     }
-  ]);
+    return [
+      {
+        id: "inq-1",
+        clientName: "Riya Malhotra",
+        location: "Saket, South Delhi",
+        service: "HD Bridal Makeup",
+        date: "2026-07-15",
+        message: "Hi! I wanted to check if you are available for a wedding on July 15th in Saket. We'd need makeup for me (HD Bridal) + 3 bridesmaids. Let me know pricing!",
+        status: "Pending",
+        squadCount: 3
+      },
+      {
+        id: "inq-2",
+        clientName: "Sanya Gupta",
+        location: "Dwarka, Delhi",
+        service: "Engagement Makeup",
+        date: "2026-07-20",
+        message: "Hey, I need an engagement makeup look for July 20th in Dwarka. Just myself, looking for a very soft dewy look. Is your calendar open?",
+        status: "Pending",
+        squadCount: 0
+      },
+      {
+        id: "inq-3",
+        clientName: "Meera Oberoi",
+        location: "Punjabi Bagh, Delhi",
+        service: "Airbrush Bridal Finish",
+        date: "2026-07-28",
+        message: "Hello! Looking to book Airbrush Bridal Makeup for July 28th. We have a day wedding in Punjabi Bagh. Do you offer any discount if I book trial too?",
+        status: "Pending",
+        squadCount: 1
+      }
+    ];
+  });
+
+  const saveInquiries = (list: typeof inquiries) => {
+    setInquiries(list);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("brideora-inquiries", JSON.stringify(list));
+    }
+  };
+
   const [activeInquiryId, setActiveInquiryId] = useState("inq-1");
   const [selectedTemplate, setSelectedTemplate] = useState<"professional" | "urgency" | "discount">("professional");
   const [editableDraft, setEditableDraft] = useState("");
@@ -1373,7 +1399,9 @@ function ArtistDashboardPage() {
 
                             <div className="flex gap-3 justify-end pt-2">
                               <button 
+                                type="button"
                                 onClick={() => {
+                                  console.log("Reset Draft clicked for activeInq:", activeInq);
                                   toast.info("Draft reset to template values.");
                                   setEditableDraft(getDraftText(activeInq, selectedTemplate));
                                 }}
@@ -1382,9 +1410,14 @@ function ArtistDashboardPage() {
                                 Reset Draft
                               </button>
                               <button 
+                                type="button"
                                 onClick={() => {
+                                  console.log("Approve & Send Draft clicked for activeInq:", activeInq);
                                   // Mark inquiry replied
-                                  setInquiries(prev => prev.map(i => i.id === activeInq.id ? { ...i, status: "Replied" } : i));
+                                  const updatedInqs = inquiries.map(i => 
+                                    i.id === activeInq.id ? { ...i, status: "Replied" as const } : i
+                                  );
+                                  saveInquiries(updatedInqs);
 
                                   // Append to bookings
                                   const baseRate = activeInq.service.includes("Airbrush") ? baseBridalRate + 5000 : baseBridalRate;

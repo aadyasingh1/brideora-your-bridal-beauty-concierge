@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import logo from "../assets/brideora-logo.png";
 import { reportAppError } from "../lib/error-reporting";
 import { AIChat } from "../components/brideora/AIChat";
+import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -132,6 +133,7 @@ function RootComponent() {
       <Outlet />
       {/* Floating AI Chat Widget */}
       <AIChat />
+      <Toaster position="bottom-right" />
     </QueryClientProvider>
   );
 }
