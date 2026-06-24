@@ -492,7 +492,7 @@ export function FeaturedVendors({
       <div className="mx-auto max-w-7xl px-6">
         <div className="flex items-end justify-between flex-wrap gap-4">
           <div className="max-w-xl">
-            <div className="divider-ornament text-xs uppercase tracking-[0.3em] text-gold-soft">
+            <div className="divider-ornament text-lg uppercase tracking-[0.3em] text-gold-soft">
               Handpicked
             </div>
             <h2 className="mt-4 font-display text-4xl sm:text-5xl text-foreground">

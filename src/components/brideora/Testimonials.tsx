@@ -26,7 +26,7 @@ export function Testimonials() {
     <section className="py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="divider-ornament text-xs uppercase tracking-[0.3em]">Love Stories</div>
+          <div className="divider-ornament text-lg uppercase tracking-[0.3em]">Love Stories</div>
           <h2 className="mt-4 font-display text-4xl sm:text-5xl">
             Brides who said <span className="italic text-gradient-royal">"yes"</span> to Brideora
           </h2>

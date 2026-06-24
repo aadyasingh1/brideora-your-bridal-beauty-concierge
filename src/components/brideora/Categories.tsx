@@ -24,7 +24,7 @@ export function Categories({ onCategoryClick }: CategoriesProps) {
     <section className="py-20 lg:py-28 bg-ivory">
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center max-w-2xl mx-auto">
-          <div className="divider-ornament text-xs uppercase tracking-[0.3em] text-gold-soft">Services</div>
+          <div className="divider-ornament text-lg uppercase tracking-[0.3em] text-gold-soft">Services</div>
           <h2 className="mt-4 font-display text-4xl sm:text-5xl text-foreground">
             Every look, <span className="italic text-gradient-royal">one platform</span>
           </h2>
