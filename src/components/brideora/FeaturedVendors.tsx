@@ -425,10 +425,28 @@ export function FeaturedVendors({
       if (!match) return false;
     }
     if (specialtyFilter) {
-      const matchSpec =
-        v.speciality.toLowerCase().includes(specialtyFilter.toLowerCase()) ||
-        v.name.toLowerCase().includes(specialtyFilter.toLowerCase());
-      if (!matchSpec) return false;
+      const specLower = specialtyFilter.toLowerCase();
+      const isMehendi = specLower.includes("mehendi") || specLower.includes("henna");
+      const isNails = specLower.includes("nail");
+      const isMakeup = specLower.includes("makeup") || specLower.includes("glam");
+      const isHair = specLower.includes("hair");
+      const isPrebridal = specLower.includes("pre-bridal") || specLower.includes("wellness") || specLower.includes("grooming");
+      const isEvent = specLower.includes("event") || (specLower.includes("styling") && !isHair && !isMehendi && !isNails);
+
+      if (isMehendi && v.category !== "Bridal Mehendi & Henna") return false;
+      if (isNails && v.category !== "Nail Art") return false;
+      if (isHair && v.category !== "Hair Styling") return false;
+      if (isPrebridal && v.category !== "Pre-Bridal Wellness & Grooming") return false;
+      if (isMakeup && v.category !== "Bridal Makeup") return false;
+      if (isEvent && v.category !== "Event-Specific Styling") return false;
+
+      // If it is none of these high-level categories, fallback to generic name/speciality search
+      if (!isMehendi && !isNails && !isHair && !isPrebridal && !isMakeup && !isEvent) {
+        const matchSpec =
+          v.speciality.toLowerCase().includes(specLower) ||
+          v.name.toLowerCase().includes(specLower);
+        if (!matchSpec) return false;
+      }
     }
     if (budgetFilter && budgetFilter !== "Any budget") {
       const priceVal = parseInt(v.price.replace(/[^\d]/g, ""), 10) || 0;
