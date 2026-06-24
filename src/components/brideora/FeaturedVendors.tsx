@@ -34,6 +34,7 @@ import prebridal3 from "@/assets/prebridal-new-3.jpg";
 import prebridal4 from "@/assets/prebridal-new-4.jpg";
 import prebridal5 from "@/assets/prebridal-new-5.jpg";
 import prebridal6 from "@/assets/prebridal-new-6.jpg";
+import prebridal7 from "@/assets/prebridal-new-7.jpg";
 import mehendi1 from "@/assets/mehendi-new-1.jpg";
 import mehendi2 from "@/assets/mehendi-new-2.jpg";
 import mehendiCover from "@/assets/cat-mehendi.jpg";
@@ -46,7 +47,7 @@ const eventImages = [a2, a3, an4, an7, an9, makeup2, makeup3, makeup5];
 const hairImages = [a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7];
 const mehendiImages = [mehendi1, mehendi2, mehendiCover, mehendi1, mehendi2];
 const squadImages = [an2, an5, an6, an10];
-const wellnessImages = [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, an8];
+const wellnessImages = [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, prebridal7, an8];
 
 const firstNames = [
   "Aanya", "Meher", "Riya", "Kriti", "Divya", "Pooja", "Ananya", "Ishita", "Sneha", "Tanvi", 

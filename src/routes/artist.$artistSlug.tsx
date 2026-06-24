@@ -40,6 +40,7 @@ import prebridal3 from "@/assets/prebridal-new-3.jpg";
 import prebridal4 from "@/assets/prebridal-new-4.jpg";
 import prebridal5 from "@/assets/prebridal-new-5.jpg";
 import prebridal6 from "@/assets/prebridal-new-6.jpg";
+import prebridal7 from "@/assets/prebridal-new-7.jpg";
 import mehendi1 from "@/assets/mehendi-new-1.jpg";
 import mehendi2 from "@/assets/mehendi-new-2.jpg";
 
@@ -501,7 +502,7 @@ function ArtistProfilePage() {
     } else if (cat === "Bridal Mehendi & Henna") {
       return [mehendi1, mehendi2, catMehendi, mehendi1, mehendi2, catMehendi];
     } else if (cat === "Pre-Bridal Wellness & Grooming") {
-      return [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6];
+      return [prebridal1, prebridal2, prebridal3, prebridal5, prebridal6, prebridal7];
     } else {
       return [makeup1, makeup2, makeup3, makeup4, makeup5, catBridalMakeup];
     }
@@ -523,7 +524,7 @@ function ArtistProfilePage() {
       return [mehendi1, mehendi2, catMehendi];
     } else if (cat === "Pre-Bridal Wellness & Grooming") {
       if (portfolioTab === "haldi") return [prebridal4, prebridal5, prebridal6];
-      if (portfolioTab === "reception") return [prebridal1, prebridal2, prebridal3];
+      if (portfolioTab === "reception") return [prebridal7, prebridal1, prebridal2];
       return [prebridal1, prebridal2, prebridal3];
     } else {
       if (portfolioTab === "haldi") return [makeup3, makeup4, makeup5];
