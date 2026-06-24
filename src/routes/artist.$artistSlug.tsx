@@ -62,6 +62,13 @@ import makeup10 from "@/assets/makeup-new-10.jpg";
 import prebridal9 from "@/assets/prebridal-new-9.jpg";
 import prebridal10 from "@/assets/prebridal-new-10.jpg";
 
+// Batch 3 manual uploads
+import nails1 from "@/assets/nails-new-1.jpg";
+import nails2 from "@/assets/nails-new-2.jpg";
+import nails3 from "@/assets/nails-new-3.jpg";
+import nails4 from "@/assets/nails-new-4.jpg";
+import nails5 from "@/assets/nails-new-5.jpg";
+
 import {
   gdriveMakeupImages,
   gdriveHairImages,
@@ -533,7 +540,7 @@ function ArtistProfilePage() {
     } else if (portfolioTab === "Bridal Mehendi") {
       return [mehendi3, ...gdriveMehendiImages, mehendi1, mehendi2, catMehendi];
     } else if (portfolioTab === "Nail Art") {
-      return [...gdriveNailsImages, catNails, an2, an5];
+      return [nails1, nails2, nails3, nails4, nails5, ...gdriveNailsImages, catNails, an2, an5];
     } else if (portfolioTab === "Pre-Bridal") {
       return [prebridal9, prebridal10, prebridal8, ...gdrivePrebridalImages, prebridal1, prebridal2, prebridal3];
     } else {
