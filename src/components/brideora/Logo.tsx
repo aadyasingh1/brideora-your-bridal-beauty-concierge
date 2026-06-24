@@ -13,8 +13,8 @@ export function Logo({ className = "h-12 w-12" }: { className?: string }) {
 }
 
 export function LogoLockup({ size = "md" }: { size?: "sm" | "md" | "lg" }) {
-  const dim = size === "sm" ? "h-24 w-24" : size === "lg" ? "h-[165px] w-[165px]" : "h-[120px] w-[120px]";
-  const text = size === "sm" ? "text-[48px]" : size === "lg" ? "text-[80px]" : "text-[60px]";
+  const dim = size === "sm" ? "h-20 w-20" : size === "lg" ? "h-[165px] w-[165px]" : "h-[120px] w-[120px]";
+  const text = size === "sm" ? "text-[36px]" : size === "lg" ? "text-[80px]" : "text-[60px]";
   return (
     <div className="flex items-center gap-2">
       <Logo className={dim} />

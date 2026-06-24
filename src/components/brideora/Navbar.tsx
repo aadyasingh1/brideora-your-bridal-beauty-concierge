@@ -23,7 +23,7 @@ export function Navbar({ onSignInClick }: NavbarProps) {
 
   return (
     <header className="sticky top-0 z-50 backdrop-blur-xl bg-pearl/80 border-b border-border/60">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
         <Link to="/" className="flex items-center">
           <LogoLockup size="sm" />
         </Link>
@@ -34,7 +34,7 @@ export function Navbar({ onSignInClick }: NavbarProps) {
               <Link
                 key={l.href}
                 to={l.href}
-                className="text-xl font-medium text-foreground/80 hover:text-primary transition-colors"
+                className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors"
               >
                 {l.label}
               </Link>
@@ -42,7 +42,7 @@ export function Navbar({ onSignInClick }: NavbarProps) {
               <a
                 key={l.href}
                 href={l.href}
-                className="text-xl font-medium text-foreground/80 hover:text-primary transition-colors"
+                className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors"
               >
                 {l.label}
               </a>
@@ -54,7 +54,7 @@ export function Navbar({ onSignInClick }: NavbarProps) {
           <a
             href="#ai"
             onClick={handleConciergeClick}
-            className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-xl font-medium text-primary hover:bg-rose transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-lg font-medium text-primary hover:bg-rose transition-colors cursor-pointer"
           >
             <Sparkles className="h-4.5 w-4.5 text-gold" />
             Bridal Concierge
@@ -65,13 +65,13 @@ export function Navbar({ onSignInClick }: NavbarProps) {
               e.preventDefault();
               onSignInClick?.("signup", "artist");
             }}
-            className="text-xl font-medium text-foreground/80 hover:text-primary transition-colors cursor-pointer"
+            className="text-lg font-medium text-foreground/80 hover:text-primary transition-colors cursor-pointer"
           >
             For Artists
           </a>
           <button
             onClick={() => onSignInClick?.("login", "user")}
-            className="rounded-full bg-gradient-royal px-6 py-3 text-xl font-medium text-primary-foreground shadow-soft hover:shadow-luxe transition-all cursor-pointer"
+            className="rounded-full bg-gradient-royal px-6 py-3 text-lg font-medium text-primary-foreground shadow-soft hover:shadow-luxe transition-all cursor-pointer"
           >
             Sign in
           </button>
