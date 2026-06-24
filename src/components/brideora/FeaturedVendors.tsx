@@ -51,6 +51,13 @@ import mehendi3 from "@/assets/mehendi-new-3.jpg";
 import makeup9 from "@/assets/makeup-new-9.jpg";
 import prebridal8 from "@/assets/prebridal-new-8.jpg";
 
+// Batch 2 manual uploads
+import hair11 from "@/assets/hair-new-11.jpg";
+import hair12 from "@/assets/hair-new-12.jpg";
+import makeup10 from "@/assets/makeup-new-10.jpg";
+import prebridal9 from "@/assets/prebridal-new-9.jpg";
+import prebridal10 from "@/assets/prebridal-new-10.jpg";
+
 import { BookingModal } from "./BookingModal";
 import { toast } from "sonner";
 import {
@@ -61,12 +68,12 @@ import {
   gdrivePrebridalImages
 } from "./gdriveImages";
 
-const makeupImages = [makeup9, ...gdriveMakeupImages, a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2, makeup3, makeup4, makeup5, makeup6, makeup7, makeup8];
-const eventImages = [makeup9, ...gdriveMakeupImages, a2, a3, an4, an7, an9, makeup2, makeup3, makeup5, makeup6, makeup8];
-const hairImages = [hair9, hair10, ...gdriveHairImages, a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7, hair8];
+const makeupImages = [makeup10, makeup9, ...gdriveMakeupImages, a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2, makeup3, makeup4, makeup5, makeup6, makeup7, makeup8];
+const eventImages = [makeup10, makeup9, ...gdriveMakeupImages, a2, a3, an4, an7, an9, makeup2, makeup3, makeup5, makeup6, makeup8];
+const hairImages = [hair11, hair12, hair9, hair10, ...gdriveHairImages, a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7, hair8];
 const mehendiImages = [mehendi3, ...gdriveMehendiImages, mehendi1, mehendi2, mehendiCover];
 const squadImages = [...gdriveNailsImages, catNails, an2, an5, an6, an10];
-const wellnessImages = [prebridal8, ...gdrivePrebridalImages, prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, prebridal7, an8];
+const wellnessImages = [prebridal9, prebridal10, prebridal8, ...gdrivePrebridalImages, prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, prebridal7, an8];
 
 const firstNames = [
   "Aanya", "Meher", "Riya", "Kriti", "Divya", "Pooja", "Ananya", "Ishita", "Sneha", "Tanvi", 
