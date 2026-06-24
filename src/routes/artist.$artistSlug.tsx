@@ -69,6 +69,13 @@ import nails3 from "@/assets/nails-new-3.jpg";
 import nails4 from "@/assets/nails-new-4.jpg";
 import nails5 from "@/assets/nails-new-5.jpg";
 
+// Batch 4 manual uploads
+import hair13 from "@/assets/hair-new-13.jpg";
+import makeup11 from "@/assets/makeup-new-11.jpg";
+import mehendi4 from "@/assets/mehendi-new-4.jpg";
+import mehendi5 from "@/assets/mehendi-new-5.jpg";
+import mehendi6 from "@/assets/mehendi-new-6.jpg";
+
 import {
   gdriveMakeupImages,
   gdriveHairImages,
@@ -536,16 +543,16 @@ function ArtistProfilePage() {
       return customProfile.portfolioPics;
     }
     if (portfolioTab === "Hair Styling") {
-      return [hair11, hair12, hair9, hair10, ...gdriveHairImages, hair1, hair2, hair3];
+      return [hair13, hair11, hair12, hair9, hair10, ...gdriveHairImages, hair1, hair2, hair3];
     } else if (portfolioTab === "Bridal Mehendi") {
-      return [mehendi3, ...gdriveMehendiImages, mehendi1, mehendi2, catMehendi];
+      return [mehendi4, mehendi5, mehendi6, mehendi3, ...gdriveMehendiImages, mehendi1, mehendi2, catMehendi];
     } else if (portfolioTab === "Nail Art") {
       return [nails1, nails2, nails3, nails4, nails5, ...gdriveNailsImages, catNails, an2, an5];
     } else if (portfolioTab === "Pre-Bridal") {
       return [prebridal9, prebridal10, prebridal8, ...gdrivePrebridalImages, prebridal1, prebridal2, prebridal3];
     } else {
       // Default: Bridal Makeup
-      return [makeup10, makeup9, ...gdriveMakeupImages, makeup1, makeup2, makeup3];
+      return [makeup11, makeup10, makeup9, ...gdriveMakeupImages, makeup1, makeup2, makeup3];
     }
   };
 
