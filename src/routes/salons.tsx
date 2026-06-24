@@ -160,6 +160,86 @@ function SalonsPage() {
   });
   const [infoModal, setInfoModal] = useState<{ open: boolean; type: string }>({ open: false, type: "" });
 
+  // Conversational AI states
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [parsedSummary, setParsedSummary] = useState<string | null>(null);
+  const [maxBudget, setMaxBudget] = useState<number | null>(null);
+
+  const handleConversationalSearch = (query: string) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setParsedSummary(null);
+      setMaxBudget(null);
+      return;
+    }
+
+    setIsAnalyzing(true);
+    setTimeout(() => {
+      setIsAnalyzing(false);
+      
+      const q = query.toLowerCase();
+      let detectedLocality = "All Delhi";
+      let detectedCategory = "All Services";
+      let budget: number | null = null;
+
+      // Extract locality
+      for (const loc of localities) {
+        if (loc !== "All Delhi" && q.includes(loc.toLowerCase())) {
+          detectedLocality = loc;
+          break;
+        }
+      }
+
+      // Extract category keywords
+      if (q.includes("bridal") || q.includes("wedding") || q.includes("makeover")) {
+        detectedCategory = "Bridal Makeup";
+      } else if (q.includes("hair") || q.includes("cut") || q.includes("extensions") || q.includes("styling")) {
+        detectedCategory = "Hair Styling";
+      } else if (q.includes("drap") || q.includes("saree") || q.includes("lehenga")) {
+        detectedCategory = "Outfit Draping";
+      } else if (q.includes("squad") || q.includes("bridesmaid") || q.includes("sister") || q.includes("family")) {
+        detectedCategory = "Bridal Squad Services";
+      } else if (q.includes("wellness") || q.includes("skin") || q.includes("facial") || q.includes("spa") || q.includes("glow") || q.includes("pedi") || q.includes("mani") || q.includes("nail")) {
+        detectedCategory = "Pre-Bridal Wellness & Grooming";
+      } else if (q.includes("event") || q.includes("mehendi") || q.includes("haldi") || q.includes("sangeet") || q.includes("engagement")) {
+        detectedCategory = "Event-Specific Styling";
+      }
+
+      // Extract budget numbers
+      const kMatch = q.match(/(\d+)\s*k/);
+      const numMatch = q.match(/(?:under|below|budget|₹)?\s*(\d{4,6})/);
+
+      if (kMatch) {
+        budget = parseInt(kMatch[1], 10) * 1000;
+      } else if (numMatch) {
+        budget = parseInt(numMatch[1], 10);
+      }
+
+      // Set states
+      setSelectedLocality(detectedLocality);
+      setSelectedCategory(detectedCategory);
+      setMaxBudget(budget);
+
+      // Build summary description
+      let summary = "AI Concierge: Showing ";
+      if (detectedCategory !== "All Services") {
+        summary += `${detectedCategory} `;
+      } else {
+        summary += "salons ";
+      }
+      if (detectedLocality !== "All Delhi") {
+        summary += `in ${detectedLocality} `;
+      } else {
+        summary += "across Delhi ";
+      }
+      if (budget) {
+        summary += `under ₹${budget.toLocaleString()}`;
+      }
+      setParsedSummary(summary);
+      toast.success("AI parsed search filters applied!");
+    }, 800);
+  };
+
   // Initialize first service as selected for each salon
   useEffect(() => {
     const initial: Record<string, number> = {};
@@ -210,7 +290,15 @@ function SalonsPage() {
       salon.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
       salon.services.some(s => s.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    return matchesLocality && matchesCategory && matchesSearch;
+    // 4. Budget Filter
+    const matchesBudget =
+      !maxBudget ||
+      salon.services.some(s => {
+        const priceNum = parseInt(s.price.replace(/[^\d]/g, ""), 10) || 0;
+        return (selectedCategory === "All Services" || s.category === selectedCategory) && priceNum <= maxBudget;
+      });
+
+    return matchesLocality && matchesCategory && matchesSearch && matchesBudget;
   });
 
   return (
@@ -239,57 +327,97 @@ function SalonsPage() {
         {/* Filters Panel */}
         <div className="mb-10 rounded-[2rem] bg-pearl border border-border/80 p-6 lg:p-8 shadow-soft space-y-6">
           <div className="grid md:grid-cols-3 gap-4">
-            {/* Search Input */}
-            <div className="relative flex items-center">
+            {/* Conversational AI Search Input */}
+            <div className="relative flex items-center col-span-1 md:col-span-2">
               <Search className="absolute left-4 h-5 w-5 text-muted-foreground/60" />
               <input
                 type="text"
-                placeholder="Search salons or services..."
+                placeholder="Ask Brideora Concierge (e.g. 'makeup in Saket under 30k' or 'hydrafacial under 8k')"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-2xl border border-border/70 bg-white pl-12 pr-4 py-3.5 text-sm outline-none focus:border-primary transition-all"
+                onChange={(e) => handleConversationalSearch(e.target.value)}
+                className={`w-full rounded-2xl border bg-white pl-12 pr-12 py-3.5 text-sm outline-none transition-all ${
+                  isAnalyzing 
+                    ? "border-gold ring-4 ring-gold/15 animate-pulse text-foreground" 
+                    : "border-border/70 focus:border-primary text-foreground"
+                }`}
               />
+              <div className="absolute right-4 flex items-center">
+                {isAnalyzing ? (
+                  <Sparkles className="h-5 w-5 text-gold animate-spin" />
+                ) : (
+                  <Sparkles className="h-5 w-5 text-gold-soft" title="AI Concierge Search Enabled" />
+                )}
+              </div>
             </div>
 
             {/* Locality Selector */}
-            <div className="relative flex items-center">
+            <div className="relative flex items-center col-span-1">
               <MapPin className="absolute left-4 h-5 w-5 text-muted-foreground/60" />
               <select
                 value={selectedLocality}
-                onChange={(e) => setSelectedLocality(e.target.value)}
-                className="w-full rounded-2xl border border-border/70 bg-white pl-12 pr-4 py-3.5 text-sm outline-none focus:border-primary transition-all appearance-none cursor-pointer"
+                onChange={(e) => {
+                  setSelectedLocality(e.target.value);
+                  setParsedSummary(null);
+                }}
+                className="w-full rounded-2xl border border-border/70 bg-white pl-12 pr-4 py-3.5 text-sm outline-none focus:border-primary transition-all appearance-none cursor-pointer text-foreground"
               >
                 {localities.map(loc => (
                   <option key={loc} value={loc}>{loc}</option>
                 ))}
               </select>
             </div>
-
-            {/* Total Results Counter */}
-            <div className="flex items-center justify-end text-sm text-muted-foreground pr-2 font-medium">
-              Found {filteredSalons.length} premium salons
-            </div>
           </div>
 
-          {/* Category Quick Filters */}
-          <div className="border-t border-border/60 pt-6">
-            <div className="text-xs uppercase tracking-wider text-muted-foreground font-bold mb-3 flex items-center gap-1.5">
-              <SlidersHorizontal className="h-3.5 w-3.5 text-gold-soft" /> Filter by Service Type
+          {/* AI Parser Summary */}
+          {parsedSummary && (
+            <div className="rounded-2xl bg-gradient-to-r from-gold/10 to-rose/10 border border-gold/25 p-4 text-xs text-primary font-serif italic flex items-center justify-between gap-2 shadow-sm animate-in fade-in duration-300">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-gold animate-bounce shrink-0" />
+                <span>{parsedSummary}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedCategory("All Services");
+                  setSelectedLocality("All Delhi");
+                  setMaxBudget(null);
+                  setParsedSummary(null);
+                }}
+                className="font-sans font-bold text-[10px] text-muted-foreground hover:text-primary cursor-pointer uppercase shrink-0"
+              >
+                Clear AI Filter
+              </button>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {categories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`rounded-full px-5 py-2 text-xs font-semibold tracking-wide transition-all cursor-pointer ${
-                    selectedCategory === cat
-                      ? "bg-foreground text-pearl shadow-md"
-                      : "bg-rose text-primary hover:bg-rose/85"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+          )}
+
+          {/* Category Quick Filters */}
+          <div className="border-t border-border/60 pt-6 flex flex-wrap justify-between items-center gap-4">
+            <div>
+              <div className="text-xs uppercase tracking-wider text-muted-foreground font-bold mb-3 flex items-center gap-1.5">
+                <SlidersHorizontal className="h-3.5 w-3.5 text-gold-soft" /> Filter by Service Type
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      setParsedSummary(null);
+                    }}
+                    className={`rounded-full px-5 py-2 text-xs font-semibold tracking-wide transition-all cursor-pointer ${
+                      selectedCategory === cat
+                        ? "bg-foreground text-pearl shadow-md"
+                        : "bg-rose text-primary hover:bg-rose/85"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-widest pt-4 md:pt-0">
+              Found <span className="text-primary font-bold text-sm">{filteredSalons.length}</span> premium salons
             </div>
           </div>
         </div>

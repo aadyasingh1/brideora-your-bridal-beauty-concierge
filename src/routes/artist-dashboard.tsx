@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   TrendingUp,
@@ -17,7 +17,8 @@ import {
   ArrowLeft,
   Info,
   MessageSquare,
-  Send
+  Send,
+  User
 } from "lucide-react";
 import { Navbar } from "@/components/brideora/Navbar";
 import { Footer } from "@/components/brideora/Footer";
@@ -37,23 +38,95 @@ export const Route = createFileRoute("/artist-dashboard")({
 });
 
 function ArtistDashboardPage() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "calendar" | "packages" | "health" | "instagram" | "inbox">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "calendar" | "packages" | "health" | "instagram" | "inbox" | "bookings" | "profile">("dashboard");
+
+  // State for Profile Editor
+  const [profile, setProfile] = useState(() => {
+    const saved = localStorage.getItem("brideora-artist-profile");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return {
+      name: "Aanya Kapoor",
+      studioName: "Aanya Kapoor Makeovers",
+      bio: "Certified by the prestigious Makeup Studio Academy. I focus on natural skin-like finishes that never feel heavy, highlighting your natural bone structure to make you glow under bright mandap lighting.",
+      location: "Dwarka, Delhi",
+      travelRadius: "Travels outstation globally",
+      instagram: "glam_by_aanya",
+      packages: {
+        bridal: 18000,
+        engagement: 12000,
+        haldi: 6000
+      },
+      brands: ["Charlotte Tilbury", "MAC Cosmetics", "Huda Beauty", "NARS", "Dior Beauty", "Estee Lauder"],
+      hygiene: ["Sanitized Brushes", "Disposable Spoolies", "Disinfected Vanity Kit", "PPE & Masks"],
+      profilePic: "",
+      coverPic: "",
+      portfolioPics: [] as string[]
+    };
+  });
+
+  // State for bookings
+  const [bookingsList, setBookingsList] = useState<Array<{
+    id: string;
+    clientName: string;
+    date: string;
+    service: string;
+    location: string;
+    amount: number;
+    status: "Paid" | "Confirmed" | "Cancelled" | "Declined";
+  }>>(() => {
+    const saved = localStorage.getItem("brideora-bookings");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    return [
+      { id: "b1", clientName: "Devika Sen", date: "2026-07-12", service: "HD Bridal Makeup", location: "Saket, South Delhi", amount: 18000, status: "Paid" },
+      { id: "b2", clientName: "Anjali Kabir", date: "2026-07-23", service: "Airbrush Bridal Finish", location: "Gurugram, NCR", amount: 23000, status: "Confirmed" },
+      { id: "b3", clientName: "Priya Sharma", date: "2026-07-05", service: "Haldi & Mehendi Look", location: "Dwarka, Delhi", amount: 12000, status: "Paid" }
+    ];
+  });
+
+  const saveBookings = (list: typeof bookingsList) => {
+    setBookingsList(list);
+    localStorage.setItem("brideora-bookings", JSON.stringify(list));
+  };
 
   // State for Calendar (Unified Calendar Management)
   const [blockedDates, setBlockedDates] = useState<Array<{ date: string; label: string }>>([
-    { date: "2026-11-12", label: "Wedding - Devika Weds Rohan" },
-    { date: "2026-11-23", label: "Peak Wedding Season - Blocked" },
-    { date: "2026-12-05", label: "Wedding - Anjali Weds Kabir" }
+    { date: "2026-11-12", label: "Devika Weds Rohan" },
+    { date: "2026-11-23", label: "Peak Season Block" },
+    { date: "2026-12-05", label: "Anjali Weds Kabir" },
+    { date: "2026-07-12", label: "Devika Weds Rohan" },
+    { date: "2026-07-23", label: "Peak Season Block" },
+    { date: "2026-07-05", label: "Anjali Weds Kabir" }
   ]);
   const [newBlockDate, setNewBlockDate] = useState("");
   const [newBlockLabel, setNewBlockLabel] = useState("");
+  const [currentMonth, setCurrentMonth] = useState(6); // July
+  const [currentYear, setCurrentYear] = useState(2026);
 
   // State for Service Builder (Tiered Package & Service Builder)
   const [isPeakSeasonBoost, setIsPeakSeasonBoost] = useState(true);
   const [isWeekdayDiscount, setIsWeekdayDiscount] = useState(false);
-  const [baseBridalRate, setBaseBridalRate] = useState(18000);
-  const [baseEngagementRate, setBaseEngagementRate] = useState(12000);
-  const [baseHaldiRate, setBaseHaldiRate] = useState(6000);
+  const [baseBridalRate, setBaseBridalRate] = useState(() => profile.packages.bridal);
+  const [baseEngagementRate, setBaseEngagementRate] = useState(() => profile.packages.engagement);
+  const [baseHaldiRate, setBaseHaldiRate] = useState(() => profile.packages.haldi);
+
+  // Sync profile package edits back to base rates state if profile changes
+  useEffect(() => {
+    setBaseBridalRate(profile.packages.bridal);
+    setBaseEngagementRate(profile.packages.engagement);
+    setBaseHaldiRate(profile.packages.haldi);
+  }, [profile.packages]);
 
   // State for Instagram Sync (Instagram Auto-Sync Integration)
   const [isInstaSynced, setIsInstaSynced] = useState(true);
@@ -71,6 +144,80 @@ function ArtistDashboardPage() {
   const [analyzingImage, setAnalyzingImage] = useState(false);
   const [generatedTags, setGeneratedTags] = useState<string[]>([]);
   const [customTagInput, setCustomTagInput] = useState("");
+
+  // Inquiries State (for AI Auto-Responder)
+  const [inquiries, setInquiries] = useState<Array<{
+    id: string;
+    clientName: string;
+    location: string;
+    service: string;
+    date: string;
+    message: string;
+    status: "Pending" | "Replied";
+    squadCount: number;
+  }>>([
+    {
+      id: "inq-1",
+      clientName: "Riya Malhotra",
+      location: "Saket, South Delhi",
+      service: "HD Bridal Makeup",
+      date: "2026-07-15",
+      message: "Hi! I wanted to check if you are available for a wedding on July 15th in Saket. We'd need makeup for me (HD Bridal) + 3 bridesmaids. Let me know pricing!",
+      status: "Pending",
+      squadCount: 3
+    },
+    {
+      id: "inq-2",
+      clientName: "Sanya Gupta",
+      location: "Dwarka, Delhi",
+      service: "Engagement Makeup",
+      date: "2026-07-20",
+      message: "Hey, I need an engagement makeup look for July 20th in Dwarka. Just myself, looking for a very soft dewy look. Is your calendar open?",
+      status: "Pending",
+      squadCount: 0
+    },
+    {
+      id: "inq-3",
+      clientName: "Meera Oberoi",
+      location: "Punjabi Bagh, Delhi",
+      service: "Airbrush Bridal Finish",
+      date: "2026-07-28",
+      message: "Hello! Looking to book Airbrush Bridal Makeup for July 28th. We have a day wedding in Punjabi Bagh. Do you offer any discount if I book trial too?",
+      status: "Pending",
+      squadCount: 1
+    }
+  ]);
+  const [activeInquiryId, setActiveInquiryId] = useState("inq-1");
+  const [selectedTemplate, setSelectedTemplate] = useState<"professional" | "urgency" | "discount">("professional");
+  const [editableDraft, setEditableDraft] = useState("");
+
+  const getDraftText = (inquiry: typeof inquiries[0], template: "professional" | "urgency" | "discount") => {
+    if (!inquiry) return "";
+    const dateStr = new Date(inquiry.date).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
+    const baseRate = inquiry.service.includes("Airbrush") ? baseBridalRate + 5000 : baseBridalRate;
+    const groupDiscount = inquiry.squadCount >= 3 ? 0.9 : 1.0;
+    const squadPrice = inquiry.squadCount * 6000 * groupDiscount;
+    const totalPrice = baseRate + squadPrice;
+    const depositPrice = Math.round(totalPrice * 0.1);
+
+    if (template === "professional") {
+      return `Dear ${inquiry.clientName}, thank you for reaching out! Yes, I am available on ${dateStr} for your services in ${inquiry.location}. Based on my current rates, the quote for ${inquiry.service} ${inquiry.squadCount > 0 ? `+ ${inquiry.squadCount} Bridesmaids` : ''} is ₹${totalPrice.toLocaleString()}. A 10% advance of ₹${depositPrice.toLocaleString()} via Brideora Escrow will secure this date on my calendar. Looking forward to being part of your special day!\n\nBest regards,\n${profile.name}`;
+    } else if (template === "urgency") {
+      return `Hi ${inquiry.clientName}! Thanks for your message. I am available on ${dateStr}, but please note that this is a highly requested date and I have other inquiries pending for it. The total quote is ₹${totalPrice.toLocaleString()} (Deposit: ₹${depositPrice.toLocaleString()}). If you'd like to book, let's finalize the 10% advance deposit today so I can block it for you and reject other offers.\n\nWarmly,\n${profile.name}`;
+    } else {
+      const discTotal = Math.round(totalPrice * 0.95);
+      const discDeposit = Math.round(discTotal * 0.1);
+      return `Hello ${inquiry.clientName}! I would love to work with you on ${dateStr}. To help you lock in your wedding styling, I can offer a special 5% package discount on your booking, bringing the total from ₹${totalPrice.toLocaleString()} down to ₹${discTotal.toLocaleString()}! The booking deposit would be only ₹${discDeposit.toLocaleString()}. Let me know if you would like me to send over the booking link!\n\nCheers,\n${profile.name}`;
+    }
+  };
+
+  // Re-generate draft on active inquiry / template changes
+  useEffect(() => {
+    const inquiry = inquiries.find(i => i.id === activeInquiryId);
+    if (inquiry) {
+      setEditableDraft(getDraftText(inquiry, selectedTemplate));
+    }
+  }, [activeInquiryId, selectedTemplate, inquiries, baseBridalRate, profile.name]);
 
   // Add block date handler
   const handleAddBlockDate = (e: React.FormEvent) => {
@@ -95,6 +242,39 @@ function ArtistDashboardPage() {
     setBlockedDates(blockedDates.filter(d => d.date !== dateToRemove));
     toast.success("Date unblocked successfully.");
   };
+
+  const handleSaveProfile = (updatedProfile: typeof profile) => {
+    setProfile(updatedProfile);
+    localStorage.setItem("brideora-artist-profile", JSON.stringify(updatedProfile));
+    toast.success("Public profile updated successfully! Changes are live on your portfolio page.");
+  };
+
+  const handleProfilePicUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setProfile(prev => ({ ...prev, profilePic: event.target.result as string }));
+        toast.success("Profile photo uploaded!");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCoverPicUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setProfile(prev => ({ ...prev, coverPic: event.target.result as string }));
+        toast.success("Cover background photo uploaded!");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
 
   // Toggle Insta pic sync
   const handleToggleInstaPic = (id: string) => {
@@ -236,6 +416,28 @@ function ArtistDashboardPage() {
             >
               <CalendarIcon className="h-4.5 w-4.5" /> Unified Calendar
             </button>
+
+            <button
+              onClick={() => setActiveTab("bookings")}
+              className={`w-full flex items-center gap-3 rounded-2xl px-5 py-4 text-sm font-semibold tracking-wide transition-all cursor-pointer ${
+                activeTab === "bookings"
+                  ? "bg-foreground text-pearl shadow-md"
+                  : "bg-pearl hover:bg-rose/40 text-foreground/80"
+              }`}
+            >
+              <Users className="h-4.5 w-4.5" /> Bookings & Customers
+            </button>
+
+            <button
+              onClick={() => setActiveTab("inbox")}
+              className={`w-full flex items-center gap-3 rounded-2xl px-5 py-4 text-sm font-semibold tracking-wide transition-all cursor-pointer ${
+                activeTab === "inbox"
+                  ? "bg-foreground text-pearl shadow-md"
+                  : "bg-pearl hover:bg-rose/40 text-foreground/80"
+              }`}
+            >
+              <MessageSquare className="h-4.5 w-4.5" /> AI Inbox Responder
+            </button>
             
             <button
               onClick={() => setActiveTab("packages")}
@@ -245,18 +447,18 @@ function ArtistDashboardPage() {
                   : "bg-pearl hover:bg-rose/40 text-foreground/80"
               }`}
             >
-              <Settings className="h-4.5 w-4.5" /> Tiered Service Builder
+              <DollarSign className="h-4.5 w-4.5" /> Tiered Service Builder
             </button>
-            
+
             <button
-              onClick={() => setActiveTab("health")}
+              onClick={() => setActiveTab("profile")}
               className={`w-full flex items-center gap-3 rounded-2xl px-5 py-4 text-sm font-semibold tracking-wide transition-all cursor-pointer ${
-                activeTab === "health"
+                activeTab === "profile"
                   ? "bg-foreground text-pearl shadow-md"
                   : "bg-pearl hover:bg-rose/40 text-foreground/80"
               }`}
             >
-              <Sparkles className="h-4.5 w-4.5" /> Health & Trend Analytics
+              <User className="h-4.5 w-4.5" /> Edit Public Profile
             </button>
             
             <button
@@ -271,14 +473,14 @@ function ArtistDashboardPage() {
             </button>
 
             <button
-              onClick={() => setActiveTab("inbox")}
+              onClick={() => setActiveTab("health")}
               className={`w-full flex items-center gap-3 rounded-2xl px-5 py-4 text-sm font-semibold tracking-wide transition-all cursor-pointer ${
-                activeTab === "inbox"
+                activeTab === "health"
                   ? "bg-foreground text-pearl shadow-md"
                   : "bg-pearl hover:bg-rose/40 text-foreground/80"
               }`}
             >
-              <MessageSquare className="h-4.5 w-4.5" /> AI Inbox Responder
+              <Sparkles className="h-4.5 w-4.5" /> Health & Analytics
             </button>
           </aside>
 
@@ -393,74 +595,279 @@ function ArtistDashboardPage() {
                 <div>
                   <h3 className="font-display text-2xl text-foreground mb-1">Unified Calendar Management</h3>
                   <p className="text-sm text-muted-foreground font-serif">
-                    Automatically blocks out booked wedding dates across the platform to completely prevent double-bookings.
+                    Manage blocked dates and view paid bookings directly in a unified monthly grid to prevent double-bookings.
                   </p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-8">
-                  {/* Block Date Form */}
-                  <form onSubmit={handleAddBlockDate} className="space-y-4">
-                    <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">Manual Block Tool</h4>
-                    
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-muted-foreground">Select Wedding/Event Date</label>
-                      <input
-                        type="date"
-                        required
-                        value={newBlockDate}
-                        onChange={(e) => setNewBlockDate(e.target.value)}
-                        className="w-full rounded-2xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-primary transition-all"
-                      />
+                <div className="grid lg:grid-cols-12 gap-8">
+                  {/* Left Column: Monthly Grid (takes 7 columns) */}
+                  <div className="lg:col-span-7 bg-white rounded-3xl border border-border p-6 shadow-soft space-y-4">
+                    {/* Header */}
+                    <div className="flex items-center justify-between border-b border-border pb-4">
+                      <button
+                        onClick={() => {
+                          if (currentMonth === 0) {
+                            setCurrentMonth(11);
+                            setCurrentYear(prev => prev - 1);
+                          } else {
+                            setCurrentMonth(prev => prev - 1);
+                          }
+                        }}
+                        className="p-2 rounded-full hover:bg-rose transition-colors cursor-pointer text-primary text-sm font-bold"
+                      >
+                        &larr; Prev
+                      </button>
+                      <h4 className="font-display text-lg text-primary font-bold">
+                        {monthNames[currentMonth]} {currentYear}
+                      </h4>
+                      <button
+                        onClick={() => {
+                          if (currentMonth === 11) {
+                            setCurrentMonth(0);
+                            setCurrentYear(prev => prev + 1);
+                          } else {
+                            setCurrentMonth(prev => prev + 1);
+                          }
+                        }}
+                        className="p-2 rounded-full hover:bg-rose transition-colors cursor-pointer text-primary text-sm font-bold"
+                      >
+                        Next &rarr;
+                      </button>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-xs font-semibold text-muted-foreground">Event / Client Name</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g., Deepika Weds Ranveer"
-                        value={newBlockLabel}
-                        onChange={(e) => setNewBlockLabel(e.target.value)}
-                        className="w-full rounded-2xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-primary transition-all"
-                      />
+                    {/* Weekdays Row */}
+                    <div className="grid grid-cols-7 gap-2 text-center text-xs font-bold text-muted-foreground">
+                      <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
                     </div>
 
-                    <button
-                      type="submit"
-                      className="w-full rounded-full bg-foreground py-3 text-xs font-semibold text-pearl hover:bg-primary transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                    >
-                      <Plus className="h-4 w-4" /> Block Date on Platform
-                    </button>
-                    
-                    <div className="rounded-2xl bg-ivory border border-gold/10 p-4 text-xs text-muted-foreground flex gap-2">
-                      <Info className="h-5 w-5 text-gold-soft flex-shrink-0" />
-                      <span>Any dates blocked here are immediately disabled on the booking calendar. Double-bookings are prevented instantly.</span>
-                    </div>
-                  </form>
+                    {/* Grid Days */}
+                    <div className="grid grid-cols-7 gap-2">
+                      {(() => {
+                        const daysInMonthVal = getDaysInMonth(currentMonth, currentYear);
+                        const firstDayIdx = getFirstDayOfMonth(currentMonth, currentYear);
+                        const elements = [];
 
-                  {/* Blocked Dates List */}
-                  <div className="space-y-4">
-                    <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">Currently Blocked Dates</h4>
-                    <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-                      {blockedDates.map((block) => (
-                        <div key={block.date} className="flex items-center justify-between rounded-2xl border border-border/80 bg-white p-4 shadow-sm hover:border-gold/30 transition-all">
-                          <div>
-                            <div className="text-xs font-bold text-foreground">{block.label}</div>
-                            <div className="text-[10px] text-muted-foreground font-medium mt-0.5">{new Date(block.date).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
-                          </div>
-                          <button
-                            onClick={() => handleRemoveBlockDate(block.date)}
-                            className="rounded-full px-3 py-1.5 text-[10px] font-bold bg-rose hover:bg-rose/85 text-primary transition-colors cursor-pointer"
-                          >
-                            Unblock
-                          </button>
-                        </div>
-                      ))}
+                        // Empty cells before start of month
+                        for (let i = 0; i < firstDayIdx; i++) {
+                          elements.push(<div key={`empty-${i}`} className="aspect-square" />);
+                        }
+
+                        // Day cells
+                        for (let day = 1; day <= daysInMonthVal; day++) {
+                          const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+                          
+                          // Check blocked dates
+                          const isBlocked = blockedDates.find(d => d.date === dateStr);
+                          
+                          // Check paid bookings
+                          const isBooked = bookingsList.find(b => b.date === dateStr);
+
+                          elements.push(
+                            <button
+                              key={`day-${day}`}
+                              onClick={() => {
+                                setNewBlockDate(dateStr);
+                                if (isBlocked) {
+                                  toast.info(`Blocked Date: "${isBlocked.label}"`);
+                                } else if (isBooked) {
+                                  toast.info(`Booking: "${isBooked.clientName} - ${isBooked.service}"`);
+                                } else {
+                                  toast.success(`Selected ${dateStr} for manual block.`);
+                                }
+                              }}
+                              className={`aspect-square rounded-2xl text-xs font-bold flex flex-col items-center justify-between p-1.5 relative border transition-all hover:scale-105 cursor-pointer ${
+                                isBlocked
+                                  ? "bg-rose border-red-200 text-primary shadow-sm"
+                                  : isBooked
+                                  ? "bg-gold-soft/20 border-gold/40 text-primary shadow-sm"
+                                  : "bg-pearl border-border/40 hover:bg-rose/40 text-foreground"
+                              }`}
+                            >
+                              <span className="self-start">{day}</span>
+                              <div className="w-full flex flex-col gap-0.5 mt-1 overflow-hidden pointer-events-none">
+                                {isBlocked && (
+                                  <span className="text-[7px] font-sans font-bold bg-primary text-pearl px-1 rounded-sm block truncate leading-tight">
+                                    Blocked
+                                  </span>
+                                )}
+                                {isBooked && (
+                                  <span className="text-[7px] font-sans font-bold bg-gold text-pearl px-1 rounded-sm block truncate leading-tight">
+                                    Booked
+                                  </span>
+                                )}
+                              </div>
+                            </button>
+                          );
+                        }
+
+                        return elements;
+                      })()}
+                    </div>
+
+                    {/* Legend */}
+                    <div className="flex items-center justify-center gap-4 text-[10px] text-muted-foreground border-t border-border/50 pt-4 mt-2">
+                      <div className="flex items-center gap-1.5">
+                        <div className="h-3 w-3 rounded bg-pearl border border-border" />
+                        <span>Available</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="h-3 w-3 rounded bg-rose border border-red-200" />
+                        <span>Blocked Out</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="h-3 w-3 rounded bg-gold-soft/20 border border-gold/40" />
+                        <span>Paid Booking</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column: Block Form & Blocked Dates List (takes 5 columns) */}
+                  <div className="lg:col-span-5 space-y-6">
+                    {/* Block Date Form */}
+                    <form onSubmit={handleAddBlockDate} className="bg-white border border-border rounded-3xl p-6 shadow-soft space-y-4">
+                      <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">Manual Block Tool</h4>
+                      
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-muted-foreground">Select Wedding/Event Date</label>
+                        <input
+                          type="date"
+                          required
+                          value={newBlockDate}
+                          onChange={(e) => setNewBlockDate(e.target.value)}
+                          className="w-full rounded-2xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-primary transition-all text-foreground"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-muted-foreground">Event / Client Name</label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g., Deepika Weds Ranveer"
+                          value={newBlockLabel}
+                          onChange={(e) => setNewBlockLabel(e.target.value)}
+                          className="w-full rounded-2xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-primary transition-all text-foreground"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="w-full rounded-full bg-foreground py-3 text-xs font-semibold text-pearl hover:bg-primary transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                      >
+                        <Plus className="h-4 w-4" /> Block Date on Platform
+                      </button>
+                    </form>
+
+                    {/* Blocked Dates List */}
+                    <div className="bg-white border border-border rounded-3xl p-6 shadow-soft space-y-4">
+                      <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground border-b pb-2">Currently Blocked Dates</h4>
+                      <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                        {blockedDates.length > 0 ? (
+                          blockedDates.map((block) => (
+                            <div key={`${block.date}-${block.label}`} className="flex items-center justify-between rounded-2xl border border-border/80 bg-pearl p-3 shadow-sm hover:border-gold/30 transition-all text-left">
+                              <div>
+                                <div className="text-xs font-bold text-foreground truncate max-w-[160px]">{block.label}</div>
+                                <div className="text-[10px] text-muted-foreground font-medium mt-0.5">{block.date}</div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveBlockDate(block.date)}
+                                className="rounded-full px-3 py-1.5 text-[10px] font-bold bg-rose hover:bg-rose/85 text-primary transition-colors cursor-pointer"
+                              >
+                                Unblock
+                              </button>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-xs text-muted-foreground text-center py-4">No blocked dates.</div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             )}
+
+            {/* TAB 2.5: Bookings & Customers Directory */}
+            {activeTab === "bookings" && (
+              <div className="rounded-[2.5rem] bg-pearl border border-border p-6 lg:p-8 shadow-luxe space-y-8 animate-in fade-in duration-300 text-left">
+                <div>
+                  <h3 className="font-display text-2xl text-foreground mb-1">Bookings & Customers Directory</h3>
+                  <p className="text-sm text-muted-foreground font-serif">
+                    Monitor, filter, and manage all your active bridal appointments, deposits, and client statuses.
+                  </p>
+                </div>
+
+                <div className="overflow-x-auto rounded-3xl border border-border bg-white shadow-soft">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-border bg-rose/10 text-[10px] uppercase font-bold tracking-widest text-primary">
+                        <th className="px-6 py-4">Client Name</th>
+                        <th className="px-6 py-4">Event Date</th>
+                        <th className="px-6 py-4">Service</th>
+                        <th className="px-6 py-4">Location</th>
+                        <th className="px-6 py-4 text-right">Amount</th>
+                        <th className="px-6 py-4">Status</th>
+                        <th className="px-6 py-4 text-center">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/60 text-xs font-serif text-muted-foreground">
+                      {bookingsList.map((booking) => (
+                        <tr key={booking.id} className="hover:bg-ivory/50 transition-colors">
+                          <td className="px-6 py-4 font-bold text-foreground font-display text-sm">{booking.clientName}</td>
+                          <td className="px-6 py-4 font-sans font-semibold">{booking.date}</td>
+                          <td className="px-6 py-4">{booking.service}</td>
+                          <td className="px-6 py-4">{booking.location}</td>
+                          <td className="px-6 py-4 text-right font-sans font-bold text-primary">₹{booking.amount.toLocaleString()}</td>
+                          <td className="px-6 py-4">
+                            <span className={`inline-block rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider ${
+                              booking.status === "Paid"
+                                ? "bg-emerald-50 text-emerald-700 border border-emerald-250"
+                                : booking.status === "Confirmed"
+                                ? "bg-blue-50 text-blue-700 border border-blue-250"
+                                : booking.status === "Cancelled"
+                                ? "bg-zinc-100 text-zinc-650 border border-zinc-200"
+                                : "bg-red-50 text-red-700 border border-red-200"
+                            }`}>
+                              {booking.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            <div className="flex justify-center gap-1.5">
+                              {booking.status !== "Confirmed" && booking.status !== "Paid" && (
+                                <button
+                                  onClick={() => {
+                                    const updated = bookingsList.map(b => b.id === booking.id ? { ...b, status: "Confirmed" as const } : b);
+                                    saveBookings(updated);
+                                    toast.success(`Booking for ${booking.clientName} confirmed!`);
+                                  }}
+                                  className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700 hover:bg-emerald-100 transition-colors cursor-pointer"
+                                >
+                                  Confirm
+                                </button>
+                              )}
+                              {booking.status !== "Cancelled" && (
+                                <button
+                                  onClick={() => {
+                                    const updated = bookingsList.map(b => b.id === booking.id ? { ...b, status: "Cancelled" as const } : b);
+                                    saveBookings(updated);
+                                    toast.error(`Booking for ${booking.clientName} cancelled.`);
+                                  }}
+                                  className="rounded-full bg-rose px-2.5 py-1 text-[10px] font-bold text-primary hover:bg-rose/85 transition-colors cursor-pointer"
+                                >
+                                  Cancel
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+
 
             {/* TAB 3: Tiered Package & Service Builder */}
             {activeTab === "packages" && (
@@ -850,7 +1257,7 @@ function ArtistDashboardPage() {
             )}
 
             {activeTab === "inbox" && (
-              <div className="rounded-[2.5rem] bg-pearl border border-border p-6 lg:p-8 shadow-luxe space-y-8 animate-in fade-in duration-300">
+              <div className="rounded-[2.5rem] bg-pearl border border-border p-6 lg:p-8 shadow-luxe space-y-8 animate-in fade-in duration-300 text-left">
                 <div>
                   <h3 className="font-display text-2xl text-foreground mb-1">AI Inbox Auto-Responder</h3>
                   <p className="text-sm text-muted-foreground font-serif">
@@ -858,60 +1265,410 @@ function ArtistDashboardPage() {
                   </p>
                 </div>
 
-                <div className="space-y-6">
-                  {/* Inquiry Card */}
-                  <div className="rounded-3xl border border-border bg-white p-6 shadow-sm space-y-4 text-left">
-                    <div className="flex items-center justify-between border-b border-border pb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-rose text-primary flex items-center justify-center font-bold">
-                          RM
-                        </div>
-                        <div>
-                          <h4 className="font-display text-sm font-semibold text-primary">Riya Malhotra</h4>
-                          <span className="text-[10px] text-muted-foreground uppercase font-serif">Bride · Dwarka, Delhi</span>
-                        </div>
-                      </div>
-                      <span className="bg-primary/10 text-primary text-[10px] uppercase font-bold tracking-widest px-2.5 py-1 rounded-full border border-gold/10">
-                        Inquiry
-                      </span>
+                <div className="grid lg:grid-cols-12 gap-8">
+                  {/* Left Column: Inquiry list (takes 4 columns) */}
+                  <div className="lg:col-span-4 bg-white rounded-3xl border border-border p-4 shadow-soft space-y-3">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block mb-2 px-2">Inquiries Queue</span>
+                    <div className="space-y-2">
+                      {inquiries.map((inq) => (
+                        <button
+                          key={inq.id}
+                          onClick={() => setActiveInquiryId(inq.id)}
+                          className={`w-full rounded-2xl p-3 border transition-all text-left flex flex-col gap-1 cursor-pointer ${
+                            activeInquiryId === inq.id
+                              ? "border-primary bg-rose-glow/10 shadow-sm"
+                              : "border-border/60 hover:bg-rose/40"
+                          }`}
+                        >
+                          <div className="flex justify-between items-center w-full">
+                            <span className="font-display text-sm font-semibold text-primary">{inq.clientName}</span>
+                            <span className={`text-[8px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                              inq.status === "Pending" ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            }`}>
+                              {inq.status}
+                            </span>
+                          </div>
+                          <span className="text-[10px] text-muted-foreground font-serif">{inq.service}</span>
+                          <span className="text-[9px] text-muted-foreground font-sans font-medium">{inq.date}</span>
+                        </button>
+                      ))}
                     </div>
+                  </div>
 
-                    <div className="bg-rose/40 border border-gold/15 rounded-2xl p-4 space-y-1">
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Received Message</span>
-                      <p className="text-xs text-foreground font-serif italic leading-relaxed">
-                        "Hi! I wanted to check if you are available for a wedding on December 12th in Saket. We'd need makeup for me (HD Bridal) + 3 bridesmaids. Let me know pricing!"
-                      </p>
-                    </div>
+                  {/* Right Column: AI Drafting & Details (takes 8 columns) */}
+                  <div className="lg:col-span-8 space-y-6">
+                    {(() => {
+                      const activeInq = inquiries.find(i => i.id === activeInquiryId);
+                      if (!activeInq) return <div className="text-center py-8 text-xs text-muted-foreground">Select an inquiry to view details.</div>;
 
-                    {/* AI Draft Suggestion */}
-                    <div className="rounded-2xl border border-primary/30 bg-pearl/30 p-5 space-y-3 relative overflow-hidden">
-                      <div className="absolute top-0 right-0 bg-primary/15 text-primary text-[8px] uppercase tracking-widest font-bold px-3 py-1 rounded-bl-xl border-l border-b border-primary/20">
-                        AI Draft
-                      </div>
-                      <span className="text-[10px] uppercase font-bold tracking-wider text-primary block font-semibold">Suggested Response</span>
-                      
-                      <textarea
-                        defaultValue="Dear Riya, thank you for reaching out! Yes, I am available on December 12, 2026. Based on my winter rates, the package for HD Bridal Makeup + 3 bridesmaids is ₹18,000 + ₹21,600 (includes a 10% group discount) = ₹39,600 total. A 10% deposit of ₹3,960 holds your date in my calendar. Let me know if you would like me to lock this in! Best, Aanya."
-                        className="w-full min-h-[120px] rounded-xl border border-border bg-white p-3.5 text-xs text-foreground font-serif leading-relaxed outline-none focus:border-primary transition-all resize-none"
+                      return (
+                        <div className="bg-white border border-border rounded-3xl p-6 shadow-soft space-y-4">
+                          <div className="flex justify-between items-center border-b border-border pb-3">
+                            <div>
+                              <h4 className="font-display text-lg font-bold text-primary">{activeInq.clientName}</h4>
+                              <p className="text-[10px] text-muted-foreground font-serif uppercase tracking-wider">{activeInq.location} • Squad size: {activeInq.squadCount}</p>
+                            </div>
+                            <span className="bg-primary/10 text-primary text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full border border-gold/10">
+                              Inquiry
+                            </span>
+                          </div>
+
+                          <div className="bg-rose/40 border border-gold/15 rounded-2xl p-4 space-y-1">
+                            <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block">Received Message</span>
+                            <p className="text-xs text-foreground font-serif italic leading-relaxed">
+                              "{activeInq.message}"
+                            </p>
+                          </div>
+
+                          {/* Template Selector */}
+                          <div className="space-y-2">
+                            <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block">Select AI Reply Tone Template</span>
+                            <div className="flex gap-2">
+                              {[
+                                { id: "professional", label: "Polite & Professional" },
+                                { id: "urgency", label: "Urgency / High Demand" },
+                                { id: "discount", label: "Discount / Bundle Offer" }
+                              ].map((t) => (
+                                <button
+                                  key={t.id}
+                                  type="button"
+                                  onClick={() => setSelectedTemplate(t.id as any)}
+                                  className={`rounded-full px-4 py-2 text-xs font-semibold transition-all cursor-pointer ${
+                                    selectedTemplate === t.id
+                                      ? "bg-primary text-white shadow-soft"
+                                      : "bg-rose text-primary hover:bg-rose/80"
+                                  }`}
+                                >
+                                  {t.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Suggested reply box */}
+                          <div className="rounded-2xl border border-primary/30 bg-pearl/30 p-5 space-y-3 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 bg-primary/15 text-primary text-[8px] uppercase tracking-widest font-bold px-3 py-1 rounded-bl-xl border-l border-b border-primary/20">
+                              AI Suggested Response
+                            </div>
+                            <span className="text-[10px] uppercase font-bold tracking-wider text-primary block font-semibold">Suggested Response Editor</span>
+                            
+                            <textarea
+                              value={editableDraft}
+                              onChange={(e) => setEditableDraft(e.target.value)}
+                              className="w-full min-h-[140px] rounded-xl border border-border bg-white p-3.5 text-xs text-foreground font-serif leading-relaxed outline-none focus:border-primary transition-all resize-none text-foreground"
+                            />
+
+                            <div className="flex gap-3 justify-end pt-2">
+                              <button 
+                                onClick={() => {
+                                  toast.info("Draft reset to template values.");
+                                  setEditableDraft(getDraftText(activeInq, selectedTemplate));
+                                }}
+                                className="rounded-full border border-border bg-white px-5 py-2 text-xs font-semibold text-foreground hover:bg-ivory transition-colors cursor-pointer"
+                              >
+                                Reset Draft
+                              </button>
+                              <button 
+                                onClick={() => {
+                                  // Mark inquiry replied
+                                  setInquiries(prev => prev.map(i => i.id === activeInq.id ? { ...i, status: "Replied" } : i));
+
+                                  // Append to bookings
+                                  const baseRate = activeInq.service.includes("Airbrush") ? baseBridalRate + 5000 : baseBridalRate;
+                                  const groupDiscount = activeInq.squadCount >= 3 ? 0.9 : 1.0;
+                                  const squadPrice = activeInq.squadCount * 6000 * groupDiscount;
+                                  const totalPrice = baseRate + squadPrice;
+
+                                  const newB = {
+                                    id: `b-${Date.now()}`,
+                                    clientName: activeInq.clientName,
+                                    date: activeInq.date,
+                                    service: activeInq.service,
+                                    location: activeInq.location,
+                                    amount: totalPrice,
+                                    status: "Confirmed" as const
+                                  };
+
+                                  const updated = [...bookingsList, newB];
+                                  saveBookings(updated);
+
+                                  toast.success(`AI Response Sent! Booking for ${activeInq.clientName} created successfully.`);
+                                }}
+                                className="rounded-full bg-gradient-royal px-5 py-2 text-xs font-semibold text-pearl hover:shadow transition-all flex items-center gap-1.5 cursor-pointer"
+                              >
+                                <Send className="h-3.5 w-3.5" /> Approve & Send Draft
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 6: Edit Public Profile Settings */}
+            {activeTab === "profile" && (
+              <div className="rounded-[2.5rem] bg-pearl border border-border p-6 lg:p-8 shadow-luxe space-y-8 animate-in fade-in duration-300 text-left">
+                <div>
+                  <h3 className="font-display text-2xl text-foreground mb-1">Edit Public Profile Details</h3>
+                  <p className="text-sm text-muted-foreground font-serif">
+                    Update your public portfolio info, packages, Instagram handle, and vanity brands.
+                  </p>
+                </div>
+
+                <form onSubmit={(e) => { e.preventDefault(); handleSaveProfile(profile); }} className="space-y-6 bg-white border border-border rounded-3xl p-6 lg:p-8 shadow-soft">
+                  
+                  {/* Row 1: Name, Studio & Location */}
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground">Artist Public Name</label>
+                      <input
+                        type="text"
+                        required
+                        value={profile.name}
+                        onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                        className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-primary transition-all text-foreground"
                       />
+                    </div>
 
-                      <div className="flex gap-3 justify-end pt-2">
-                        <button 
-                          onClick={() => toast.info("Draft discarded.")}
-                          className="rounded-full border border-border px-5 py-2 text-xs font-semibold text-foreground hover:bg-ivory transition-colors cursor-pointer"
-                        >
-                          Discard
-                        </button>
-                        <button 
-                          onClick={() => toast.success("AI suggested response sent to Riya Malhotra!")}
-                          className="rounded-full bg-gradient-royal px-5 py-2 text-xs font-semibold text-pearl hover:shadow transition-all flex items-center gap-1.5 cursor-pointer"
-                        >
-                          <Send className="h-3.5 w-3.5" /> Approve & Send Draft
-                        </button>
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground">Studio Name</label>
+                      <input
+                        type="text"
+                        required
+                        value={profile.studioName}
+                        onChange={(e) => setProfile({ ...profile, studioName: e.target.value })}
+                        className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-primary transition-all text-foreground"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground">Location Base</label>
+                      <input
+                        type="text"
+                        required
+                        value={profile.location}
+                        onChange={(e) => setProfile({ ...profile, location: e.target.value })}
+                        className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-primary transition-all text-foreground"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 2: Bio & Travel Radius */}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground">Travel Policy (e.g. Travels globally)</label>
+                      <input
+                        type="text"
+                        required
+                        value={profile.travelRadius}
+                        onChange={(e) => setProfile({ ...profile, travelRadius: e.target.value })}
+                        className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-primary transition-all text-foreground"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-semibold text-muted-foreground">Instagram Username (without @)</label>
+                      <input
+                        type="text"
+                        required
+                        value={profile.instagram}
+                        onChange={(e) => setProfile({ ...profile, instagram: e.target.value })}
+                        className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-primary transition-all text-foreground"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-semibold text-muted-foreground">Bio Description</label>
+                    <textarea
+                      required
+                      value={profile.bio}
+                      onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                      className="w-full min-h-[90px] rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-primary transition-all text-foreground font-serif resize-none"
+                    />
+                  </div>
+
+                  {/* Pricing Editor */}
+                  <div className="space-y-3 border-t border-border pt-4">
+                    <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Service Packages Pricing</h4>
+                    <div className="grid md:grid-cols-3 gap-6">
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-muted-foreground">Base Bridal Package (₹)</label>
+                        <input
+                          type="number"
+                          required
+                          value={profile.packages.bridal}
+                          onChange={(e) => setProfile({
+                            ...profile,
+                            packages: { ...profile.packages, bridal: parseInt(e.target.value, 10) || 0 }
+                          })}
+                          className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-primary transition-all text-foreground"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-muted-foreground">Base Engagement Package (₹)</label>
+                        <input
+                          type="number"
+                          required
+                          value={profile.packages.engagement}
+                          onChange={(e) => setProfile({
+                            ...profile,
+                            packages: { ...profile.packages, engagement: parseInt(e.target.value, 10) || 0 }
+                          })}
+                          className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-primary transition-all text-foreground"
+                        />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-xs font-semibold text-muted-foreground">Base Haldi Package (₹)</label>
+                        <input
+                          type="number"
+                          required
+                          value={profile.packages.haldi}
+                          onChange={(e) => setProfile({
+                            ...profile,
+                            packages: { ...profile.packages, haldi: parseInt(e.target.value, 10) || 0 }
+                          })}
+                          className="w-full rounded-2xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-primary transition-all text-foreground"
+                        />
                       </div>
                     </div>
                   </div>
-                </div>
+
+                  {/* Brand & Hygiene checklists */}
+                  <div className="grid md:grid-cols-2 gap-8 border-t border-border pt-4">
+                    {/* Brand Checklist */}
+                    <div className="space-y-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Vanity Cosmetics Kit</h4>
+                      <p className="text-[10px] text-muted-foreground">Select brands visible on your public portfolio page.</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {["Charlotte Tilbury", "MAC Cosmetics", "Huda Beauty", "NARS", "Dior Beauty", "Estee Lauder", "Chanel", "Fenty Beauty"].map(brand => {
+                          const hasBrand = profile.brands.includes(brand);
+                          return (
+                            <label key={brand} className="flex items-center gap-2 text-xs font-semibold text-foreground cursor-pointer select-none">
+                              <input
+                                type="checkbox"
+                                checked={hasBrand}
+                                onChange={() => {
+                                  const updated = hasBrand ? profile.brands.filter((b: string) => b !== brand) : [...profile.brands, brand];
+                                  setProfile({ ...profile, brands: updated });
+                                }}
+                                className="accent-primary"
+                              />
+                              {brand}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Hygiene Checklist */}
+                    <div className="space-y-2">
+                      <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Hygiene Checklist</h4>
+                      <p className="text-[10px] text-muted-foreground">Toggle verification checklist indicators.</p>
+                      <div className="grid grid-cols-2 gap-2">
+                        {["Sanitized Brushes", "Disposable Spoolies", "Disinfected Vanity Kit", "PPE & Masks", "Air Purifiers", "Single-use sponges"].map(item => {
+                          const hasItem = profile.hygiene.includes(item);
+                          return (
+                            <label key={item} className="flex items-center gap-2 text-xs font-semibold text-foreground cursor-pointer select-none">
+                              <input
+                                type="checkbox"
+                                checked={hasItem}
+                                onChange={() => {
+                                  const updated = hasItem ? profile.hygiene.filter((h: string) => h !== item) : [...profile.hygiene, item];
+                                  setProfile({ ...profile, hygiene: updated });
+                                }}
+                                className="accent-primary"
+                              />
+                              {item}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Profile and Cover Photo Upload Previews */}
+                  <div className="grid md:grid-cols-3 gap-6 border-t border-border pt-4">
+                    {/* Profile Pic Upload */}
+                    <div className="space-y-2 text-left">
+                      <span className="text-xs font-semibold text-muted-foreground block">Profile Headshot</span>
+                      <div className="flex items-center gap-3">
+                        <div className="h-14 w-14 rounded-full overflow-hidden border border-border bg-pearl flex-shrink-0">
+                          {profile.profilePic ? (
+                            <img src={profile.profilePic} alt="Profile preview" className="h-full w-full object-cover" />
+                          ) : (
+                            <div className="h-full w-full flex items-center justify-center text-xs text-muted-foreground font-serif">Empty</div>
+                          )}
+                        </div>
+                        <label className="cursor-pointer bg-pearl border border-border hover:bg-rose/40 rounded-full px-4 py-2 text-[10px] font-bold text-foreground">
+                          Upload Headshot
+                          <input type="file" accept="image/*" className="hidden" onChange={handleProfilePicUpload} />
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Cover Pic Upload */}
+                    <div className="space-y-2 text-left">
+                      <span className="text-xs font-semibold text-muted-foreground block">Backdrop Cover Photo</span>
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-20 rounded-lg overflow-hidden border border-border bg-pearl flex-shrink-0">
+                          {profile.coverPic ? (
+                            <img src={profile.coverPic} alt="Cover preview" className="h-full w-full object-cover" />
+                          ) : (
+                            <div className="h-full w-full flex items-center justify-center text-[10px] text-muted-foreground font-serif">Empty</div>
+                          )}
+                        </div>
+                        <label className="cursor-pointer bg-pearl border border-border hover:bg-rose/40 rounded-full px-4 py-2 text-[10px] font-bold text-foreground">
+                          Upload Cover
+                          <input type="file" accept="image/*" className="hidden" onChange={handleCoverPicUpload} />
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* New Portfolio Photo Upload */}
+                    <div className="space-y-2 text-left">
+                      <span className="text-xs font-semibold text-muted-foreground block">Add to Public Gallery</span>
+                      <label className="cursor-pointer bg-pearl border border-dashed border-border hover:bg-rose/40 rounded-2xl p-4 flex flex-col items-center justify-center text-[10px] font-bold text-foreground text-center">
+                        📸 Click to Upload Photo
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              if (event.target?.result) {
+                                setProfile(prev => ({
+                                  ...prev,
+                                  portfolioPics: [event.target.result as string, ...prev.portfolioPics]
+                                }));
+                                toast.success("Photo added to public portfolio gallery!");
+                              }
+                            };
+                            reader.readAsDataURL(file);
+                          }}
+                        />
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Save Changes Button */}
+                  <div className="border-t border-border pt-6 flex justify-end">
+                    <button
+                      type="submit"
+                      className="rounded-full bg-gradient-royal px-8 py-3 text-xs font-bold text-pearl hover:shadow transition-all cursor-pointer uppercase tracking-wider"
+                    >
+                      Save Profile & Publish
+                    </button>
+                  </div>
+                </form>
               </div>
             )}
 

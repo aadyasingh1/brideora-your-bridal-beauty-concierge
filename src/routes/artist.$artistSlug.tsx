@@ -3,7 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { 
   Star, MapPin, Award, Heart, Share2, CheckCircle2, ShieldCheck, 
   Clock, ArrowLeft, Calendar, ChevronRight, Sparkles, Play, 
-  Volume2, Plus, Minus, Info, CalendarDays, ThumbsUp, Send
+  Volume2, Plus, Minus, Info, CalendarDays, ThumbsUp, Send,
+  Instagram
 } from "lucide-react";
 import { toast } from "sonner";
 import { Navbar } from "@/components/brideora/Navbar";
@@ -294,23 +295,41 @@ function ArtistProfilePage() {
   }
 
   const basePrice = parseInt(artist.price.replace(/[^\d]/g, ""), 10) || 18000;
-  const hdPrice = basePrice;
-  const airbrushPrice = basePrice + 5000;
-  const trialPrice = Math.round(basePrice * 0.2);
-  const partyPrice = Math.round(basePrice * 0.4);
+
+  const [customProfile, setCustomProfile] = useState<any>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("brideora-artist-profile");
+    if (saved) {
+      try {
+        setCustomProfile(JSON.parse(saved));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
+  const slugifiedCustomName = customProfile ? slugify(customProfile.name) : "";
+  const isCustomArtist = customProfile && (artistSlug === slugifiedCustomName || artistSlug === "aanya-kapoor" || artistSlug === "glam-by-aanya");
+
+  const displayPrice = isCustomArtist ? customProfile.packages.bridal : basePrice;
+  const hdPrice = displayPrice;
+  const airbrushPrice = displayPrice + 5000;
+  const trialPrice = Math.round(displayPrice * 0.2);
+  const partyPrice = Math.round(displayPrice * 0.4);
 
   // Wishlist and share states
   const [isWishlisted, setIsWishlisted] = useState(false);
   
   useEffect(() => {
-    const saved = localStorage.getItem(`wishlist-${artist!.name}`);
+    const saved = localStorage.getItem(`wishlist-${isCustomArtist ? customProfile.name : artist!.name}`);
     if (saved === "true") setIsWishlisted(true);
-  }, [artist.name]);
+  }, [artist.name, isCustomArtist, customProfile]);
 
   const toggleWishlist = () => {
     const next = !isWishlisted;
     setIsWishlisted(next);
-    localStorage.setItem(`wishlist-${artist!.name}`, next ? "true" : "false");
+    localStorage.setItem(`wishlist-${isCustomArtist ? customProfile.name : artist!.name}`, next ? "true" : "false");
     toast.success(next ? "Added to wishlist!" : "Removed from wishlist");
   };
 
@@ -414,13 +433,27 @@ function ArtistProfilePage() {
 
   // Portfolio items mapping based on selected tab
   const getPortfolioItems = () => {
+    let baseItems = [isCustomArtist && customProfile.profilePic ? customProfile.profilePic : artist.img, catMehendi, catParty];
     if (portfolioTab === "haldi") {
-      return [catMehendi, artist.img, catParty];
+      baseItems = [catMehendi, isCustomArtist && customProfile.profilePic ? customProfile.profilePic : artist.img, catParty];
     } else if (portfolioTab === "reception") {
-      return [catParty, catMehendi, artist.img];
+      baseItems = [catParty, catMehendi, isCustomArtist && customProfile.profilePic ? customProfile.profilePic : artist.img];
     }
-    return [artist.img, catMehendi, catParty];
+
+    if (isCustomArtist && customProfile.portfolioPics && customProfile.portfolioPics.length > 0) {
+      return [...customProfile.portfolioPics, ...baseItems].slice(0, 3);
+    }
+    return baseItems;
   };
+
+  const displayName = isCustomArtist ? customProfile.name : artist.name;
+  const displayLocation = isCustomArtist ? customProfile.location : artist.location;
+  const displayImg = isCustomArtist && customProfile.profilePic ? customProfile.profilePic : artist.img;
+  const displayCover = isCustomArtist && customProfile.coverPic ? customProfile.coverPic : heroCover;
+  const displayBio = isCustomArtist ? customProfile.bio : "Certified by the prestigious Makeup Studio Academy. I focus on natural skin-like finishes that never feel heavy, highlighting your natural bone structure to make you glow under bright mandap lighting.";
+  const displayBrands = isCustomArtist ? customProfile.brands : ["Charlotte Tilbury", "MAC Cosmetics", "Huda Beauty", "NARS", "Dior Beauty", "Estee Lauder"];
+  const displayHygiene = isCustomArtist ? customProfile.hygiene : ["Sanitized Brushes", "Disposable Spoolies", "Disinfected Vanity Kit", "PPE & Masks"];
+  const displayTravelRadius = isCustomArtist ? customProfile.travelRadius : "Travels outstation globally";
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -437,7 +470,7 @@ function ArtistProfilePage() {
         {/* Dynamic Cover Section */}
         <div className="relative rounded-[2.5rem] overflow-hidden border border-gold/20 shadow-soft h-[350px] mb-8 group">
           <img 
-            src={heroCover} 
+            src={displayCover} 
             alt="Wedding Cover Backdrop" 
             className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000" 
           />
@@ -465,11 +498,11 @@ function ArtistProfilePage() {
           <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row items-start md:items-end justify-between gap-6 z-10 text-white">
             <div className="flex items-center gap-6">
               <div className="relative h-24 w-24 rounded-full overflow-hidden border-2 border-white/80 shadow-luxe bg-pearl">
-                <img src={artist.img} alt={artist.name} className="h-full w-full object-cover" />
+                <img src={displayImg} alt={displayName} className="h-full w-full object-cover" />
               </div>
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2.5 flex-wrap">
-                  <h1 className="font-display text-3xl sm:text-4xl text-pearl font-semibold tracking-wide">{artist.name}</h1>
+                  <h1 className="font-display text-3xl sm:text-4xl text-pearl font-semibold tracking-wide">{displayName}</h1>
                   <span className="inline-flex items-center gap-1 rounded-full bg-rose/90 backdrop-blur text-primary text-[9px] font-bold px-2.5 py-0.5 border border-gold/10 tracking-widest uppercase shadow-sm">
                     <Award className="h-3 w-3 text-gold" />
                     {artist.badge}
@@ -478,7 +511,7 @@ function ArtistProfilePage() {
                 <p className="text-sm text-zinc-200 font-serif font-semibold">{artist.speciality}</p>
                 <div className="flex items-center gap-2.5 text-xs text-zinc-300 font-semibold">
                   <MapPin className="h-3.5 w-3.5 text-rose-300" />
-                  <span>Based in {artist.location} • Travels outstation globally</span>
+                  <span>Based in {displayLocation} • {displayTravelRadius}</span>
                 </div>
               </div>
             </div>
@@ -500,6 +533,66 @@ function ArtistProfilePage() {
             </div>
           </div>
         </div>
+
+        {/* Instagram Verification Block */}
+        <section className="mb-8 rounded-[2.5rem] bg-gradient-to-r from-[#fdf0f5] to-[#f5f0fd] border border-pink-200/40 p-6 lg:p-8 shadow-soft text-left">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-600 flex items-center justify-center text-white shadow">
+                <Instagram className="h-7 w-7" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-display text-xl font-bold text-foreground">Instagram Verified Feed</h3>
+                  <span className="bg-emerald-100 text-emerald-700 text-[8px] uppercase tracking-widest font-bold px-2 py-0.5 rounded-full border border-emerald-250 flex items-center gap-0.5">
+                    <CheckCircle2 className="h-2 w-2 fill-emerald-700 text-white" /> Synced
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground font-serif mt-0.5">
+                  Real-time portfolio verification for @{isCustomArtist ? customProfile.instagram : "glam_by_aanya"}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-6">
+              <div className="text-center md:text-left">
+                <div className="text-lg font-bold text-foreground">18.4K</div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Followers</div>
+              </div>
+              <div className="text-center md:text-left">
+                <div className="text-lg font-bold text-foreground">342</div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Posts</div>
+              </div>
+              <a 
+                href={`https://instagram.com/${isCustomArtist ? customProfile.instagram : "glam_by_aanya"}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-full bg-foreground text-pearl px-5 py-2.5 text-xs font-semibold hover:bg-primary transition-all flex items-center gap-1.5 shadow"
+              >
+                Follow on Instagram
+              </a>
+            </div>
+          </div>
+
+          {/* Instagram Feed Grid */}
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mt-6">
+            {[
+              "https://images.unsplash.com/photo-1607190074257-dd4b7af0309f?q=80&w=300",
+              "https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?q=80&w=300",
+              "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=300",
+              "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=300",
+              "https://images.unsplash.com/photo-1522337360788-8b13edd793be?q=80&w=300",
+              "https://images.unsplash.com/photo-1594744803329-e58b31de215f?q=80&w=300"
+            ].map((url, idx) => (
+              <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-border/40 shadow-sm group">
+                <img src={url} alt="Insta post" className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[10px] text-white font-bold font-sans">
+                  ♥ 428
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
 
         {/* 2 Grid Layout: Details & Sticky Calculator */}
         <div className="grid lg:grid-cols-3 gap-8 items-start">
@@ -548,13 +641,13 @@ function ArtistProfilePage() {
                 {/* Draggable Before & After Slider (takes 2 columns) */}
                 <div className="md:col-span-2 space-y-2">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block text-center">Interactive Makeover Slider</span>
-                  <BeforeAfterSlider beforeImg={artist.img} afterImg={artist.img} />
+                  <BeforeAfterSlider beforeImg={displayImg} afterImg={displayImg} />
                 </div>
 
                 {/* Unedited Reel Mockup (takes 1.5 columns) */}
                 <div className="md:col-span-1.5 space-y-2">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block text-center">Lighting Validation Reels</span>
-                  <ReelsVideoMock artistName={artist.name} coverImg={catMehendi} />
+                  <ReelsVideoMock artistName={displayName} coverImg={catMehendi} />
                 </div>
 
                 {/* Normal portfolio images (takes 1.5 columns) */}
@@ -594,7 +687,7 @@ function ArtistProfilePage() {
                   High-paying brides care deeply about product quality. We exclusively stock luxury brand cosmetics to guarantee clean finishes that photograph flawlessly.
                 </p>
                 <div className="grid grid-cols-3 gap-2.5 pt-2">
-                  {["Charlotte Tilbury", "MAC Cosmetics", "Huda Beauty", "NARS", "Dior Beauty", "Estee Lauder"].map(brand => (
+                  {displayBrands.map(brand => (
                     <div key={brand} className="rounded-xl border border-border bg-white p-2.5 text-center text-[10px] font-bold text-primary shadow-sm hover:border-gold-soft transition-colors cursor-default">
                       {brand}
                     </div>
@@ -606,25 +699,18 @@ function ArtistProfilePage() {
                 <div>
                   <h3 className="font-display text-2xl text-foreground">Credentials & Bio</h3>
                   <p className="text-xs text-muted-foreground mt-2 font-serif leading-relaxed">
-                    "Certified by the prestigious <strong>Makeup Studio Academy</strong>. I focus on natural skin-like finishes that never feel heavy, highlighting your natural bone structure to make you glow under bright mandap lighting."
+                    "{displayBio}"
                   </p>
                 </div>
 
                 <div className="space-y-2 border-t border-border pt-4">
                   <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground block mb-2">Hygiene Standards Checks</span>
                   <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-primary">
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" /> Sanitized Brushes
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" /> Disposable Spoolies
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" /> Disinfected Vanity Kit
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" /> PPE & Masks
-                    </div>
+                    {displayHygiene.map(item => (
+                      <div key={item} className="flex items-center gap-1.5">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" /> {item}
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
