@@ -114,6 +114,19 @@ function ArtistDashboardPage() {
   const [currentMonth, setCurrentMonth] = useState(6); // July
   const [currentYear, setCurrentYear] = useState(2026);
 
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  const getDaysInMonth = (month: number, year: number) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (month: number, year: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+
   // State for Service Builder (Tiered Package & Service Builder)
   const [isPeakSeasonBoost, setIsPeakSeasonBoost] = useState(true);
   const [isWeekdayDiscount, setIsWeekdayDiscount] = useState(false);
