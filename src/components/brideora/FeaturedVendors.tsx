@@ -41,8 +41,8 @@ import prebridal6 from "@/assets/prebridal-new-6.jpg";
 import prebridal7 from "@/assets/prebridal-new-7.jpg";
 import mehendi1 from "@/assets/mehendi-new-1.jpg";
 import mehendi2 from "@/assets/mehendi-new-2.jpg";
-import mehendiCover from "@/assets/cat-mehendi.jpg";
-import catNails from "@/assets/cat-nails.jpg";
+import mehendiCover from "@/assets/mehendi-new-3.jpg";
+import catNails from "@/assets/nails-new-5.jpg";
 
 // Batch 1 manual uploads
 import hair9 from "@/assets/hair-new-9.jpg";
@@ -86,7 +86,7 @@ const makeupImages = [makeup11, makeup10, makeup9, ...gdriveMakeupImages, a1, a2
 const eventImages = [makeup11, makeup10, makeup9, ...gdriveMakeupImages, a2, a3, an4, an7, an9, makeup2, makeup3, makeup5, makeup6, makeup8];
 const hairImages = [hair13, hair11, hair12, hair9, hair10, ...gdriveHairImages, a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7, hair8];
 const mehendiImages = [mehendi4, mehendi5, mehendi6, mehendi3, ...gdriveMehendiImages, mehendi1, mehendi2, mehendiCover];
-const squadImages = [nails1, nails2, nails3, nails4, nails5, ...gdriveNailsImages, catNails, an2, an5, an6, an10];
+const squadImages = [nails1, nails2, nails3, nails4, nails5, ...gdriveNailsImages, catNails];
 const wellnessImages = [prebridal9, prebridal10, prebridal8, ...gdrivePrebridalImages, prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, prebridal7, an8];
 
 const firstNames = [

@@ -17,10 +17,10 @@ import { mockSalons } from "./salons";
 
 // Import asset photos if needed or fall back gracefully
 import heroCover from "@/assets/hero-bride.jpg";
-import catMehendi from "@/assets/cat-mehendi.jpg";
+import catMehendi from "@/assets/mehendi-new-3.jpg";
 import catParty from "@/assets/cat-party.jpg";
 import catBridalMakeup from "@/assets/cat-bridal-makeup.jpg";
-import catNails from "@/assets/cat-nails.jpg";
+import catNails from "@/assets/nails-new-5.jpg";
 
 // Import new premium images
 import hair1 from "@/assets/hair-new-1.jpg";
@@ -547,7 +547,7 @@ function ArtistProfilePage() {
     } else if (portfolioTab === "Bridal Mehendi") {
       return [mehendi4, mehendi5, mehendi6, mehendi3, ...gdriveMehendiImages, mehendi1, mehendi2, catMehendi];
     } else if (portfolioTab === "Nail Art") {
-      return [nails1, nails2, nails3, nails4, nails5, ...gdriveNailsImages, catNails, an2, an5];
+      return [nails1, nails2, nails3, nails4, nails5, ...gdriveNailsImages, catNails];
     } else if (portfolioTab === "Pre-Bridal") {
       return [prebridal9, prebridal10, prebridal8, ...gdrivePrebridalImages, prebridal1, prebridal2, prebridal3];
     } else {

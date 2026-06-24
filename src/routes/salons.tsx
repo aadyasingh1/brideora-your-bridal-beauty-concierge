@@ -23,8 +23,12 @@ import an7 from "@/assets/artist-new-7.jpg";
 import an8 from "@/assets/artist-new-8.jpg";
 import an9 from "@/assets/artist-new-9.jpg";
 import an10 from "@/assets/artist-new-10.jpg";
-import me1 from "@/assets/cat-mehendi.jpg";
-import n1 from "@/assets/cat-nails.jpg";
+import me1 from "@/assets/mehendi-new-3.jpg";
+import nails1 from "@/assets/nails-new-1.jpg";
+import nails2 from "@/assets/nails-new-2.jpg";
+import nails3 from "@/assets/nails-new-3.jpg";
+import nails4 from "@/assets/nails-new-4.jpg";
+import nails5 from "@/assets/nails-new-5.jpg";
 
 // Import new premium images
 import hair1 from "@/assets/hair-new-1.jpg";
@@ -57,7 +61,7 @@ const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeu
 const eventImages = [a2, a3, an4, an7, an9, makeup2, makeup3, makeup5, makeup6, makeup8];
 const hairImages = [a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7, hair8];
 const mehendiImages = [mehendi1, mehendi2, me1, mehendi1, mehendi2];
-const squadImages = [n1, an2, an5, an6, an10];
+const squadImages = [nails1, nails2, nails3, nails4, nails5];
 const wellnessImages = [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, prebridal7, an8];
 
 export const Route = createFileRoute("/salons")({
@@ -106,7 +110,7 @@ const generateMockSalons = () => {
     "Urban Chic Spa", "Diva Makeovers", "Magnolia Hair & Beauty", "Reflections Salon", "Elite Bridal Studio",
     "Gilded Scissors", "Pearl & Rose Wellness", "Golden Shear Salon", "Nail Couture & Spa", "Studio Velvet Beauty"
   ];
-  const images = [a1, a2, a3, an1, an2, an3, an4, an5, an6, an7, an8, an9, an10, me1, n1];
+  const images = [a1, a2, a3, an1, an2, an3, an4, an5, an6, an7, an8, an9, an10, me1, nails5];
   
   const cleanLocalities = localities.filter(l => l !== "All Delhi");
   const cleanCategories = categories.filter(c => c !== "All Services");
