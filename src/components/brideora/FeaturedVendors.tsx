@@ -36,6 +36,7 @@ import prebridal5 from "@/assets/prebridal-new-5.jpg";
 import prebridal6 from "@/assets/prebridal-new-6.jpg";
 import mehendi1 from "@/assets/mehendi-new-1.jpg";
 import mehendi2 from "@/assets/mehendi-new-2.jpg";
+import mehendiCover from "@/assets/cat-mehendi.jpg";
 
 import { BookingModal } from "./BookingModal";
 import { toast } from "sonner";
@@ -43,7 +44,7 @@ import { toast } from "sonner";
 const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2, makeup3, makeup4, makeup5];
 const eventImages = [a2, a3, an4, an7, an9, makeup2, makeup3, makeup5];
 const hairImages = [a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7];
-const drapingImages = [mehendi1, mehendi2, an3, an7];
+const mehendiImages = [mehendi1, mehendi2, mehendiCover, mehendi1, mehendi2];
 const squadImages = [an2, an5, an6, an10];
 const wellnessImages = [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, an8];
 
@@ -111,15 +112,15 @@ const services = [
     maxPrice: 12000
   },
   {
-    category: "Outfit Draping",
+    category: "Bridal Mehendi & Henna",
     styles: [
-      "Professional Saree Draping (Outfit Draping)",
-      "Lehenga Draping (Outfit Draping)",
-      "Dupatta Draping (Outfit Draping)",
-      "Saree & Lehenga Draping (Outfit Draping)"
+      "Traditional Bridal Mehendi (Bridal Mehendi & Henna)",
+      "Arabic Henna Design (Bridal Mehendi & Henna)",
+      "Intricate Mandala Mehendi (Bridal Mehendi & Henna)",
+      "Premium Rajasthani Bridal Henna (Bridal Mehendi & Henna)"
     ],
-    minPrice: 2000,
-    maxPrice: 6000
+    minPrice: 5000,
+    maxPrice: 15000
   },
   {
     category: "Bridal Squad Services",
@@ -166,8 +167,8 @@ const generateMockVendors = () => {
           img = eventImages[nameSeed % eventImages.length];
         } else if (srv.category === "Hair Styling") {
           img = hairImages[nameSeed % hairImages.length];
-        } else if (srv.category === "Outfit Draping") {
-          img = drapingImages[nameSeed % drapingImages.length];
+        } else if (srv.category === "Bridal Mehendi & Henna") {
+          img = mehendiImages[nameSeed % mehendiImages.length];
         } else if (srv.category === "Bridal Squad Services") {
           img = squadImages[nameSeed % squadImages.length];
         } else if (srv.category === "Pre-Bridal Wellness & Grooming") {
@@ -204,6 +205,60 @@ const generateMockVendors = () => {
           img = a3;
           badge = "Premium";
         }
+        else if (loc === "Pitampura" && srv.category === "Bridal Mehendi & Henna" && itemIdx === 0) {
+          name = "Priti Henna Art";
+          speciality = "Traditional Bridal Mehendi (Bridal Mehendi & Henna)";
+          priceStr = "₹8,500";
+          rating = 4.9;
+          reviews = 112;
+          img = mehendi1;
+          badge = "Premium";
+        }
+        else if (loc === "Janakpuri" && srv.category === "Bridal Mehendi & Henna" && itemIdx === 0) {
+          name = "Divya Henna Studio";
+          speciality = "Intricate Mandala Mehendi (Bridal Mehendi & Henna)";
+          priceStr = "₹7,000";
+          rating = 4.8;
+          reviews = 94;
+          img = mehendi2;
+          badge = "Trending";
+        }
+        else if (loc === "Lajpat Nagar" && srv.category === "Hair Styling" && itemIdx === 0) {
+          name = "Ishita Hair Couture";
+          speciality = "Premium Styling (Hair Styling)";
+          priceStr = "₹11,000";
+          rating = 4.9;
+          reviews = 138;
+          img = hair4;
+          badge = "Luxe";
+        }
+        else if (loc === "Rajouri Garden" && srv.category === "Pre-Bridal Wellness & Grooming" && itemIdx === 0) {
+          name = "Pearl & Rose Wellness";
+          speciality = "Full Pre-Bridal Glow Treatment (Pre-Bridal Wellness & Grooming)";
+          priceStr = "₹12,500";
+          rating = 4.8;
+          reviews = 84;
+          img = prebridal1;
+          badge = "Luxury";
+        }
+        else if (loc === "Paschim Vihar" && srv.category === "Pre-Bridal Wellness & Grooming" && itemIdx === 0) {
+          name = "Aura Luxury Spa";
+          speciality = "Facial & Massage (Pre-Bridal Wellness & Grooming)";
+          priceStr = "₹8,000";
+          rating = 4.7;
+          reviews = 76;
+          img = prebridal3;
+          badge = "Verified";
+        }
+        else if (loc === "Saket" && srv.category === "Bridal Makeup" && itemIdx === 0) {
+          name = "Kriti Malhotra";
+          speciality = "HD Bridal Makeup";
+          priceStr = "₹24,000";
+          rating = 4.9;
+          reviews = 104;
+          img = makeup1;
+          badge = "Featured";
+        }
         else {
           const firstName = firstNames[nameSeed % firstNames.length];
           const lastName = lastNames[(nameSeed * 7 + 3) % lastNames.length];
@@ -236,7 +291,8 @@ const generateMockVendors = () => {
           rating,
           reviews,
           img,
-          badge
+          badge,
+          category: srv.category
         });
       }
     });
@@ -353,7 +409,7 @@ export function FeaturedVendors({
         vendors.find((v) => v.location.includes("Dwarka") && v.speciality.includes("Bridal Makeup")),
         vendors.find((v) => v.location.includes("Saket") && v.speciality.includes("Event-Specific Styling")),
         vendors.find((v) => v.location.includes("Rohini") && v.speciality.includes("Hair Styling")),
-        vendors.find((v) => v.location.includes("Pitampura") && v.speciality.includes("Outfit Draping")),
+        vendors.find((v) => v.location.includes("Pitampura") && v.speciality.includes("Bridal Mehendi & Henna")),
         vendors.find((v) => v.location.includes("Janakpuri") && v.speciality.includes("Bridal Squad Services")),
         vendors.find((v) => v.location.includes("Rajouri Garden") && v.speciality.includes("Pre-Bridal Wellness & Grooming")),
       ].filter(Boolean) as typeof vendors;

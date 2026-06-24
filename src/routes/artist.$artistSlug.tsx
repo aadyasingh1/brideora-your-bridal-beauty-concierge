@@ -19,6 +19,29 @@ import { mockSalons } from "./salons";
 import heroCover from "@/assets/hero-bride.jpg";
 import catMehendi from "@/assets/cat-mehendi.jpg";
 import catParty from "@/assets/cat-party.jpg";
+import catBridalMakeup from "@/assets/cat-bridal-makeup.jpg";
+
+// Import new premium images
+import hair1 from "@/assets/hair-new-1.jpg";
+import hair2 from "@/assets/hair-new-2.jpg";
+import hair3 from "@/assets/hair-new-3.jpg";
+import hair4 from "@/assets/hair-new-4.jpg";
+import hair5 from "@/assets/hair-new-5.jpg";
+import hair6 from "@/assets/hair-new-6.jpg";
+import hair7 from "@/assets/hair-new-7.jpg";
+import makeup1 from "@/assets/makeup-new-1.jpg";
+import makeup2 from "@/assets/makeup-new-2.jpg";
+import makeup3 from "@/assets/makeup-new-3.jpg";
+import makeup4 from "@/assets/makeup-new-4.jpg";
+import makeup5 from "@/assets/makeup-new-5.jpg";
+import prebridal1 from "@/assets/prebridal-new-1.jpg";
+import prebridal2 from "@/assets/prebridal-new-2.jpg";
+import prebridal3 from "@/assets/prebridal-new-3.jpg";
+import prebridal4 from "@/assets/prebridal-new-4.jpg";
+import prebridal5 from "@/assets/prebridal-new-5.jpg";
+import prebridal6 from "@/assets/prebridal-new-6.jpg";
+import mehendi1 from "@/assets/mehendi-new-1.jpg";
+import mehendi2 from "@/assets/mehendi-new-2.jpg";
 
 export const Route = createFileRoute("/artist/$artistSlug")({
   head: () => ({
@@ -274,7 +297,8 @@ function ArtistProfilePage() {
         rating: salon.rating,
         reviews: salon.reviews,
         img: salon.img,
-        badge: salon.badge
+        badge: salon.badge,
+        category: salon.services[0]?.category || "Bridal Makeup"
       };
     }
   }
@@ -290,7 +314,8 @@ function ArtistProfilePage() {
       rating: 4.9,
       reviews: 124,
       img: vendors[0].img,
-      badge: "Top Rated"
+      badge: "Top Rated",
+      category: "Bridal Makeup"
     };
   }
 
@@ -431,19 +456,156 @@ function ArtistProfilePage() {
     });
   };
 
+  // Before-after images selector
+  const getBeforeAfterImages = () => {
+    if (isCustomArtist && customProfile.profilePic) {
+      return { before: customProfile.profilePic, after: customProfile.profilePic };
+    }
+    const cat = artist.category;
+    if (cat === "Hair Styling") {
+      return { before: hair3, after: hair1 };
+    } else if (cat === "Bridal Mehendi & Henna") {
+      return { before: catMehendi, after: mehendi1 };
+    } else if (cat === "Pre-Bridal Wellness & Grooming") {
+      return { before: prebridal3, after: prebridal1 };
+    } else {
+      return { before: makeup4, after: makeup1 };
+    }
+  };
+
+  // Reels cover selector
+  const getReelCoverImage = () => {
+    if (isCustomArtist && customProfile.profilePic) {
+      return customProfile.profilePic;
+    }
+    const cat = artist.category;
+    if (cat === "Hair Styling") {
+      return hair2;
+    } else if (cat === "Bridal Mehendi & Henna") {
+      return mehendi2;
+    } else if (cat === "Pre-Bridal Wellness & Grooming") {
+      return prebridal2;
+    } else {
+      return makeup2;
+    }
+  };
+
+  // Instagram feed selector
+  const getInstaFeedPhotos = () => {
+    if (isCustomArtist && customProfile.portfolioPics && customProfile.portfolioPics.length >= 6) {
+      return customProfile.portfolioPics.slice(0, 6);
+    }
+    const cat = artist.category;
+    if (cat === "Hair Styling") {
+      return [hair1, hair2, hair3, hair4, hair5, hair6];
+    } else if (cat === "Bridal Mehendi & Henna") {
+      return [mehendi1, mehendi2, catMehendi, mehendi1, mehendi2, catMehendi];
+    } else if (cat === "Pre-Bridal Wellness & Grooming") {
+      return [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6];
+    } else {
+      return [makeup1, makeup2, makeup3, makeup4, makeup5, catBridalMakeup];
+    }
+  };
+
   // Portfolio items mapping based on selected tab
   const getPortfolioItems = () => {
-    let baseItems = [isCustomArtist && customProfile.profilePic ? customProfile.profilePic : artist.img, catMehendi, catParty];
-    if (portfolioTab === "haldi") {
-      baseItems = [catMehendi, isCustomArtist && customProfile.profilePic ? customProfile.profilePic : artist.img, catParty];
-    } else if (portfolioTab === "reception") {
-      baseItems = [catParty, catMehendi, isCustomArtist && customProfile.profilePic ? customProfile.profilePic : artist.img];
-    }
-
     if (isCustomArtist && customProfile.portfolioPics && customProfile.portfolioPics.length > 0) {
-      return [...customProfile.portfolioPics, ...baseItems].slice(0, 3);
+      return customProfile.portfolioPics;
     }
-    return baseItems;
+    const cat = artist.category;
+    if (cat === "Hair Styling") {
+      if (portfolioTab === "haldi") return [hair4, hair5, hair6];
+      if (portfolioTab === "reception") return [hair7, hair1, hair2];
+      return [hair1, hair2, hair3];
+    } else if (cat === "Bridal Mehendi & Henna") {
+      if (portfolioTab === "haldi") return [mehendi1, mehendi2, catMehendi];
+      if (portfolioTab === "reception") return [mehendi2, catMehendi, mehendi1];
+      return [mehendi1, mehendi2, catMehendi];
+    } else if (cat === "Pre-Bridal Wellness & Grooming") {
+      if (portfolioTab === "haldi") return [prebridal4, prebridal5, prebridal6];
+      if (portfolioTab === "reception") return [prebridal1, prebridal2, prebridal3];
+      return [prebridal1, prebridal2, prebridal3];
+    } else {
+      if (portfolioTab === "haldi") return [makeup3, makeup4, makeup5];
+      if (portfolioTab === "reception") return [makeup2, makeup1, makeup5];
+      return [makeup1, makeup2, makeup3];
+    }
+  };
+
+  // Dynamic category-specific reviews
+  const getReviewsForCategory = () => {
+    const cat = artist.category;
+    const name = displayName;
+    
+    if (cat === "Hair Styling") {
+      return [
+        {
+          bride: "Ridhima Sen",
+          date: "Sangeet Ceremony - June 2026",
+          review: `Stunning hair styling by ${name}! She created a beautiful modern braid with fresh Mogra flowers that stayed perfectly secure through 4 hours of high-energy dancing. Received so many compliments!`,
+          rating: 5,
+          photos: [hair5]
+        },
+        {
+          bride: "Kiara Bhasin",
+          date: "Wedding Day - May 2026",
+          review: `The extensions were color-matched perfectly and felt so light. ${name} designed an elegant traditional updo that accommodated my heavy mathapatti and dupatta drape beautifully.`,
+          rating: 5,
+          photos: [hair6]
+        }
+      ];
+    } else if (cat === "Bridal Mehendi & Henna") {
+      return [
+        {
+          bride: "Ananya Chawla",
+          date: "Mehendi Ceremony - June 2026",
+          review: `Her hand is incredibly fast and the design lines are laser-sharp. ${name} incorporated our love story motifs into the bridal design. The henna stain turned out to be a deep rich mahogany!`,
+          rating: 5,
+          photos: [mehendi1]
+        },
+        {
+          bride: "Ishita Arora",
+          date: "Sangeet Prep - May 2026",
+          review: `Exquisite mandala design on my palms and beautiful Arabic patterns for my bridesmaids. ${name} and her team were very professional, finishing 15 family members' henna exactly on schedule.`,
+          rating: 5,
+          photos: [mehendi2]
+        }
+      ];
+    } else if (cat === "Pre-Bridal Wellness & Grooming") {
+      return [
+        {
+          bride: "Tanvi Mehta",
+          date: "Pre-Bridal Spa - June 2026",
+          review: `The pre-wedding HydraFacial and glow treatment at ${name} were heavenly. My skin felt so hydrated and prepped for the wedding makeup. The body massage was the perfect stress buster!`,
+          rating: 5,
+          photos: [prebridal5]
+        },
+        {
+          bride: "Priya Gill",
+          date: "Wellness Package - May 2026",
+          review: `Clean, hygienic, and extremely relaxing. The bridal pedicure and nail extensions were done to perfection. ${name} is a must-book for every bride-to-be!`,
+          rating: 5,
+          photos: [prebridal6]
+        }
+      ];
+    } else {
+      return [
+        {
+          bride: "Kriti Malhotra",
+          date: "Wedding Day - June 2026",
+          review: `${name} was absolutely amazing! She arrived at my venue at 4:30 AM without a minute of delay. The makeup was extremely lightweight and looked absolutely skin-like. It did not crease or wash out even after 10 hours under heavy hot lights!`,
+          rating: 5,
+          photos: [makeup4]
+        },
+        {
+          bride: "Sneha Sarin",
+          date: "Reception Ceremony - May 2026",
+          review: `I was super nervous about looking heavy on my reception day, but ${name}'s signature dewy glass finish was exactly what I wanted. She sanitizes all brushes right in front of you. 100% recommended!`,
+          rating: 5,
+          photos: [makeup5]
+        }
+      ];
+    }
   };
 
   const displayName = isCustomArtist ? customProfile.name : artist.name;
@@ -576,14 +738,7 @@ function ArtistProfilePage() {
 
           {/* Instagram Feed Grid */}
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mt-6">
-            {[
-              "https://images.unsplash.com/photo-1607190074257-dd4b7af0309f?q=80&w=300",
-              "https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?q=80&w=300",
-              "https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=300",
-              "https://images.unsplash.com/photo-1596462502278-27bfdc403348?q=80&w=300",
-              "https://images.unsplash.com/photo-1522337360788-8b13edd793be?q=80&w=300",
-              "https://images.unsplash.com/photo-1594744803329-e58b31de215f?q=80&w=300"
-            ].map((url, idx) => (
+            {getInstaFeedPhotos().map((url, idx) => (
               <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden border border-border/40 shadow-sm group">
                 <img src={url} alt="Insta post" className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-[10px] text-white font-bold font-sans">
@@ -641,13 +796,13 @@ function ArtistProfilePage() {
                 {/* Draggable Before & After Slider (takes 2 columns) */}
                 <div className="md:col-span-2 space-y-2">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block text-center">Interactive Makeover Slider</span>
-                  <BeforeAfterSlider beforeImg={displayImg} afterImg={displayImg} />
+                  <BeforeAfterSlider beforeImg={getBeforeAfterImages().before} afterImg={getBeforeAfterImages().after} />
                 </div>
 
                 {/* Unedited Reel Mockup (takes 1.5 columns) */}
                 <div className="md:col-span-1.5 space-y-2">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block text-center">Lighting Validation Reels</span>
-                  <ReelsVideoMock artistName={displayName} coverImg={catMehendi} />
+                  <ReelsVideoMock artistName={displayName} coverImg={getReelCoverImage()} />
                 </div>
 
                 {/* Normal portfolio images (takes 1.5 columns) */}
@@ -764,22 +919,7 @@ function ArtistProfilePage() {
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
-                {[
-                  {
-                    bride: "Kriti Malhotra",
-                    date: "Wedding Day - June 2026",
-                    review: "Aanya was absolutely amazing! She arrived at my venue at 4:30 AM without a minute of delay. The makeup was extremely lightweight and looked absolutely skin-like. It did not crease or wash out even after 10 hours under heavy hot lights!",
-                    rating: 5,
-                    photos: [catParty]
-                  },
-                  {
-                    bride: "Sneha Sarin",
-                    date: "Reception Ceremony - May 2026",
-                    review: "I was super nervous about looking heavy on my reception day, but Aanya's signature dewy glass finish was exactly what I wanted. She sanitizes all brushes right in front of you. 100% recommended!",
-                    rating: 5,
-                    photos: [catMehendi]
-                  }
-                ].map((item, idx) => (
+                {getReviewsForCategory().map((item, idx) => (
                   <div key={idx} className="rounded-3xl border border-border bg-white p-5 shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                       <div>

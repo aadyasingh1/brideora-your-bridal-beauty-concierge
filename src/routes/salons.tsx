@@ -51,7 +51,7 @@ import mehendi2 from "@/assets/mehendi-new-2.jpg";
 const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2, makeup3, makeup4, makeup5];
 const eventImages = [a2, a3, an4, an7, an9, makeup2, makeup3, makeup5];
 const hairImages = [a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7];
-const drapingImages = [mehendi1, mehendi2, me1, an3, an7];
+const mehendiImages = [mehendi1, mehendi2, me1, mehendi1, mehendi2];
 const squadImages = [n1, an2, an5, an6, an10];
 const wellnessImages = [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, an8];
 
@@ -73,7 +73,7 @@ const categories = [
   "Bridal Makeup",
   "Event-Specific Styling",
   "Hair Styling",
-  "Outfit Draping",
+  "Bridal Mehendi & Henna",
   "Bridal Squad Services",
   "Pre-Bridal Wellness & Grooming"
 ];
@@ -118,8 +118,8 @@ const generateMockSalons = () => {
           img = eventImages[nameSeed % eventImages.length];
         } else if (cat === "Hair Styling") {
           img = hairImages[nameSeed % hairImages.length];
-        } else if (cat === "Outfit Draping") {
-          img = drapingImages[nameSeed % drapingImages.length];
+        } else if (cat === "Bridal Mehendi & Henna") {
+          img = mehendiImages[nameSeed % mehendiImages.length];
         } else if (cat === "Bridal Squad Services") {
           img = squadImages[nameSeed % squadImages.length];
         } else if (cat === "Pre-Bridal Wellness & Grooming") {
@@ -149,10 +149,10 @@ const generateMockSalons = () => {
           servicesList.push({ name: "Bridal Updo & Flowers", price: "₹8,500", category: "Hair Styling" });
           servicesList.push({ name: "Luxury Extensions & Blowdry", price: "₹12,000", category: "Hair Styling" });
           servicesList.push({ name: "Premium Styling & Setting", price: "₹6,000", category: "Hair Styling" });
-        } else if (cat === "Outfit Draping") {
-          servicesList.push({ name: "Saree Draping Professional", price: "₹2,500", category: "Outfit Draping" });
-          servicesList.push({ name: "Lehenga Pleating & Setting", price: "₹3,000", category: "Outfit Draping" });
-          servicesList.push({ name: "Multi-Outfit Premium Draping", price: "₹5,500", category: "Outfit Draping" });
+        } else if (cat === "Bridal Mehendi & Henna") {
+          servicesList.push({ name: "Traditional Bridal Mehendi", price: "₹8,500", category: "Bridal Mehendi & Henna" });
+          servicesList.push({ name: "Premium Arabic Henna Design", price: "₹4,500", category: "Bridal Mehendi & Henna" });
+          servicesList.push({ name: "Intricate Mandala Henna", price: "₹6,000", category: "Bridal Mehendi & Henna" });
         } else if (cat === "Bridal Squad Services") {
           servicesList.push({ name: "Bridesmaid Makeup & Hair", price: "₹9,500", category: "Bridal Squad Services" });
           servicesList.push({ name: "Mothers Grooming Package", price: "₹8,000", category: "Bridal Squad Services" });
@@ -239,13 +239,15 @@ function SalonsPage() {
         detectedCategory = "Bridal Makeup";
       } else if (q.includes("hair") || q.includes("cut") || q.includes("extensions") || q.includes("styling")) {
         detectedCategory = "Hair Styling";
+      } else if (q.includes("mehendi") || q.includes("henna") || q.includes("mehndi")) {
+        detectedCategory = "Bridal Mehendi & Henna";
       } else if (q.includes("drap") || q.includes("saree") || q.includes("lehenga")) {
-        detectedCategory = "Outfit Draping";
+        detectedCategory = "Event-Specific Styling";
       } else if (q.includes("squad") || q.includes("bridesmaid") || q.includes("sister") || q.includes("family")) {
         detectedCategory = "Bridal Squad Services";
       } else if (q.includes("wellness") || q.includes("skin") || q.includes("facial") || q.includes("spa") || q.includes("glow") || q.includes("pedi") || q.includes("mani") || q.includes("nail")) {
         detectedCategory = "Pre-Bridal Wellness & Grooming";
-      } else if (q.includes("event") || q.includes("mehendi") || q.includes("haldi") || q.includes("sangeet") || q.includes("engagement")) {
+      } else if (q.includes("event") || q.includes("haldi") || q.includes("sangeet") || q.includes("engagement")) {
         detectedCategory = "Event-Specific Styling";
       }
 

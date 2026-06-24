@@ -38,7 +38,7 @@ const categories = [
   "Bridal Makeup",
   "Event-Specific Styling",
   "Hair Styling",
-  "Outfit Draping",
+  "Bridal Mehendi & Henna",
   "Bridal Squad Services",
   "Pre-Bridal Wellness & Grooming"
 ];
@@ -122,7 +122,7 @@ function ArtistsPage() {
             Hyperlocal Bridal <span className="text-gradient-royal italic">Artists</span> in Delhi
           </h1>
           <p className="text-lg text-muted-foreground font-serif">
-            Discover and book verified bridal makeup, hair styling, outfit draping, and pre-bridal wellness artists near you.
+            Discover and book verified bridal makeup, hair styling, bridal mehendi, and pre-bridal wellness artists near you.
           </p>
         </div>
 
