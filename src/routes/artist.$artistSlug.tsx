@@ -171,7 +171,7 @@ function ReelsVideoMock({ artistName, coverImg, onExpand }: { artistName: string
   const [hasLiked, setHasLiked] = useState(false);
 
   return (
-    <div className="relative rounded-[2rem] overflow-hidden border border-gold/15 aspect-[9/16] w-full max-w-[340px] mx-auto bg-black shadow-soft group">
+    <div className="relative rounded-[2rem] overflow-hidden border border-gold/15 aspect-[3/5] w-full bg-black shadow-soft group">
       {onExpand && (
         <button 
           onClick={onExpand}
@@ -934,7 +934,7 @@ function ArtistProfilePage() {
                   <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block text-center">Recent Looks</span>
                   
                   {getPortfolioItems().length > 0 ? (
-                    <div className="relative aspect-[9/16] rounded-[2rem] overflow-hidden border border-gold/15 shadow-soft group bg-black max-w-[340px] mx-auto flex flex-col justify-between">
+                    <div className="relative aspect-[3/5] w-full rounded-[2rem] overflow-hidden border border-gold/15 shadow-soft group bg-black flex flex-col justify-between">
                       {/* Main Image */}
                       <div 
                         onClick={() => setLightbox({ open: true, type: "image", src: getPortfolioItems()[activeLookIndex] })}
@@ -998,7 +998,7 @@ function ArtistProfilePage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="aspect-[9/16] rounded-[2rem] border border-dashed border-border/80 flex items-center justify-center text-center p-6 text-muted-foreground text-sm font-serif max-w-[340px] mx-auto bg-pearl/20">
+                    <div className="aspect-[3/5] w-full rounded-[2rem] border border-dashed border-border/80 flex items-center justify-center text-center p-6 text-muted-foreground text-sm font-serif bg-pearl/20">
                       No looks loaded for this category.
                     </div>
                   )}
