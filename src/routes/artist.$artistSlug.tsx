@@ -12,6 +12,7 @@ import { AuthModal } from "@/components/brideora/AuthModal";
 import { InfoModal } from "@/components/brideora/InfoModal";
 import { BookingModal } from "@/components/brideora/BookingModal";
 import { vendors, slugify } from "@/components/brideora/FeaturedVendors";
+import { mockSalons } from "./salons";
 
 // Import asset photos if needed or fall back gracefully
 import heroCover from "@/assets/hero-bride.jpg";
@@ -259,6 +260,23 @@ function ArtistProfilePage() {
   
   // Find artist from our mock vendors list
   let artist = vendors.find(v => slugify(v.name) === artistSlug);
+
+  // If not found, check mock salons
+  if (!artist) {
+    const salon = mockSalons.find(s => slugify(s.name) === artistSlug);
+    if (salon) {
+      artist = {
+        name: salon.name,
+        speciality: salon.services[0]?.name || "Luxury Salon Service",
+        location: salon.location,
+        price: salon.services[0]?.price || "₹15,000",
+        rating: salon.rating,
+        reviews: salon.reviews,
+        img: salon.img,
+        badge: salon.badge
+      };
+    }
+  }
 
   // Fallback to avoid crashes
   if (!artist) {

@@ -7,6 +7,7 @@ import { AuthModal } from "@/components/brideora/AuthModal";
 import { InfoModal } from "@/components/brideora/InfoModal";
 import { BookingModal } from "@/components/brideora/BookingModal";
 import { toast } from "sonner";
+import { slugify } from "@/components/brideora/FeaturedVendors";
 
 // Import premium assets
 import a1 from "@/assets/artist-1.jpg";
@@ -135,7 +136,7 @@ const generateMockSalons = () => {
   return list;
 };
 
-const mockSalons = generateMockSalons();
+export const mockSalons = generateMockSalons();
 
 function SalonsPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -306,12 +307,14 @@ function SalonsPage() {
                 <article key={salon.id} className="group rounded-3xl bg-card overflow-hidden shadow-soft hover:shadow-luxe transition-all duration-500 border border-border/60 flex flex-col">
                   {/* Image container */}
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    <img
-                      src={salon.img}
-                      alt={salon.name}
-                      loading="lazy"
-                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
+                    <Link to="/artist/$artistSlug" params={{ artistSlug: slugify(salon.name) }}>
+                      <img
+                        src={salon.img}
+                        alt={salon.name}
+                        loading="lazy"
+                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700 cursor-pointer"
+                      />
+                    </Link>
                     <div className="absolute top-4 left-4 inline-flex items-center gap-1 rounded-full bg-pearl/90 backdrop-blur px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
                       <Award className="h-3 w-3 text-gold" /> {salon.badge}
                     </div>
@@ -322,7 +325,9 @@ function SalonsPage() {
                     <div>
                       {/* Name & Rating */}
                       <div className="flex items-start justify-between gap-3 mb-2">
-                        <h3 className="font-display text-2xl text-foreground leading-snug">{salon.name}</h3>
+                        <Link to="/artist/$artistSlug" params={{ artistSlug: slugify(salon.name) }} className="hover:text-primary transition-colors">
+                          <h3 className="font-display text-2xl text-foreground leading-snug cursor-pointer">{salon.name}</h3>
+                        </Link>
                         <div className="flex items-center gap-1 rounded-full bg-rose px-2.5 py-1 text-xs font-semibold text-primary">
                           <Star className="h-3 w-3 fill-gold text-gold" /> {salon.rating}
                         </div>
@@ -339,16 +344,16 @@ function SalonsPage() {
                         <div className="space-y-2">
                           {salon.services.map((service, index) => (
                             <label
-                              key={service.name}
-                              className={`flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-all ${
-                                activeIndex === index
-                                  ? "border-primary/85 bg-rose-glow/10"
-                                  : "border-border/60 bg-pearl/40 hover:bg-ivory"
-                              }`}
-                              onClick={() => {
-                                setSelectedServices(prev => ({ ...prev, [salon.id]: index }));
-                              }}
-                            >
+                               key={service.name}
+                               className={`flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-all ${
+                                 activeIndex === index
+                                   ? "border-primary/85 bg-rose-glow/10"
+                                   : "border-border/60 bg-pearl/40 hover:bg-ivory"
+                               }`}
+                               onClick={() => {
+                                 setSelectedServices(prev => ({ ...prev, [salon.id]: index }));
+                               }}
+                             >
                               <div className="flex items-center gap-2">
                                 <div className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border ${
                                   activeIndex === index ? "border-primary bg-primary text-pearl" : "border-border bg-white"
@@ -377,12 +382,21 @@ function SalonsPage() {
                         </div>
                       </div>
                       
-                      <button
-                        onClick={() => handleBookClick(salon)}
-                        className="w-full rounded-full bg-foreground py-3 text-xs font-semibold text-pearl hover:bg-primary transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                      >
-                        <Sparkles className="h-3.5 w-3.5 text-gold-soft" /> Book Selected Service
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleBookClick(salon)}
+                          className="flex-1 rounded-full bg-foreground py-3 text-xs font-semibold text-pearl hover:bg-primary transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                        >
+                          <Sparkles className="h-3.5 w-3.5 text-gold-soft" /> Book
+                        </button>
+                        <Link
+                          to="/artist/$artistSlug"
+                          params={{ artistSlug: slugify(salon.name) }}
+                          className="flex-1 rounded-full border border-border bg-white text-center py-3 text-xs font-semibold text-foreground hover:bg-rose transition-all flex items-center justify-center gap-1"
+                        >
+                          View Portfolio
+                        </Link>
+                      </div>
                       <div className="text-center text-[9px] text-muted-foreground mt-2">
                         {salon.reviews} reviews verified
                       </div>
