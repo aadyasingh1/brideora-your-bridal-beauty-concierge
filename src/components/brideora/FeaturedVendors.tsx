@@ -84,10 +84,10 @@ import {
 
 const makeupImages = [makeup11, makeup10, makeup9, ...gdriveMakeupImages, a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2, makeup3, makeup4, makeup5, makeup6, makeup7, makeup8];
 const eventImages = [makeup11, makeup10, makeup9, ...gdriveMakeupImages, a2, a3, an4, an7, an9, makeup2, makeup3, makeup5, makeup6, makeup8];
-const hairImages = [hair13, hair11, hair12, hair9, hair10, ...gdriveHairImages, a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7, hair8];
+const hairImages = [hair13, hair11, hair12, hair9, hair10, ...gdriveHairImages, hair1, hair2, hair3, hair4, hair5, hair6, hair7, hair8];
 const mehendiImages = [mehendi4, mehendi5, mehendi6, mehendi3, ...gdriveMehendiImages, mehendi1, mehendi2, mehendiCover];
 const squadImages = [nails1, nails2, nails3, nails4, nails5, ...gdriveNailsImages, catNails];
-const wellnessImages = [prebridal9, prebridal10, prebridal8, ...gdrivePrebridalImages, prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, prebridal7, an8];
+const wellnessImages = [prebridal9, prebridal10, prebridal8, ...gdrivePrebridalImages, prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, prebridal7];
 
 const firstNames = [
   "Aanya", "Meher", "Riya", "Kriti", "Divya", "Pooja", "Ananya", "Ishita", "Sneha", "Tanvi", 
@@ -244,7 +244,7 @@ const generateMockVendors = () => {
           priceStr = "₹9,500";
           rating = 4.9;
           reviews = 156;
-          img = a3;
+          img = hair1;
           badge = "Premium";
         }
         else if (loc === "Pitampura" && srv.category === "Bridal Mehendi & Henna" && itemIdx === 0) {

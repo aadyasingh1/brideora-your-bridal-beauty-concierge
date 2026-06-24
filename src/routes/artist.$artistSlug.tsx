@@ -911,16 +911,16 @@ function ArtistProfilePage() {
               </div>
 
               {/* Grid content containing Before & After, Reels, and Gallery */}
-              <div className="grid md:grid-cols-5 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
                 
-                {/* Draggable Before & After Slider (takes 2 columns) */}
-                <div className="md:col-span-2 space-y-2">
+                {/* Draggable Before & After Slider */}
+                <div className="space-y-2">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block text-center">Interactive Makeover Slider</span>
                   <BeforeAfterSlider beforeImg={getBeforeAfterImages().before} afterImg={getBeforeAfterImages().after} />
                 </div>
 
-                {/* Unedited Reel Mockup (takes 1.5 columns) */}
-                <div className="md:col-span-1.5 space-y-2">
+                {/* Unedited Reel Mockup */}
+                <div className="space-y-2">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block text-center">Lighting Validation Reels</span>
                   <ReelsVideoMock 
                     artistName={displayName} 
@@ -929,8 +929,8 @@ function ArtistProfilePage() {
                   />
                 </div>
 
-                {/* Normal portfolio images (takes 1.5 columns) */}
-                <div className="md:col-span-1.5 space-y-2">
+                {/* Normal portfolio images */}
+                <div className="space-y-2">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block text-center">Recent Looks</span>
                   
                   {getPortfolioItems().length > 0 ? (
