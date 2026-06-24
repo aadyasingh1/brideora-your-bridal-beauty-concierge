@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { 
   Star, MapPin, Award, Heart, Share2, CheckCircle2, ShieldCheck, 
-  Clock, ArrowLeft, Calendar, ChevronRight, Sparkles, Play, 
+  Clock, ArrowLeft, Calendar, ChevronRight, ChevronLeft, Sparkles, Play, 
   Volume2, Plus, Minus, Info, CalendarDays, ThumbsUp, Send,
-  Instagram
+  Instagram, Maximize2, X
 } from "lucide-react";
 import { toast } from "sonner";
 import { Navbar } from "@/components/brideora/Navbar";
@@ -165,13 +165,22 @@ function BeforeAfterSlider({ beforeImg, afterImg }: { beforeImg: string; afterIm
 }
 
 // Simulated vertical short-form reels mockup
-function ReelsVideoMock({ artistName, coverImg }: { artistName: string; coverImg: string }) {
+function ReelsVideoMock({ artistName, coverImg, onExpand }: { artistName: string; coverImg: string; onExpand?: () => void }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [likes, setLikes] = useState(148);
   const [hasLiked, setHasLiked] = useState(false);
 
   return (
     <div className="relative rounded-[2rem] overflow-hidden border border-gold/15 aspect-[9/16] w-full max-w-[280px] mx-auto bg-black shadow-soft group">
+      {onExpand && (
+        <button 
+          onClick={onExpand}
+          className="absolute top-4 right-4 z-30 h-8 w-8 rounded-full bg-black/45 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-black/60 transition-colors cursor-pointer"
+          title="View Fullscreen"
+        >
+          <Maximize2 className="h-4 w-4" />
+        </button>
+      )}
       {!isPlaying ? (
         <div className="absolute inset-0 flex flex-col justify-between p-5 h-full">
           <img src={coverImg} alt="Reels cover" className="absolute inset-0 w-full h-full object-cover opacity-80" />
@@ -407,6 +416,12 @@ function ArtistProfilePage() {
 
   // Portfolio tab state
   const [portfolioTab, setPortfolioTab] = useState<string>("Bridal Makeup");
+  const [activeLookIndex, setActiveLookIndex] = useState<number>(0);
+  const [lightbox, setLightbox] = useState<{ open: boolean; type: "image" | "reel"; src: string } | null>(null);
+
+  useEffect(() => {
+    setActiveLookIndex(0);
+  }, [portfolioTab]);
   
   // Booking Calculator States
   const [selectedService, setSelectedService] = useState<"hd" | "airbrush" | "none">("hd");
@@ -907,22 +922,86 @@ function ArtistProfilePage() {
                 {/* Unedited Reel Mockup (takes 1.5 columns) */}
                 <div className="md:col-span-1.5 space-y-2">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block text-center">Lighting Validation Reels</span>
-                  <ReelsVideoMock artistName={displayName} coverImg={getReelCoverImage()} />
+                  <ReelsVideoMock 
+                    artistName={displayName} 
+                    coverImg={getReelCoverImage()} 
+                    onExpand={() => setLightbox({ open: true, type: "reel", src: getReelCoverImage() })}
+                  />
                 </div>
 
                 {/* Normal portfolio images (takes 1.5 columns) */}
-                <div className="md:col-span-1.5 space-y-3">
+                <div className="md:col-span-1.5 space-y-2">
                   <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground block text-center">Recent Looks</span>
-                  <div className="space-y-3">
-                    {getPortfolioItems().map((imgUrl, index) => (
-                      <div key={index} className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-border/80 shadow-soft group cursor-zoom-in">
-                        <img src={imgUrl} alt="Gallery" className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-[10px] font-bold uppercase tracking-wider">
-                          View Glam
+                  
+                  {getPortfolioItems().length > 0 ? (
+                    <div className="relative aspect-[9/16] rounded-[2rem] overflow-hidden border border-gold/15 shadow-soft group bg-black max-w-[280px] mx-auto flex flex-col justify-between">
+                      {/* Main Image */}
+                      <div 
+                        onClick={() => setLightbox({ open: true, type: "image", src: getPortfolioItems()[activeLookIndex] })}
+                        className="absolute inset-0 cursor-zoom-in group z-0"
+                      >
+                        <img 
+                          src={getPortfolioItems()[activeLookIndex]} 
+                          alt={`Recent Look ${activeLookIndex + 1}`} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/20" />
+                        
+                        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center bg-black/35 text-white text-xs font-bold uppercase tracking-wider z-10">
+                          View Glam Fullscreen
                         </div>
                       </div>
-                    ))}
-                  </div>
+
+                      {/* Navigation Controls */}
+                      <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 px-3 flex justify-between items-center pointer-events-none z-20">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveLookIndex((prev) => (prev === 0 ? getPortfolioItems().length - 1 : prev - 1));
+                          }}
+                          className="h-8 w-8 rounded-full bg-black/45 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-black/60 pointer-events-auto transition-colors cursor-pointer"
+                        >
+                          <ChevronLeft className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveLookIndex((prev) => (prev === getPortfolioItems().length - 1 ? 0 : prev + 1));
+                          }}
+                          className="h-8 w-8 rounded-full bg-black/45 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-black/60 pointer-events-auto transition-colors cursor-pointer"
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                      </div>
+
+                      {/* Progress Badge */}
+                      <div className="absolute top-4 left-4 z-10 bg-black/55 backdrop-blur-md text-white text-[9px] font-bold px-2.5 py-1 rounded-full border border-white/10">
+                        Look {activeLookIndex + 1} of {getPortfolioItems().length}
+                      </div>
+
+                      {/* Maximize Icon Overlay */}
+                      <button 
+                        onClick={() => setLightbox({ open: true, type: "image", src: getPortfolioItems()[activeLookIndex] })}
+                        className="absolute top-4 right-4 z-10 h-8 w-8 rounded-full bg-black/45 backdrop-blur-md border border-white/20 text-white flex items-center justify-center hover:bg-black/60 transition-colors cursor-pointer"
+                      >
+                        <Maximize2 className="h-4 w-4" />
+                      </button>
+
+                      {/* Bottom Caption Overlay */}
+                      <div className="absolute bottom-5 inset-x-5 z-10 text-white text-left pointer-events-none">
+                        <span className="text-[9px] uppercase font-bold tracking-widest text-gold-soft block mb-1">
+                          {portfolioTab} Look
+                        </span>
+                        <p className="text-xs font-semibold font-serif leading-tight">
+                          Hover to inspect styling, click to zoom full-screen.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="aspect-[9/16] rounded-[2rem] border border-dashed border-border/80 flex items-center justify-center text-center p-6 text-muted-foreground text-sm font-serif max-w-[280px] mx-auto bg-pearl/20">
+                      No looks loaded for this category.
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1348,6 +1427,64 @@ function ArtistProfilePage() {
             location: artist.location
           }}
         />
+      )}
+
+      {/* Lightbox Modal for Fullscreen looks/reels */}
+      {lightbox && lightbox.open && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300"
+          onClick={() => setLightbox(null)}
+        >
+          <button 
+            onClick={() => setLightbox(null)}
+            className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors h-10 w-10 rounded-full bg-white/10 flex items-center justify-center hover:scale-105 cursor-pointer z-55 border border-white/10"
+            title="Close Lightbox"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
+          <div 
+            className="relative max-w-full max-h-[90vh] flex items-center justify-center text-center z-50 pointer-events-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {lightbox.type === "image" ? (
+              <div className="relative rounded-2xl overflow-hidden shadow-luxe max-w-[90vw] md:max-w-[500px]">
+                <img 
+                  src={lightbox.src} 
+                  alt="Fullscreen Look" 
+                  className="w-full h-auto max-h-[80vh] object-contain rounded-2xl border border-white/15" 
+                />
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold tracking-widest px-3 py-1 rounded-full border border-white/10 whitespace-nowrap">
+                  {portfolioTab} LOOK
+                </div>
+              </div>
+            ) : (
+              /* Reels video lightbox view */
+              <div className="relative rounded-[2rem] overflow-hidden border border-white/20 aspect-[9/16] w-[320px] max-w-[90vw] bg-black shadow-luxe flex flex-col justify-between p-6">
+                <img src={lightbox.src} alt="Reel video fullscreen" className="absolute inset-0 w-full h-full object-cover opacity-80" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/40" />
+
+                <div className="relative z-10 self-start bg-rose/95 backdrop-blur-md text-primary text-[10px] uppercase font-bold tracking-widest px-3.5 py-1.5 rounded-full border border-gold/15 shadow-sm">
+                  Unedited Reel Video
+                </div>
+
+                <div className="relative z-10 flex flex-col items-center justify-center gap-3">
+                  <Volume2 className="h-10 w-10 text-white animate-bounce" />
+                  <p className="text-white text-xs font-semibold font-serif bg-black/40 px-3 py-1.5 rounded-xl backdrop-blur-sm border border-white/10">
+                    Playing unedited client beauty capture video reel...
+                  </p>
+                </div>
+
+                <div className="relative z-10 text-white text-left space-y-1">
+                  <p className="font-display text-base font-semibold">@{displayName.toLowerCase().replace(/[^a-z0-9]/g, "")}</p>
+                  <p className="text-xs text-zinc-300 font-serif leading-relaxed">
+                    Captured under raw sunlight. No filter overlay, no skin smoothing, 100% genuine texture validation.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       )}
     </div>
   );
