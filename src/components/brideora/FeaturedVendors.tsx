@@ -46,13 +46,20 @@ import catNails from "@/assets/cat-nails.jpg";
 
 import { BookingModal } from "./BookingModal";
 import { toast } from "sonner";
+import {
+  gdriveMakeupImages,
+  gdriveHairImages,
+  gdriveMehendiImages,
+  gdriveNailsImages,
+  gdrivePrebridalImages
+} from "./gdriveImages";
 
-const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2, makeup3, makeup4, makeup5, makeup6, makeup7, makeup8];
-const eventImages = [a2, a3, an4, an7, an9, makeup2, makeup3, makeup5, makeup6, makeup8];
-const hairImages = [a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7, hair8];
-const mehendiImages = [mehendi1, mehendi2, mehendiCover, mehendi1, mehendi2];
-const squadImages = [catNails, an2, an5, an6, an10];
-const wellnessImages = [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, prebridal7, an8];
+const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2, makeup3, makeup4, makeup5, makeup6, makeup7, makeup8, ...gdriveMakeupImages];
+const eventImages = [a2, a3, an4, an7, an9, makeup2, makeup3, makeup5, makeup6, makeup8, ...gdriveMakeupImages];
+const hairImages = [a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7, hair8, ...gdriveHairImages];
+const mehendiImages = [mehendi1, mehendi2, mehendiCover, ...gdriveMehendiImages];
+const squadImages = [catNails, an2, an5, an6, an10, ...gdriveNailsImages];
+const wellnessImages = [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, prebridal7, an8, ...gdrivePrebridalImages];
 
 const firstNames = [
   "Aanya", "Meher", "Riya", "Kriti", "Divya", "Pooja", "Ananya", "Ishita", "Sneha", "Tanvi", 

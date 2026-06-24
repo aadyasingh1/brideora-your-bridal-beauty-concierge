@@ -48,6 +48,13 @@ import prebridal6 from "@/assets/prebridal-new-6.jpg";
 import prebridal7 from "@/assets/prebridal-new-7.jpg";
 import mehendi1 from "@/assets/mehendi-new-1.jpg";
 import mehendi2 from "@/assets/mehendi-new-2.jpg";
+import {
+  gdriveMakeupImages,
+  gdriveHairImages,
+  gdriveMehendiImages,
+  gdriveNailsImages,
+  gdrivePrebridalImages
+} from "@/components/brideora/gdriveImages";
 
 export const Route = createFileRoute("/artist/$artistSlug")({
   head: () => ({
@@ -508,16 +515,16 @@ function ArtistProfilePage() {
       return customProfile.portfolioPics;
     }
     if (portfolioTab === "Hair Styling") {
-      return [hair1, hair2, hair3];
+      return [hair1, hair2, hair3, ...gdriveHairImages];
     } else if (portfolioTab === "Bridal Mehendi") {
-      return [mehendi1, mehendi2, catMehendi];
+      return [mehendi1, mehendi2, catMehendi, ...gdriveMehendiImages];
     } else if (portfolioTab === "Nail Art") {
-      return [catNails, an2, an5];
+      return [catNails, an2, an5, ...gdriveNailsImages];
     } else if (portfolioTab === "Pre-Bridal") {
-      return [prebridal1, prebridal2, prebridal3];
+      return [prebridal1, prebridal2, prebridal3, ...gdrivePrebridalImages];
     } else {
       // Default: Bridal Makeup
-      return [makeup1, makeup2, makeup3];
+      return [makeup1, makeup2, makeup3, ...gdriveMakeupImages];
     }
   };
 
