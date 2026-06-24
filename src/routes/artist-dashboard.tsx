@@ -371,7 +371,7 @@ function ArtistDashboardPage() {
     <div className="min-h-screen bg-background">
       <Navbar />
 
-      <main className="mx-auto max-w-7xl px-6 py-12">
+      <main className="w-full max-w-[1920px] mx-auto px-6 sm:px-10 lg:px-16 py-12">
         {/* Breadcrumb */}
         <div className="mb-6">
           <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors">
@@ -404,10 +404,10 @@ function ArtistDashboardPage() {
         </div>
 
         {/* Dashboard Layout */}
-        <div className="grid lg:grid-cols-4 gap-8">
+        <div className="grid lg:grid-cols-12 gap-8">
           
           {/* Sidebar Navigation */}
-          <aside className="lg:col-span-1 space-y-2">
+          <aside className="lg:col-span-2 space-y-2">
             <button
               onClick={() => setActiveTab("dashboard")}
               className={`w-full flex items-center gap-3 rounded-2xl px-5 py-4 text-sm font-semibold tracking-wide transition-all cursor-pointer ${
@@ -498,7 +498,7 @@ function ArtistDashboardPage() {
           </aside>
 
           {/* Main Dashboard Content */}
-          <section className="lg:col-span-3">
+          <section className="lg:col-span-10">
             
             {/* TAB 1: Centralized Artist Dashboard & Earnings */}
             {activeTab === "dashboard" && (
