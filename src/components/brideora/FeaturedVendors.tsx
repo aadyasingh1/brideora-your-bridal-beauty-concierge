@@ -14,8 +14,28 @@ import an7 from "@/assets/artist-new-7.jpg";
 import an8 from "@/assets/artist-new-8.jpg";
 import an9 from "@/assets/artist-new-9.jpg";
 import an10 from "@/assets/artist-new-10.jpg";
+
+// Import new premium images
+import hair1 from "@/assets/hair-new-1.jpg";
+import hair2 from "@/assets/hair-new-2.jpg";
+import hair3 from "@/assets/hair-new-3.jpg";
+import hair4 from "@/assets/hair-new-4.jpg";
+import hair5 from "@/assets/hair-new-5.jpg";
+import makeup1 from "@/assets/makeup-new-1.jpg";
+import makeup2 from "@/assets/makeup-new-2.jpg";
+import prebridal1 from "@/assets/prebridal-new-1.jpg";
+import prebridal2 from "@/assets/prebridal-new-2.jpg";
+import mehendi1 from "@/assets/mehendi-new-1.jpg";
+
 import { BookingModal } from "./BookingModal";
 import { toast } from "sonner";
+
+const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2];
+const eventImages = [a2, a3, an4, an7, an9, makeup2];
+const hairImages = [a3, hair1, hair2, hair3, hair4, hair5];
+const drapingImages = [mehendi1, an3, an7];
+const squadImages = [an2, an5, an6, an10];
+const wellnessImages = [prebridal1, prebridal2, an8];
 
 const firstNames = [
   "Aanya", "Meher", "Riya", "Kriti", "Divya", "Pooja", "Ananya", "Ishita", "Sneha", "Tanvi", 
@@ -129,6 +149,21 @@ const generateMockVendors = () => {
         let rating = 4.8;
         let reviews = 100;
         let img = artistImages[nameSeed % artistImages.length];
+        
+        if (srv.category === "Bridal Makeup") {
+          img = makeupImages[nameSeed % makeupImages.length];
+        } else if (srv.category === "Event-Specific Styling") {
+          img = eventImages[nameSeed % eventImages.length];
+        } else if (srv.category === "Hair Styling") {
+          img = hairImages[nameSeed % hairImages.length];
+        } else if (srv.category === "Outfit Draping") {
+          img = drapingImages[nameSeed % drapingImages.length];
+        } else if (srv.category === "Bridal Squad Services") {
+          img = squadImages[nameSeed % squadImages.length];
+        } else if (srv.category === "Pre-Bridal Wellness & Grooming") {
+          img = wellnessImages[nameSeed % wellnessImages.length];
+        }
+
         let badge = "";
 
         // Sync with specific chatbot recommended artists

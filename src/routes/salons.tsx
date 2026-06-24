@@ -26,6 +26,25 @@ import an10 from "@/assets/artist-new-10.jpg";
 import me1 from "@/assets/cat-mehendi.jpg";
 import n1 from "@/assets/cat-nails.jpg";
 
+// Import new premium images
+import hair1 from "@/assets/hair-new-1.jpg";
+import hair2 from "@/assets/hair-new-2.jpg";
+import hair3 from "@/assets/hair-new-3.jpg";
+import hair4 from "@/assets/hair-new-4.jpg";
+import hair5 from "@/assets/hair-new-5.jpg";
+import makeup1 from "@/assets/makeup-new-1.jpg";
+import makeup2 from "@/assets/makeup-new-2.jpg";
+import prebridal1 from "@/assets/prebridal-new-1.jpg";
+import prebridal2 from "@/assets/prebridal-new-2.jpg";
+import mehendi1 from "@/assets/mehendi-new-1.jpg";
+
+const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeup2];
+const eventImages = [a2, a3, an4, an7, an9, makeup2];
+const hairImages = [a3, hair1, hair2, hair3, hair4, hair5];
+const drapingImages = [mehendi1, me1, an3, an7];
+const squadImages = [n1, an2, an5, an6, an10];
+const wellnessImages = [prebridal1, prebridal2, an8];
+
 export const Route = createFileRoute("/salons")({
   head: () => ({
     meta: [
@@ -81,7 +100,22 @@ const generateMockSalons = () => {
     cleanCategories.forEach((cat, catIdx) => {
       for (let itemIdx = 0; itemIdx < 12; itemIdx++) {
         const nameSeed = locIdx * 100 + catIdx * 10 + itemIdx;
-        const img = images[nameSeed % images.length];
+        
+        let img = images[nameSeed % images.length];
+        if (cat === "Bridal Makeup") {
+          img = makeupImages[nameSeed % makeupImages.length];
+        } else if (cat === "Event-Specific Styling") {
+          img = eventImages[nameSeed % eventImages.length];
+        } else if (cat === "Hair Styling") {
+          img = hairImages[nameSeed % hairImages.length];
+        } else if (cat === "Outfit Draping") {
+          img = drapingImages[nameSeed % drapingImages.length];
+        } else if (cat === "Bridal Squad Services") {
+          img = squadImages[nameSeed % squadImages.length];
+        } else if (cat === "Pre-Bridal Wellness & Grooming") {
+          img = wellnessImages[nameSeed % wellnessImages.length];
+        }
+
         const name = `${loc} ${salonNames[nameSeed % salonNames.length]}`;
         const suffix = (loc === "Saket" || loc === "Lajpat Nagar") ? ", South Delhi" : ", Delhi";
         const location = `${loc}${suffix}`;

@@ -2,12 +2,16 @@ import i1 from "@/assets/insp-1.jpg";
 import i2 from "@/assets/insp-2.jpg";
 import i3 from "@/assets/insp-3.jpg";
 import i4 from "@/assets/insp-4.jpg";
+import hair1 from "@/assets/hair-new-1.jpg";
+import hair2 from "@/assets/hair-new-2.jpg";
 
 const items = [
   { src: i1, label: "Red Bridal", span: "row-span-2" },
   { src: i2, label: "Minimal Glam", span: "" },
+  { src: hair1, label: "Traditional Braid", span: "" },
   { src: i3, label: "Punjabi Bridal", span: "row-span-2" },
   { src: i4, label: "Reception Look", span: "" },
+  { src: hair2, label: "Gajra Braid Glam", span: "" },
 ];
 
 export function Inspiration() {

@@ -1,9 +1,9 @@
 import bridal from "@/assets/cat-bridal-makeup.jpg";
 import party from "@/assets/cat-party.jpg";
-import hair from "@/assets/cat-hair.jpg";
+import hair from "@/assets/hair-new-4.jpg";
 import mehendi from "@/assets/cat-mehendi.jpg";
 import nails from "@/assets/cat-nails.jpg";
-import prebridal from "@/assets/cat-prebridal.jpg";
+import prebridal from "@/assets/prebridal-new-1.jpg";
 import trials from "@/assets/artist-new-4.jpg";
 
 const cats = [
