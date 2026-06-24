@@ -11,7 +11,7 @@ const cats = [
   { name: "Event-Specific Styling", count: "144+ stylists", img: party },
   { name: "Hair Styling", count: "144+ experts", img: hair },
   { name: "Bridal Mehendi & Henna", count: "144+ artists", img: mehendi },
-  { name: "Bridal Squad Services", count: "144+ packages", img: nails },
+  { name: "Nail Art", count: "144+ artists", img: nails },
   { name: "Pre-Bridal Wellness & Grooming", count: "144+ packages", img: prebridal },
 ];
 

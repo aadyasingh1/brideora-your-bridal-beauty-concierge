@@ -39,7 +39,7 @@ const categories = [
   "Event-Specific Styling",
   "Hair Styling",
   "Bridal Mehendi & Henna",
-  "Bridal Squad Services",
+  "Nail Art",
   "Pre-Bridal Wellness & Grooming"
 ];
 
@@ -217,8 +217,20 @@ function ArtistsPage() {
       </main>
 
       <Footer
-        onServiceClick={(cat) => updateFilters({ specialty: cat })}
-        onLocationClick={(loc) => updateFilters({ locality: loc })}
+        onServiceClick={(cat) => {
+          let mappedSpec = cat;
+          if (cat === "Party Makeup") mappedSpec = "Event-Specific Styling";
+          else if (cat === "Mehendi") mappedSpec = "Bridal Mehendi & Henna";
+          else if (cat === "Pre-Bridal") mappedSpec = "Pre-Bridal Wellness & Grooming";
+          updateFilters({ specialty: mappedSpec });
+          const gridEl = document.querySelector("#vendors");
+          gridEl?.scrollIntoView({ behavior: "smooth" });
+        }}
+        onLocationClick={(loc) => {
+          updateFilters({ locality: loc });
+          const gridEl = document.querySelector("#vendors");
+          gridEl?.scrollIntoView({ behavior: "smooth" });
+        }}
         onInfoClick={(type) => setInfoModal({ open: true, type })}
         onSignInClick={handleSignInClick}
       />

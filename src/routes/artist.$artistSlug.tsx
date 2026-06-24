@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { 
   Star, MapPin, Award, Heart, Share2, CheckCircle2, ShieldCheck, 
   Clock, ArrowLeft, Calendar, ChevronRight, Sparkles, Play, 
@@ -20,6 +20,7 @@ import heroCover from "@/assets/hero-bride.jpg";
 import catMehendi from "@/assets/cat-mehendi.jpg";
 import catParty from "@/assets/cat-party.jpg";
 import catBridalMakeup from "@/assets/cat-bridal-makeup.jpg";
+import catNails from "@/assets/cat-nails.jpg";
 
 // Import new premium images
 import hair1 from "@/assets/hair-new-1.jpg";
@@ -93,7 +94,7 @@ function BeforeAfterSlider({ beforeImg, afterImg }: { beforeImg: string; afterIm
         <img 
           src={beforeImg} 
           alt="Before makeup" 
-          className="w-full h-full object-cover filter saturate-[0.65] brightness-[0.95] contrast-[0.9]"
+          className="w-full h-full object-cover object-top filter saturate-[0.65] brightness-[0.95] contrast-[0.9]"
         />
         <div className="absolute bottom-4 left-4 bg-black/60 backdrop-blur-md text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-full z-10">
           Before (Raw Face)
@@ -108,7 +109,7 @@ function BeforeAfterSlider({ beforeImg, afterImg }: { beforeImg: string; afterIm
         <img 
           src={afterImg} 
           alt="After Makeup" 
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-top"
         />
         <div className="absolute bottom-4 right-4 bg-primary/95 backdrop-blur-md text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-full z-10">
           After (Brideora Glam)
@@ -286,6 +287,7 @@ function AvailabilityCalendar({ selectedDate, onSelectDate }: { selectedDate: st
 
 function ArtistProfilePage() {
   const { artistSlug } = Route.useParams();
+  const navigate = useNavigate();
   
   // Find artist from our mock vendors list
   let artist = vendors.find(v => slugify(v.name) === artistSlug);
@@ -369,7 +371,7 @@ function ArtistProfilePage() {
   };
 
   // Portfolio tab state
-  const [portfolioTab, setPortfolioTab] = useState<"wedding" | "haldi" | "reception">("wedding");
+  const [portfolioTab, setPortfolioTab] = useState<string>("Bridal Makeup");
   
   // Booking Calculator States
   const [selectedService, setSelectedService] = useState<"hd" | "airbrush" | "none">("hd");
@@ -463,19 +465,7 @@ function ArtistProfilePage() {
 
   // Before-after images selector
   const getBeforeAfterImages = () => {
-    if (isCustomArtist && customProfile.profilePic) {
-      return { before: customProfile.profilePic, after: customProfile.profilePic };
-    }
-    const cat = artist.category;
-    if (cat === "Hair Styling") {
-      return { before: hair3, after: hair1 };
-    } else if (cat === "Bridal Mehendi & Henna") {
-      return { before: catMehendi, after: mehendi1 };
-    } else if (cat === "Pre-Bridal Wellness & Grooming") {
-      return { before: prebridal3, after: prebridal1 };
-    } else {
-      return { before: makeup4, after: makeup1 };
-    }
+    return { before: displayImg, after: displayImg };
   };
 
   // Reels cover selector
@@ -517,22 +507,16 @@ function ArtistProfilePage() {
     if (isCustomArtist && customProfile.portfolioPics && customProfile.portfolioPics.length > 0) {
       return customProfile.portfolioPics;
     }
-    const cat = artist.category;
-    if (cat === "Hair Styling") {
-      if (portfolioTab === "haldi") return [hair4, hair5, hair8];
-      if (portfolioTab === "reception") return [hair7, hair1, hair2];
+    if (portfolioTab === "Hair Styling") {
       return [hair1, hair2, hair3];
-    } else if (cat === "Bridal Mehendi & Henna") {
-      if (portfolioTab === "haldi") return [mehendi1, mehendi2, catMehendi];
-      if (portfolioTab === "reception") return [mehendi2, catMehendi, mehendi1];
+    } else if (portfolioTab === "Bridal Mehendi") {
       return [mehendi1, mehendi2, catMehendi];
-    } else if (cat === "Pre-Bridal Wellness & Grooming") {
-      if (portfolioTab === "haldi") return [prebridal4, prebridal5, prebridal6];
-      if (portfolioTab === "reception") return [prebridal7, prebridal1, prebridal2];
+    } else if (portfolioTab === "Nail Art") {
+      return [catNails, an2, an5];
+    } else if (portfolioTab === "Pre-Bridal") {
       return [prebridal1, prebridal2, prebridal3];
     } else {
-      if (portfolioTab === "haldi") return [makeup3, makeup6, makeup7];
-      if (portfolioTab === "reception") return [makeup8, makeup1, makeup5];
+      // Default: Bridal Makeup
       return [makeup1, makeup2, makeup3];
     }
   };
@@ -622,6 +606,59 @@ function ArtistProfilePage() {
   const displayHygiene = isCustomArtist ? customProfile.hygiene : ["Sanitized Brushes", "Disposable Spoolies", "Disinfected Vanity Kit", "PPE & Masks"];
   const displayTravelRadius = isCustomArtist ? customProfile.travelRadius : "Travels outstation globally";
 
+  const getCategoryBannerStyles = (cat: string) => {
+    switch (cat) {
+      case "Bridal Makeup":
+        return {
+          bgClass: "bg-[#4a121a] text-white",
+          accentText: "text-gold-soft",
+          dividerBorder: "border-gold/20",
+          tagBg: "bg-gold/10 text-gold-soft",
+          polaroidBg: "bg-white text-black shadow-md",
+          sub: "DELHI'S PREMIER MAKEUP ARTIST"
+        };
+      case "Bridal Mehendi & Henna":
+        return {
+          bgClass: "bg-[#2d4a27] text-white", // deep henna green
+          accentText: "text-[#ebd3ad]", // warm sand/gold
+          dividerBorder: "border-[#ebd3ad]/20",
+          tagBg: "bg-[#ebd3ad]/10 text-[#ebd3ad]",
+          polaroidBg: "bg-[#fcfaf7] text-black shadow-md",
+          sub: "LUXURY HENNA & MEHENDI DESIGNER"
+        };
+      case "Hair Styling":
+        return {
+          bgClass: "bg-[#1c1917] text-white", // rich stone charcoal
+          accentText: "text-[#dfc3a7]", // luxury beige
+          dividerBorder: "border-[#dfc3a7]/20",
+          tagBg: "bg-[#dfc3a7]/10 text-[#dfc3a7]",
+          polaroidBg: "bg-white text-black shadow-md",
+          sub: "MASTER HAIR COUTURIER"
+        };
+      case "Pre-Bridal Wellness & Grooming":
+        return {
+          bgClass: "bg-[#fcfaf2] text-[#4a3b32] border border-[#e6dfd5]", // soft warm ivory
+          accentText: "text-[#b89574]", // soft bronze/gold
+          dividerBorder: "border-[#b89574]/20",
+          tagBg: "bg-[#b89574]/10 text-[#b89574]",
+          polaroidBg: "bg-white text-black shadow-md",
+          sub: "PRE-BRIDAL CLINICAL SPA & WELLNESS"
+        };
+      default:
+        return {
+          bgClass: "bg-[#1e293b] text-white", // slate navy
+          accentText: "text-rose-200",
+          dividerBorder: "border-rose-200/20",
+          tagBg: "bg-rose-200/10 text-rose-200",
+          polaroidBg: "bg-white text-black shadow-md",
+          sub: "VERIFIED BEAUTY CONCIERGE"
+        };
+    }
+  };
+
+  const bannerTheme = getCategoryBannerStyles(artist.category);
+  const bannerPics = getInstaFeedPhotos();
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar onSignInClick={handleSignInClick} />
@@ -634,70 +671,111 @@ function ArtistProfilePage() {
           </Link>
         </div>
 
-        {/* Dynamic Cover Section */}
-        <div className="relative rounded-[2.5rem] overflow-hidden border border-gold/20 shadow-soft h-[350px] mb-8 group">
-          <img 
-            src={displayCover} 
-            alt="Wedding Cover Backdrop" 
-            className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-1000" 
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        {/* Styled Etsy-inspired Professional Artist Banner */}
+        <div className={`relative rounded-[2.5rem] overflow-hidden shadow-luxe h-[350px] mb-8 group p-6 flex flex-col md:flex-row items-center justify-between gap-6 transition-all duration-500 ${bannerTheme.bgClass}`}>
+          {/* Inner Decorative Border */}
+          <div className={`absolute inset-4 rounded-[2rem] border ${bannerTheme.dividerBorder} pointer-events-none z-0`} />
           
-          {/* Wishlist and Share Floating Buttons */}
-          <div className="absolute top-6 right-6 flex gap-3 z-10">
-            <button 
-              onClick={handleShare}
-              className="h-10 w-10 rounded-full bg-pearl/90 backdrop-blur flex items-center justify-center text-primary border border-gold/20 shadow-soft hover:bg-white hover:scale-105 transition-all cursor-pointer"
-              title="Share Profile"
-            >
-              <Share2 className="h-4.5 w-4.5" />
-            </button>
-            <button 
-              onClick={toggleWishlist}
-              className="h-10 w-10 rounded-full bg-pearl/90 backdrop-blur flex items-center justify-center text-primary border border-gold/20 shadow-soft hover:bg-white hover:scale-105 transition-all cursor-pointer"
-              title="Save to Wishlist"
-            >
-              <Heart className={`h-4.5 w-4.5 ${isWishlisted ? "fill-primary text-primary" : "text-primary"}`} />
-            </button>
-          </div>
-
-          {/* Hero details card overlay */}
-          <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row items-start md:items-end justify-between gap-6 z-10 text-white">
-            <div className="flex items-center gap-6">
-              <div className="relative h-24 w-24 rounded-full overflow-hidden border-2 border-white/80 shadow-luxe bg-pearl">
+          {/* Left Column: Elegant Typography & Details */}
+          <div className="relative z-10 flex-1 flex flex-col justify-center max-w-xl pl-6 text-left space-y-3.5">
+            <div className="flex items-center gap-4">
+              <div className="relative h-16 w-16 rounded-full overflow-hidden border-2 border-white/80 shadow bg-pearl shrink-0">
                 <img src={displayImg} alt={displayName} className="h-full w-full object-cover" />
               </div>
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2.5 flex-wrap">
-                  <h1 className="font-display text-3xl sm:text-4xl text-pearl font-semibold tracking-wide">{displayName}</h1>
-                  <span className="inline-flex items-center gap-1 rounded-full bg-rose/90 backdrop-blur text-primary text-[9px] font-bold px-2.5 py-0.5 border border-gold/10 tracking-widest uppercase shadow-sm">
-                    <Award className="h-3 w-3 text-gold" />
-                    {artist.badge}
-                  </span>
-                </div>
-                <p className="text-sm text-zinc-200 font-serif font-semibold">{artist.speciality}</p>
-                <div className="flex items-center gap-2.5 text-xs text-zinc-300 font-semibold">
-                  <MapPin className="h-3.5 w-3.5 text-rose-300" />
-                  <span>Based in {displayLocation} • {displayTravelRadius}</span>
-                </div>
+              <div className="space-y-1">
+                <span className={`text-[9px] font-bold tracking-[0.25em] uppercase ${bannerTheme.accentText}`}>
+                  {bannerTheme.sub}
+                </span>
+                <h1 className="font-serif text-2xl sm:text-3xl font-medium tracking-wide">
+                  {displayName}
+                </h1>
               </div>
             </div>
             
-            {/* Quick Ratings Row */}
-            <div className="flex gap-4">
-              <div className="bg-pearl/15 backdrop-blur-md rounded-2xl p-4 text-center border border-white/10 min-w-[90px]">
-                <div className="flex items-center justify-center gap-1 text-gold">
-                  <Star className="h-4 w-4 fill-gold text-gold" />
-                  <span className="font-bold text-sm text-white">{artist.rating}</span>
-                </div>
-                <div className="text-[9px] uppercase tracking-wider text-zinc-300 mt-1">{artist.reviews} Reviews</div>
-              </div>
+            {/* Divider line with dot */}
+            <div className="flex items-center gap-3 w-40 select-none">
+              <div className="h-[1px] flex-1 bg-current opacity-25" />
+              <div className="h-1.5 w-1.5 rounded-full bg-current opacity-60" />
+              <div className="h-[1px] flex-1 bg-current opacity-25" />
+            </div>
 
-              <div className="bg-pearl/15 backdrop-blur-md rounded-2xl p-4 text-center border border-white/10 min-w-[90px]">
-                <div className="font-bold text-sm text-white">{100 + (artist.name.length * 7)}+</div>
-                <div className="text-[9px] uppercase tracking-wider text-zinc-300 mt-1">Weddings Done</div>
+            <div className="space-y-2">
+              <p className="text-xs opacity-85 font-serif font-medium max-w-md leading-relaxed">
+                {artist.speciality} • Premium Bridal Experience • travels globally
+              </p>
+              
+              <div className="flex flex-wrap gap-2.5 items-center text-xs font-semibold pt-1">
+                <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[9px] uppercase tracking-wider font-bold ${bannerTheme.tagBg}`}>
+                  <Award className="h-3 w-3" />
+                  {artist.badge}
+                </span>
+                <span className="opacity-80 flex items-center gap-1">
+                  <MapPin className="h-3.5 w-3.5 text-rose-400" />
+                  {displayLocation}
+                </span>
+                <span className="opacity-80">
+                  • {displayTravelRadius}
+                </span>
               </div>
             </div>
+
+            {/* Quick Stats Row in Banners style */}
+            <div className="flex items-center gap-6 pt-3 border-t border-current/10 max-w-sm">
+              <div>
+                <div className="flex items-center gap-1 font-bold text-sm">
+                  <Star className="h-4 w-4 fill-gold text-gold" />
+                  <span>{artist.rating}</span>
+                </div>
+                <div className="text-[9px] uppercase tracking-wider opacity-60 mt-0.5">{artist.reviews} Reviews</div>
+              </div>
+              <div className="h-6 w-[1px] bg-current opacity-10" />
+              <div>
+                <div className="font-bold text-sm">{100 + (artist.name.length * 7)}+</div>
+                <div className="text-[9px] uppercase tracking-wider opacity-60 mt-0.5">Weddings Completed</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Polaroid Gallery Strip */}
+          <div className="relative z-10 hidden md:flex items-center gap-4 pr-6 select-none h-full">
+            {/* Polaroid 1 */}
+            <div className={`p-2 pb-6 ${bannerTheme.polaroidBg} rounded-xl shadow-luxe transition-transform hover:-translate-y-4 hover:rotate-0 duration-300 transform -rotate-3 translate-y-2 w-[125px] shrink-0`}>
+              <div className="aspect-[3/4] rounded-lg overflow-hidden bg-stone-100">
+                <img src={bannerPics[0] || displayImg} alt="Look 1" className="h-full w-full object-cover object-top" />
+              </div>
+            </div>
+            
+            {/* Polaroid 2 */}
+            <div className={`p-2 pb-6 ${bannerTheme.polaroidBg} rounded-xl shadow-luxe transition-transform hover:-translate-y-4 hover:rotate-0 duration-300 transform rotate-1 -translate-y-2 w-[125px] shrink-0`}>
+              <div className="aspect-[3/4] rounded-lg overflow-hidden bg-stone-100">
+                <img src={bannerPics[1] || displayImg} alt="Look 2" className="h-full w-full object-cover object-top" />
+              </div>
+            </div>
+
+            {/* Polaroid 3 */}
+            <div className={`p-2 pb-6 ${bannerTheme.polaroidBg} rounded-xl shadow-luxe transition-transform hover:-translate-y-4 hover:rotate-0 duration-300 transform rotate-3 translate-y-1 w-[125px] shrink-0`}>
+              <div className="aspect-[3/4] rounded-lg overflow-hidden bg-stone-100">
+                <img src={bannerPics[2] || displayImg} alt="Look 3" className="h-full w-full object-cover object-top" />
+              </div>
+            </div>
+          </div>
+
+          {/* Wishlist and Share Floating Buttons - styled nicely for the theme */}
+          <div className="absolute top-6 right-6 flex gap-3 z-20">
+            <button 
+              onClick={handleShare}
+              className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur border border-white/25 flex items-center justify-center text-white transition-all cursor-pointer shadow"
+              title="Share Profile"
+            >
+              <Share2 className="h-4 w-4" />
+            </button>
+            <button 
+              onClick={toggleWishlist}
+              className="h-9 w-9 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur border border-white/25 flex items-center justify-center text-white transition-all cursor-pointer shadow"
+              title="Save to Wishlist"
+            >
+              <Heart className={`h-4 w-4 ${isWishlisted ? "fill-red-500 text-red-500" : "text-white"}`} />
+            </button>
           </div>
         </div>
 
@@ -767,31 +845,18 @@ function ArtistProfilePage() {
                   <p className="text-xs text-muted-foreground mt-0.5 font-serif">Flip through ceremony portfolios or view live Before-After transitions.</p>
                 </div>
 
-                <div className="flex rounded-full bg-rose p-1 border border-gold/10">
-                  <button 
-                    onClick={() => setPortfolioTab("wedding")}
-                    className={`rounded-full px-4 py-1.5 text-[11px] font-bold tracking-wider uppercase transition-all ${
-                      portfolioTab === "wedding" ? "bg-primary text-white shadow-soft" : "text-primary hover:text-foreground"
-                    }`}
-                  >
-                    Wedding Day
-                  </button>
-                  <button 
-                    onClick={() => setPortfolioTab("haldi")}
-                    className={`rounded-full px-4 py-1.5 text-[11px] font-bold tracking-wider uppercase transition-all ${
-                      portfolioTab === "haldi" ? "bg-primary text-white shadow-soft" : "text-primary hover:text-foreground"
-                    }`}
-                  >
-                    Haldi/Mehendi
-                  </button>
-                  <button 
-                    onClick={() => setPortfolioTab("reception")}
-                    className={`rounded-full px-4 py-1.5 text-[11px] font-bold tracking-wider uppercase transition-all ${
-                      portfolioTab === "reception" ? "bg-primary text-white shadow-soft" : "text-primary hover:text-foreground"
-                    }`}
-                  >
-                    Reception
-                  </button>
+                <div className="flex flex-wrap rounded-full bg-rose p-1 border border-gold/10 gap-1 justify-center">
+                  {["Bridal Makeup", "Hair Styling", "Bridal Mehendi", "Nail Art", "Pre-Bridal"].map((tab) => (
+                    <button 
+                      key={tab}
+                      onClick={() => setPortfolioTab(tab)}
+                      className={`rounded-full px-4 py-1.5 text-[11px] font-bold tracking-wider uppercase transition-all ${
+                        portfolioTab === tab ? "bg-primary text-white shadow-soft" : "text-primary hover:text-foreground"
+                      }`}
+                    >
+                      {tab}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -1203,8 +1268,22 @@ function ArtistProfilePage() {
       </main>
 
       <Footer
-        onServiceClick={() => {}}
-        onLocationClick={() => {}}
+        onServiceClick={(cat) => {
+          let mappedSpec = cat;
+          if (cat === "Party Makeup") mappedSpec = "Event-Specific Styling";
+          else if (cat === "Mehendi") mappedSpec = "Bridal Mehendi & Henna";
+          else if (cat === "Pre-Bridal") mappedSpec = "Pre-Bridal Wellness & Grooming";
+          navigate({
+            to: "/artists",
+            search: { specialty: mappedSpec }
+          });
+        }}
+        onLocationClick={(loc) => {
+          navigate({
+            to: "/artists",
+            search: { locality: loc }
+          });
+        }}
         onInfoClick={(type) => setInfoModal({ open: true, type })}
         onSignInClick={handleSignInClick}
       />

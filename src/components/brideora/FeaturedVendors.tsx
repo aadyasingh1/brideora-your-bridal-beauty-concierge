@@ -42,6 +42,7 @@ import prebridal7 from "@/assets/prebridal-new-7.jpg";
 import mehendi1 from "@/assets/mehendi-new-1.jpg";
 import mehendi2 from "@/assets/mehendi-new-2.jpg";
 import mehendiCover from "@/assets/cat-mehendi.jpg";
+import catNails from "@/assets/cat-nails.jpg";
 
 import { BookingModal } from "./BookingModal";
 import { toast } from "sonner";
@@ -50,7 +51,7 @@ const makeupImages = [a1, a2, an1, an2, an3, an5, an6, an8, an10, makeup1, makeu
 const eventImages = [a2, a3, an4, an7, an9, makeup2, makeup3, makeup5, makeup6, makeup8];
 const hairImages = [a3, hair1, hair2, hair3, hair4, hair5, hair6, hair7, hair8];
 const mehendiImages = [mehendi1, mehendi2, mehendiCover, mehendi1, mehendi2];
-const squadImages = [an2, an5, an6, an10];
+const squadImages = [catNails, an2, an5, an6, an10];
 const wellnessImages = [prebridal1, prebridal2, prebridal3, prebridal4, prebridal5, prebridal6, prebridal7, an8];
 
 const firstNames = [
@@ -128,14 +129,15 @@ const services = [
     maxPrice: 15000
   },
   {
-    category: "Bridal Squad Services",
+    category: "Nail Art",
     styles: [
-      "Bridesmaids Makeup (Bridal Squad Services)",
-      "Mothers & Family Styling (Bridal Squad Services)",
-      "Group Makeup Package (Bridal Squad Services)"
+      "Classic Bridal Gel Extensions (Nail Art)",
+      "Premium 3D Nail Art & Stones (Nail Art)",
+      "Chrome Overlay & French Tips (Nail Art)",
+      "Luxury Hand Spa & Overlay (Nail Art)"
     ],
-    minPrice: 8000,
-    maxPrice: 20000
+    minPrice: 3000,
+    maxPrice: 8000
   },
   {
     category: "Pre-Bridal Wellness & Grooming",
@@ -174,7 +176,7 @@ const generateMockVendors = () => {
           img = hairImages[nameSeed % hairImages.length];
         } else if (srv.category === "Bridal Mehendi & Henna") {
           img = mehendiImages[nameSeed % mehendiImages.length];
-        } else if (srv.category === "Bridal Squad Services") {
+        } else if (srv.category === "Nail Art") {
           img = squadImages[nameSeed % squadImages.length];
         } else if (srv.category === "Pre-Bridal Wellness & Grooming") {
           img = wellnessImages[nameSeed % wellnessImages.length];
@@ -415,7 +417,7 @@ export function FeaturedVendors({
         vendors.find((v) => v.location.includes("Saket") && v.speciality.includes("Event-Specific Styling")),
         vendors.find((v) => v.location.includes("Rohini") && v.speciality.includes("Hair Styling")),
         vendors.find((v) => v.location.includes("Pitampura") && v.speciality.includes("Bridal Mehendi & Henna")),
-        vendors.find((v) => v.location.includes("Janakpuri") && v.speciality.includes("Bridal Squad Services")),
+        vendors.find((v) => v.location.includes("Janakpuri") && v.category === "Nail Art"),
         vendors.find((v) => v.location.includes("Rajouri Garden") && v.speciality.includes("Pre-Bridal Wellness & Grooming")),
       ].filter(Boolean) as typeof vendors;
 

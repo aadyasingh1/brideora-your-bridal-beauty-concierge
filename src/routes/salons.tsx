@@ -79,7 +79,7 @@ const categories = [
   "Event-Specific Styling",
   "Hair Styling",
   "Bridal Mehendi & Henna",
-  "Bridal Squad Services",
+  "Nail Art",
   "Pre-Bridal Wellness & Grooming"
 ];
 
@@ -125,7 +125,7 @@ const generateMockSalons = () => {
           img = hairImages[nameSeed % hairImages.length];
         } else if (cat === "Bridal Mehendi & Henna") {
           img = mehendiImages[nameSeed % mehendiImages.length];
-        } else if (cat === "Bridal Squad Services") {
+        } else if (cat === "Nail Art") {
           img = squadImages[nameSeed % squadImages.length];
         } else if (cat === "Pre-Bridal Wellness & Grooming") {
           img = wellnessImages[nameSeed % wellnessImages.length];
@@ -158,10 +158,10 @@ const generateMockSalons = () => {
           servicesList.push({ name: "Traditional Bridal Mehendi", price: "₹8,500", category: "Bridal Mehendi & Henna" });
           servicesList.push({ name: "Premium Arabic Henna Design", price: "₹4,500", category: "Bridal Mehendi & Henna" });
           servicesList.push({ name: "Intricate Mandala Henna", price: "₹6,000", category: "Bridal Mehendi & Henna" });
-        } else if (cat === "Bridal Squad Services") {
-          servicesList.push({ name: "Bridesmaid Makeup & Hair", price: "₹9,500", category: "Bridal Squad Services" });
-          servicesList.push({ name: "Mothers Grooming Package", price: "₹8,000", category: "Bridal Squad Services" });
-          servicesList.push({ name: "Squad Pack (3+ People)", price: "₹22,000", category: "Bridal Squad Services" });
+        } else if (cat === "Nail Art") {
+          servicesList.push({ name: "Classic Gel Extensions", price: "₹3,500", category: "Nail Art" });
+          servicesList.push({ name: "Premium 3D Nail Art", price: "₹5,000", category: "Nail Art" });
+          servicesList.push({ name: "Chrome Overlay Set", price: "₹4,000", category: "Nail Art" });
         } else if (cat === "Pre-Bridal Wellness & Grooming") {
           servicesList.push({ name: "Luxury Skincare HydraFacial", price: "₹7,500", category: "Pre-Bridal Wellness & Grooming" });
           servicesList.push({ name: "Bridal Glow Body Spa", price: "₹10,000", category: "Pre-Bridal Wellness & Grooming" });
@@ -248,9 +248,9 @@ function SalonsPage() {
         detectedCategory = "Bridal Mehendi & Henna";
       } else if (q.includes("drap") || q.includes("saree") || q.includes("lehenga")) {
         detectedCategory = "Event-Specific Styling";
-      } else if (q.includes("squad") || q.includes("bridesmaid") || q.includes("sister") || q.includes("family")) {
-        detectedCategory = "Bridal Squad Services";
-      } else if (q.includes("wellness") || q.includes("skin") || q.includes("facial") || q.includes("spa") || q.includes("glow") || q.includes("pedi") || q.includes("mani") || q.includes("nail")) {
+      } else if (q.includes("nail") || q.includes("gel") || q.includes("acrylic") || q.includes("pedi") || q.includes("mani")) {
+        detectedCategory = "Nail Art";
+      } else if (q.includes("wellness") || q.includes("skin") || q.includes("facial") || q.includes("spa") || q.includes("glow")) {
         detectedCategory = "Pre-Bridal Wellness & Grooming";
       } else if (q.includes("event") || q.includes("haldi") || q.includes("sangeet") || q.includes("engagement")) {
         detectedCategory = "Event-Specific Styling";
@@ -485,13 +485,13 @@ function SalonsPage() {
               return (
                 <article key={salon.id} className="group rounded-3xl bg-card overflow-hidden shadow-soft hover:shadow-luxe transition-all duration-500 border border-border/60 flex flex-col">
                   {/* Image container */}
-                  <div className="relative aspect-[4/3] overflow-hidden">
+                  <div className="relative aspect-[3/4] overflow-hidden">
                     <Link to="/artist/$artistSlug" params={{ artistSlug: slugify(salon.name) }}>
                       <img
                         src={salon.img}
                         alt={salon.name}
                         loading="lazy"
-                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700 cursor-pointer"
+                        className="h-full w-full object-cover object-top group-hover:scale-105 transition-transform duration-700 cursor-pointer"
                       />
                     </Link>
                     <div className="absolute top-4 left-4 inline-flex items-center gap-1 rounded-full bg-pearl/90 backdrop-blur px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-primary">
@@ -516,36 +516,6 @@ function SalonsPage() {
                       <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-6 font-medium">
                         <MapPin className="h-3.5 w-3.5 text-muted-foreground/80" /> {salon.location}
                       </div>
-
-                      {/* Services Picker section */}
-                      <div className="mb-6 space-y-2">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Select Service</span>
-                        <div className="space-y-2">
-                          {salon.services.map((service, index) => (
-                            <label
-                               key={service.name}
-                               className={`flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-all ${
-                                 activeIndex === index
-                                   ? "border-primary/85 bg-rose-glow/10"
-                                   : "border-border/60 bg-pearl/40 hover:bg-ivory"
-                               }`}
-                               onClick={() => {
-                                 setSelectedServices(prev => ({ ...prev, [salon.id]: index }));
-                               }}
-                             >
-                              <div className="flex items-center gap-2">
-                                <div className={`flex h-4.5 w-4.5 items-center justify-center rounded-full border ${
-                                  activeIndex === index ? "border-primary bg-primary text-pearl" : "border-border bg-white"
-                                }`}>
-                                  {activeIndex === index && <Check className="h-3 w-3" />}
-                                </div>
-                                <span className="text-xs font-semibold text-foreground/90">{service.name}</span>
-                              </div>
-                              <span className="text-xs font-bold text-primary">{service.price}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
                     </div>
 
                     {/* Booking/Checkout Summary & Button */}
@@ -556,7 +526,7 @@ function SalonsPage() {
                           <div className="font-display text-2xl text-primary font-bold">₹{depositAmount.toLocaleString()}</div>
                         </div>
                         <div className="text-right">
-                          <div className="text-[9px] uppercase tracking-wider text-muted-foreground">Full package</div>
+                          <div className="text-[9px] uppercase tracking-wider text-muted-foreground">{activeService.name}</div>
                           <div className="text-sm font-semibold text-foreground">{activeService.price}</div>
                         </div>
                       </div>
@@ -608,8 +578,23 @@ function SalonsPage() {
       </main>
 
       <Footer
-        onServiceClick={() => {}}
-        onLocationClick={() => {}}
+        onServiceClick={(cat) => {
+          let mappedSpec = cat;
+          if (cat === "Party Makeup") mappedSpec = "Event-Specific Styling";
+          else if (cat === "Mehendi") mappedSpec = "Bridal Mehendi & Henna";
+          else if (cat === "Pre-Bridal") mappedSpec = "Pre-Bridal Wellness & Grooming";
+          setSelectedCategory(mappedSpec);
+          setParsedSummary(null);
+          // Scroll smoothly to directory grid
+          const gridEl = document.querySelector(".grid");
+          gridEl?.scrollIntoView({ behavior: "smooth" });
+        }}
+        onLocationClick={(loc) => {
+          setSelectedLocality(loc);
+          setParsedSummary(null);
+          const gridEl = document.querySelector(".grid");
+          gridEl?.scrollIntoView({ behavior: "smooth" });
+        }}
         onInfoClick={(type) => setInfoModal({ open: true, type })}
         onSignInClick={handleSignInClick}
       />
